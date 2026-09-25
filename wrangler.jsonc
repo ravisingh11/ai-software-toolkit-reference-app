@@ -20,6 +20,5 @@
     "APP_REVISION": "development",
     "TOOLKIT_REVISION": "6e0422ae58602db39a43cb0a7bea5b28a410aa0a"
   },
-  "triggers": { "crons": ["17 * * * *"] },
   "observability": { "enabled": true, "traces": { "enabled": true } }
 }

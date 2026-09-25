@@ -2,7 +2,7 @@
 
 A working issue tracker that consumes [AI Software Toolkit](https://github.com/ravisingh11/ai-software-toolkit) through its supported installers. This separate repository makes adoption, QA, guardrails, and release evidence inspectable.
 
-**Release status:** implementation is under review; the live release and rollback drill are recorded after verification in [release evidence](docs/verification/README.md).
+**[Open the live demo](https://ai-software-toolkit-reference-app.navivision-account.workers.dev)** · [Release and verification evidence](https://github.com/ravisingh11/ai-software-toolkit-reference-app/releases/tag/v0.1.0) · [Evidence guide](docs/verification/README.md)
 
 ## Try it locally
 
@@ -31,6 +31,7 @@ npm run test:coverage
 npm run validate:migrations
 npm run test:e2e
 python3 .guardrails/validators/validate_repository.py
+npm run toolkit:check          # clean committed snapshot; Docker required for scans
 ```
 
 Domain line/branch coverage is measured separately from Worker/UI integration coverage; **full changed-code line coverage is not activated**. Core/GitHub Guardrails profiles are advisory. Hosted agent QA, artifact attestation, and automatic Cloudflare deployment are unconfigured. A missing provider is never passed. See [the evidence index](docs/verification/README.md) for actual results, revisions, and remaining limits.

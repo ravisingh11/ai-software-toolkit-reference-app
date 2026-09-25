@@ -23,3 +23,7 @@ CI builds, tests, scans, and produces a PR scorecard with its GitHub token. Rele
 Hosted agent QA is also unconfigured; local Codex executes the generated functional QA skills. Browser acceptance is deterministic and separately labelled.
 
 Official references: [static assets](https://developers.cloudflare.com/workers/static-assets/), [D1 migrations](https://developers.cloudflare.com/d1/wrangler-commands/), [Workers rollback](https://developers.cloudflare.com/workers/versions-and-deployments/rollbacks/), [CI credentials](https://developers.cloudflare.com/workers/ci-cd/external-cicd/github-actions/).
+
+## Cleanup scheduling
+
+The account already uses its free-plan quota of five cron triggers. This application therefore removes expired sessions, their cascading board records, and old rate buckets when a new demo session starts. Authentication rejects expired sessions immediately after 24 hours; physical deletion happens on the next demo creation. No additional scheduled trigger or paid plan is required.

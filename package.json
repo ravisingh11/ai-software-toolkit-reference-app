@@ -5,7 +5,9 @@
   "type": "module",
   "description": "Fieldnotes: a deployed reference consumer of AI Software Toolkit",
   "license": "MIT",
-  "engines": { "node": ">=24 <27" },
+  "engines": {
+    "node": ">=24 <27"
+  },
   "scripts": {
     "dev": "wrangler dev --port 8791 --inspector-port 0",
     "types": "wrangler types",
@@ -17,7 +19,8 @@
     "db:local": "wrangler d1 migrations apply DB --local",
     "db:remote": "wrangler d1 migrations apply DB --remote",
     "lint": "tsc --noEmit && node --check public/app.js",
-    "validate:migrations": "python3 scripts/validate_migrations.py"
+    "validate:migrations": "python3 scripts/validate_migrations.py",
+    "toolkit:check": "scripts/toolkit-check.sh"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",

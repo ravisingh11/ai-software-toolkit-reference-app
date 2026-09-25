@@ -28,6 +28,11 @@ async function createSession(request: Request, env: Env): Promise<Response> {
   const ip = request.headers.get('cf-connecting-ip') ?? (['localhost', '127.0.0.1', '[::1]'].includes(url.hostname) ? 'local-development' : null);
   if (!ip) throw new ApiError(503, 'Demo sessions are temporarily unavailable.');
   const now = new Date();
+  // Expired sessions are denied on every access; new demos reclaim their data.
+  await env.DB.batch([
+    env.DB.prepare('DELETE FROM sessions WHERE expires_at <= ?').bind(now.toISOString()),
+    env.DB.prepare('DELETE FROM rate_buckets WHERE expires_at <= ?').bind(now.toISOString()),
+  ]);
   const hour = Math.floor(now.getTime() / 3_600_000);
   const rate = await env.DB.prepare('INSERT INTO rate_buckets (key, count, expires_at) VALUES (?, 1, ?) ON CONFLICT(key) DO UPDATE SET count = count + 1 WHERE count < 10 RETURNING count')
     .bind(await hash(`${ip}:${hour}`), new Date((hour + 1) * 3_600_000).toISOString()).all();
@@ -123,12 +128,5 @@ export default {
       console.error('API request failed unexpectedly.');
       return json({ error: 'The service is temporarily unavailable. Please retry.' }, 503);
     }
-  },
-  async scheduled(_controller, env): Promise<void> {
-    const now = new Date().toISOString();
-    await env.DB.batch([
-      env.DB.prepare('DELETE FROM sessions WHERE expires_at <= ?').bind(now),
-      env.DB.prepare('DELETE FROM rate_buckets WHERE expires_at <= ?').bind(now),
-    ]);
   },
 } satisfies ExportedHandler<Env>;
