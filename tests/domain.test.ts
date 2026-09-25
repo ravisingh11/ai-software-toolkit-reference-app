@@ -37,8 +37,6 @@ test('enforces the complete transition matrix and server role', () => {
       assert.equal(canTransition(from, to), from === to || from === 'in_progress' || to === 'in_progress', `${from} -> ${to}`);
     }
   }
-  // Deliberate negative control: this assertion must fail before gate verification.
-  assert.equal(canTransition('triage', 'done'), true);
   requireEditor('editor');
   rejectsStatus(() => requireEditor('viewer'), 403);
 });
