@@ -1,0 +1,38 @@
+# Guardrails v2 installer-owned workflow.
+name: Artifact Provenance
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      artifact-path:
+        description: Existing release artifact path or glob to attest.
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
+  artifact-metadata: write
+
+jobs:
+  attest:
+    name: Artifact Provenance
+    if: ${{ inputs.artifact-path != '' || vars.GUARDRAILS_ARTIFACT_PATH != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Build release artifact
+        if: ${{ vars.GUARDRAILS_ARTIFACT_BUILD_COMMAND != '' }}
+        run: bash -euo pipefail -c "${GUARDRAILS_ARTIFACT_BUILD_COMMAND}"
+        env:
+          GUARDRAILS_ARTIFACT_BUILD_COMMAND: ${{ vars.GUARDRAILS_ARTIFACT_BUILD_COMMAND }}
+      - uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6
+        with:
+          subject-path: ${{ inputs.artifact-path || vars.GUARDRAILS_ARTIFACT_PATH }}

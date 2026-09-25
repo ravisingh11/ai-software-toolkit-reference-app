@@ -1,0 +1,9 @@
+{
+  "src/index.ts": "38fdaaa85c6928815bd36a270b153ad413788553eb3abe80d528bea800576ff4",
+  "src/domain.ts": "598127f7a6693dc4e531d534cf377030f421685bc19c3c4191a7e5dc18d0d7fb",
+  "public/index.html": "a3235e1ce2c851ccfb36a68ab9d97ab470a420ae64b0d3d730fa474ee5c01c0d",
+  "public/styles.css": "521f4661dfb6be7c67718a51ec69e6c060e1dd99cbd8b85b82f79a4dc1ca1961",
+  "public/_headers": "147aaedf0a7a0c27c9e3cdcfaeb4043b2bc714df780d743bdc95b9b31e9df3d1",
+  "public/app.js": "4e40f98817ccb4d2b6d3a8b59041a5470dd545b0c6993d64d012299940c824d6",
+  "migrations/0001_initial.sql": "743447f5dd7c6122747c5a3259134accc82d947ff3402a2ecece1eb141fefc72"
+}

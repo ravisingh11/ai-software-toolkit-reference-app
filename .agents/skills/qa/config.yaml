@@ -1,0 +1,90 @@
+# Runtime configuration for Fieldnotes functional QA. Read this file for every run.
+project: Fieldnotes
+skills_dir: .agents/skills
+
+# Hosted agent QA is deliberately not configured. Local runs use the Codex browser
+# and HTTP tools available in the current session; no API key or CI secret is read.
+agent:
+  cli: Codex
+  install: Local Codex desktop session; hosted agent installation is unconfigured.
+  headless_command: Unconfigured. Do not simulate a hosted agent QA pass.
+  api_key_secret: UNCONFIGURED_NO_HOSTED_AGENT_QA
+
+environments:
+  local:
+    url: http://localhost:8791
+    kind: dev
+    restrictions:
+      - Start this Worker from the current branch checkout before testing.
+      - Use only synthetic, isolated demo boards; never enter customer data.
+      - Do not treat the future workers.dev deployment as PR or change-run evidence.
+default_target: local
+
+previews:
+  provider: none
+  backend: isolated
+  url_source: No hosted preview is configured. PR QA is local and branch-owned.
+
+auth:
+  method: demo-session-cookie
+  provider: custom Cloudflare Worker demo session
+
+personas:
+  - name: editor
+    description: Public synthetic-demo role that creates issues, comments, and valid status changes in its isolated board.
+    email: no-account; role is selected by POST /api/session
+    credentials_source: none
+    secret_name: not-applicable-public-demo-role
+    test_focus: [session-creation, issue-creation, comments, status-transitions]
+    cannot_do: [access another session board, bypass input limits, make an invalid transition]
+  - name: viewer
+    description: Public synthetic-demo role that can read its isolated board but cannot mutate it.
+    email: no-account; role is selected by POST /api/session
+    credentials_source: none
+    secret_name: not-applicable-public-demo-role
+    test_focus: [read-only-board, disabled-ui, authorization]
+    cannot_do: [create issues, add comments, change issue status]
+
+apps:
+  web:
+    type: web
+    path_patterns: [public/**, tests/e2e/**]
+    driver: Codex browser
+    build_command: npm run typecheck
+    start_command: npm run dev
+    ready_check: curl --fail --silent http://localhost:8791/api/health
+  api:
+    type: api
+    path_patterns: [src/**, migrations/**, tests/*.test.ts]
+    driver: HTTP client
+    build_command: npm run typecheck
+    start_command: npm run dev
+    ready_check: curl --fail --silent http://localhost:8791/api/health
+
+shared_paths:
+  - patterns: [package.json, package-lock.json, wrangler.jsonc, tsconfig.json, worker-configuration.d.ts]
+    affects: [web, api]
+
+feature_flags:
+  provider: none
+  how_to_override: No feature flags are configured.
+
+integrations:
+  database:
+    provider: Cloudflare D1 local binding for change QA; remote D1 is release-only.
+  assets:
+    provider: Cloudflare Workers static assets binding.
+
+cleanup:
+  strategy: none
+  instructions: Each run creates an expiring synthetic session board. Do not delete remote data; stop the local Worker after QA.
+
+evidence:
+  video: false
+  inline_upload: false
+
+flaky_retries: 1
+
+# Functional QA is advisory. There is no hosted execution or reporter workflow
+# until a separately provisioned agent credential and protected producer exist.
+failure_learning: suggest_in_report
