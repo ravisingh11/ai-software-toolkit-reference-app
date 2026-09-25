@@ -1,0 +1,87 @@
+import { test, expect } from '@playwright/test';
+test('editor creates, filters, comments, transitions, and restores a board', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('/');
+  await page.locator('#start-session').click();
+  await expect(page.locator('.issue-card')).toHaveCount(3);
+  await page.locator('#new-issue').click();
+  await page.locator('#issue-title').fill('Keyboard and browser acceptance');
+  await page.locator('#issue-description').fill('<img src=x onerror=alert(1)> is plain text');
+  await page.locator('#issue-priority').selectOption('high');
+  await page.locator('#create-submit').click();
+  await expect(page.locator('#create-dialog')).not.toBeVisible();
+  await page.locator('#search').fill('Keyboard and browser acceptance');
+  await expect(page.locator('.issue-card')).toHaveCount(1);
+  await page.locator('.issue-card').click();
+  await expect(page.locator('#detail-description')).toHaveText('<img src=x onerror=alert(1)> is plain text');
+  await expect(page.locator('#detail-description img')).toHaveCount(0);
+  await page.locator('#comment-body').fill('Verified through the real browser.');
+  await page.locator('#comment-submit').click();
+  await expect(page.locator('#comment-list')).toContainText('Verified through the real browser.');
+  await page.locator('#issue-status').selectOption('in_progress');
+  await page.locator('#status-submit').click();
+  await expect(page.locator('#detail-meta')).toContainText('In progress');
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#detail-dialog')).not.toBeVisible();
+  await page.reload();
+  await expect(page.locator('.issue-card')).toHaveCount(4);
+  await page.getByRole('button', { name: 'Open issue: Keyboard and browser acceptance', exact: true }).click();
+  await expect(page.locator('#comment-list')).toContainText('Verified through the real browser.');
+  expect(errors).toEqual([]);
+});
+test('mobile viewer has a usable read-only board', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  await page.locator('#demo-role').selectOption('viewer');
+  await page.locator('#start-session').click();
+  await expect(page.locator('.issue-card')).toHaveCount(3);
+  await expect(page.locator('#new-issue')).toBeDisabled();
+  await expect(page.locator('#role-note')).toBeVisible();
+  await page.locator('.issue-card').first().click();
+  await expect(page.locator('#issue-status')).toBeDisabled();
+  await expect(page.locator('#comment-body')).toBeDisabled();
+  await page.keyboard.press('Escape');
+  await page.locator('#priority-filter').selectOption('high');
+  await expect(page.locator('.issue-card')).toHaveCount(1);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});
+test('delayed status response does not replace another issue dialog', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#start-session').click();
+  await expect(page.locator('.issue-card')).toHaveCount(3);
+  let release!: () => void;
+  let started!: () => void;
+  const waiting = new Promise<void>(resolve => { release = resolve; });
+  const requested = new Promise<void>(resolve => { started = resolve; });
+  await page.route('**/api/issues/*', async route => {
+    if (route.request().method() === 'PATCH') { started(); await waiting; }
+    await route.continue();
+  });
+  await page.getByRole('button', { name: 'Open issue: Make empty states useful', exact: true }).click();
+  await page.locator('#issue-status').selectOption('in_progress');
+  await page.locator('#status-submit').click();
+  await requested;
+  await page.keyboard.press('Escape');
+  await page.getByRole('button', { name: 'Open issue: Publish release evidence', exact: true }).click();
+  const response = page.waitForResponse(r => r.request().method() === 'PATCH');
+  release();
+  await response;
+  await expect(page.locator('#status-submit')).toHaveText('Update status');
+  await expect(page.locator('#detail-title')).toHaveText('Publish release evidence');
+  await expect(page.locator('#detail-meta')).toContainText('Done');
+});
+test('malformed write response retains the comment draft and reports uncertainty', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#start-session').click();
+  await expect(page.locator('.issue-card')).toHaveCount(3);
+  await page.locator('.issue-card').first().click();
+  await page.locator('#comment-body').fill('Keep this draft until the write is confirmed.');
+  await page.route('**/api/issues/*/comments', async route => {
+    if (route.request().method() === 'POST') await route.fulfill({ status: 200, contentType: 'text/html', body: '<html>proxy response</html>' });
+    else await route.continue();
+  });
+  await page.locator('#comment-submit').click();
+  await expect(page.locator('#detail-error')).not.toBeEmpty();
+  await expect(page.locator('#comment-body')).toHaveValue('Keep this draft until the write is confirmed.');
+});

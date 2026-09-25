@@ -1,5 +1,51 @@
 # Fieldnotes · AI Software Toolkit reference app
 
-A small issue tracker built and operated with [AI Software Toolkit](https://github.com/ravisingh11/ai-software-toolkit). This separate application demonstrates toolkit adoption, deterministic testing, agent-driven functional QA, and deployment evidence.
+A working issue tracker that consumes [AI Software Toolkit](https://github.com/ravisingh11/ai-software-toolkit) through its supported installers. This separate repository makes adoption, QA, guardrails, and release evidence inspectable.
 
-Implementation and live verification are in progress. See [the application design](docs/design.md).
+**Release status:** implementation is under review; the live release and rollback drill are recorded after verification in [release evidence](docs/verification/README.md).
+
+## Try it locally
+
+```sh
+npm ci                         # Node 24
+npm run db:local
+npm run dev                    # http://localhost:8791
+```
+
+Choose **Editor** to create issues, move them through triage/in progress/done, and add comments. Choose **Viewer** to exercise read-only access. Search and priority/status filters work on your isolated board. Every new demo creates a separate synthetic workspace, expiring after 24 hours. Role selection is public demo functionality, not production login. Enter fictional data only.
+
+## What this proves
+
+- Real browser UI and JSON API with persistent D1 storage, server-side permissions, session isolation, input validation, and status transitions.
+- Toolkit installed at immutable revision [`6e0422a`](https://github.com/ravisingh11/ai-software-toolkit/commit/6e0422ae58602db39a43cb0a7bea5b28a410aa0a); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
+- Deterministic domain, migration, API, and Chromium acceptance tests, including negative permissions and race/error regressions.
+- Generated app-specific local agent QA skills, executed through the actual Codex browser and HTTP tools. Agent QA remains advisory and separate from deterministic tests.
+- Clean-commit Cloudflare release script, live revision verification, and a documented code rollback procedure.
+
+## Verification
+
+```sh
+npm run build
+npm run lint
+npm run test:coverage
+npm run validate:migrations
+npm run test:e2e
+python3 .guardrails/validators/validate_repository.py
+```
+
+Domain line/branch coverage is measured separately from Worker/UI integration coverage; **full changed-code line coverage is not activated**. Core/GitHub Guardrails profiles are advisory. Hosted agent QA, artifact attestation, and automatic Cloudflare deployment are unconfigured. A missing provider is never passed. See [the evidence index](docs/verification/README.md) for actual results, revisions, and remaining limits.
+
+## Repository map
+
+| Directory | Purpose |
+| --- | --- |
+| `src/` | Worker API and domain validation |
+| `public/` | Browser UI, styles, and security headers |
+| `migrations/` | Versioned D1 schema |
+| `tests/` | Domain and real Worker/browser acceptance |
+| `scripts/` | Migration verification, isolated test server, release smoke/release |
+| `.guardrails/` | Installed upstream runtime and policy |
+| `.agents/skills/` | Installed toolkit skills and generated app-specific QA |
+| `docs/` | App design, adoption, deployment, and verification evidence |
+
+Read [design](docs/design.md), [deployment and rollback](docs/deployment.md), [contribution guidance](CONTRIBUTING.md), and [security](SECURITY.md). Toolkit upgrades use a reviewed, pinned PR and rerun this consumer's acceptance checks.

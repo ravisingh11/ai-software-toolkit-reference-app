@@ -1,0 +1,36 @@
+import { test, expect } from '@playwright/test';
+const origin = 'http://localhost:8791';
+const headers = { Origin: origin };
+test('editor lifecycle persists, rejects invalid transitions, isolates other sessions', async ({ playwright }) => {
+  const editor = await playwright.request.newContext({ baseURL: origin, extraHTTPHeaders: headers });
+  const stranger = await playwright.request.newContext({ baseURL: origin, extraHTTPHeaders: headers });
+  expect((await editor.post('/api/session', { data: { role: 'editor' } })).status()).toBe(201);
+  const created = await editor.post('/api/issues', { data: { title: 'API acceptance issue', description: 'Synthetic test data', priority: 'high' } });
+  expect(created.status()).toBe(201);
+  const { issue } = await created.json();
+  expect(issue.status).toBe('triage');
+  expect((await editor.patch(`/api/issues/${issue.id}`, { data: { status: 'done' } })).status()).toBe(409);
+  expect((await editor.patch(`/api/issues/${issue.id}`, { data: { status: 'in_progress' } })).status()).toBe(200);
+  expect((await editor.patch(`/api/issues/${issue.id}`, { data: { status: 'done' } })).status()).toBe(200);
+  expect((await editor.post(`/api/issues/${issue.id}/comments`, { data: { body: 'Verified by API acceptance.' } })).status()).toBe(201);
+  expect((await (await editor.get(`/api/issues/${issue.id}/comments`)).json()).comments).toHaveLength(1);
+  const state = await editor.storageState();
+  const restored = await playwright.request.newContext({ baseURL: origin, storageState: state });
+  expect((await (await restored.get('/api/issues')).json()).issues.some((entry: { id: string }) => entry.id === issue.id)).toBe(true);
+  expect((await stranger.post('/api/session', { data: { role: 'editor' } })).status()).toBe(201);
+  expect((await stranger.patch(`/api/issues/${issue.id}`, { data: { status: 'in_progress' } })).status()).toBe(404);
+  expect((await stranger.get(`/api/issues/${issue.id}/comments`)).status()).toBe(404);
+  await editor.dispose(); await stranger.dispose(); await restored.dispose();
+});
+test('viewer and unauthenticated writes fail, cross-origin and oversized requests fail', async ({ request }) => {
+  expect((await request.get('/api/issues')).status()).toBe(401);
+  expect((await request.post('/api/session', { headers: { Origin: 'https://attacker.invalid' }, data: { role: 'editor' } })).status()).toBe(403);
+  expect((await request.post('/api/session', { headers, data: { role: 'admin' } })).status()).toBe(400);
+  expect((await request.post('/api/session', { headers, data: { role: 'viewer' } })).status()).toBe(201);
+  const { issues } = await (await request.get('/api/issues')).json();
+  expect(issues.length).toBeGreaterThan(0);
+  expect((await request.post('/api/issues', { headers, data: { title: 'Denied', description: '', priority: 'low' } })).status()).toBe(403);
+  expect((await request.patch(`/api/issues/${issues[0].id}`, { headers, data: { status: 'in_progress' } })).status()).toBe(403);
+  expect((await request.post(`/api/issues/${issues[0].id}/comments`, { headers, data: { body: 'Denied' } })).status()).toBe(403);
+  expect((await request.post('/api/session', { headers, data: { role: 'editor', padding: 'x'.repeat(9000) } })).status()).toBe(413);
+});
