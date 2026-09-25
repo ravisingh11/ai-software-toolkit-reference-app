@@ -21,3 +21,5 @@
 </details>
 
 Executed September 25, 2026 by local Codex using the generated QA skills, the in-app browser, and direct HTTP requests against `http://localhost:8791`. The source files are bound by [SHA-256 manifest](qa-source-manifest.json). The Worker reported development revision metadata; this is local behavior evidence, not a deployed-commit or hosted-agent assertion. No credentials or session cookies are retained.
+
+This report describes the application source introduced in commit `472ba6d01637a535d2a4d3cca7a86991aff61763` (implementation PR #1). The subsequent cleanup change has separate operational verification in the release record; historical evidence is not relabelled as a new revision's run.
