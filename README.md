@@ -6,6 +6,8 @@ A working issue tracker that consumes [AI Software Toolkit](https://github.com/r
 
 ## Toolkit scorecard
 
+[![Latest PR Scorecard](https://ravisingh11.github.io/ai-software-toolkit-reference-app/guardrails-badge.svg)](https://ravisingh11.github.io/ai-software-toolkit-reference-app/)
+
 [Open the live PR scorecard](https://ravisingh11.github.io/ai-software-toolkit-reference-app/) · [Scorecard CI runs](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/workflows/guardrails-scorecard.yml)
 
 The Pages report is published automatically from the latest accepted PR scorecard. It shows this application’s results, including missing evidence, and does not attest the current default branch or deployed Worker.
