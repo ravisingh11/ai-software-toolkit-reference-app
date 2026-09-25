@@ -1,11 +1,17 @@
 {
   "repository": "https://github.com/ravisingh11/ai-software-toolkit",
-  "revision": "6e0422ae58602db39a43cb0a7bea5b28a410aa0a",
+  "revision": "75207e17a06cdc16ace777571cac2e9f4eaceef1",
   "installerVersion": "2.0.0",
-  "profiles": ["core", "github"],
+  "profiles": [
+    "core",
+    "github"
+  ],
   "commands": [
-    "python3 tooling/install.py --target <application> --profile github",
+    "python3 tooling/install.py --target <application> --profile github --refresh-existing --scorecard-badge",
     "tooling/install-skills.sh --target <application>/.agents/skills --skill repo-bootstrap --skill qa-bootstrap --skill release-readiness --skill test-gap-finder --skill security-audit-lite --skill spec-driven-development"
   ],
-  "upgradePolicy": "Review exact upstream commit in a PR, run installers with documented refresh options, review generated diffs, run application acceptance and agent QA before merge. Never follow an unpinned branch in CI."
+  "upgradePolicy": "Review exact upstream commit in a PR, run installers with documented refresh options, review generated diffs, run application acceptance and agent QA before merge. Never follow an unpinned branch in CI.",
+  "optionalFeatures": [
+    "scorecard-badge"
+  ]
 }

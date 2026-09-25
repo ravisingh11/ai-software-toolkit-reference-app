@@ -2,6 +2,7 @@
 
 The live demo is at https://ai-software-toolkit-reference-app.navivision-account.workers.dev. `/api/health` exposes the serving Git revision, toolkit pin, Worker version, and database readiness.
 
+- [Live PR scorecard](https://ravisingh11.github.io/ai-software-toolkit-reference-app/): automatically published from this repository’s accepted CI artifacts. It is a PR evaluation, not a live production assessment.
 - [Readable toolkit scorecard](scorecard.md): the v0.1.0 CI snapshot, including all 15 advisory controls, missing evidence, evaluated commit, and source run. New CI runs publish their own Actions summaries; this repository snapshot is versioned separately.
 - [Implementation PR](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/1): 7 domain tests, 6 API/browser tests, migrations, build/lint, CodeQL, Gitleaks, and Semgrep passed. The initial trusted scorecard was unavailable before its runtime existed on main.
 - [Local agent functional QA](local-qa.md): actual Codex browser/HTTP interactions with a branch-owned Worker, separate from automated tests. Source SHA-256 binding included. Advisory.

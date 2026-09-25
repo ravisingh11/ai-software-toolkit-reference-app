@@ -6,6 +6,12 @@ A working issue tracker that consumes [AI Software Toolkit](https://github.com/r
 
 ## Toolkit scorecard
 
+[Open the live PR scorecard](https://ravisingh11.github.io/ai-software-toolkit-reference-app/) · [Scorecard CI runs](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/workflows/guardrails-scorecard.yml)
+
+The Pages report is published automatically from the latest accepted PR scorecard. It shows this application’s results, including missing evidence, and does not attest the current default branch or deployed Worker.
+
+### Release snapshot (v0.1.0)
+
 **v0.1.0 snapshot: ORANGE — 12/15 advisory controls passed; 3 have no result.**
 
 [Read the scorecard](docs/verification/scorecard.md) · [Recorded CI run](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/36139392302) · [Newer CI scorecards](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/workflows/guardrails-scorecard.yml)
@@ -25,7 +31,7 @@ Choose **Editor** to create issues, move them through triage/in progress/done, a
 ## What this proves
 
 - Real browser UI and JSON API with persistent D1 storage, server-side permissions, session isolation, input validation, and status transitions.
-- Toolkit installed at immutable revision [`6e0422a`](https://github.com/ravisingh11/ai-software-toolkit/commit/6e0422ae58602db39a43cb0a7bea5b28a410aa0a); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
+- Toolkit installed at immutable revision [`75207e1`](https://github.com/ravisingh11/ai-software-toolkit/commit/75207e17a06cdc16ace777571cac2e9f4eaceef1); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
 - Deterministic domain, migration, API, and Chromium acceptance tests, including negative permissions and race/error regressions.
 - Generated app-specific local agent QA skills, executed through the actual Codex browser and HTTP tools. Agent QA remains advisory and separate from deterministic tests.
 - Clean-commit Cloudflare release script, live revision verification, and a documented code rollback procedure.
