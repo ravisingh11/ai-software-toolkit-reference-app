@@ -4,6 +4,14 @@ A working issue tracker that consumes [AI Software Toolkit](https://github.com/r
 
 **[Open the live demo](https://ai-software-toolkit-reference-app.navivision-account.workers.dev)** · [Release and verification evidence](https://github.com/ravisingh11/ai-software-toolkit-reference-app/releases/tag/v0.1.0) · [Evidence guide](docs/verification/README.md)
 
+## Toolkit scorecard
+
+**v0.1.0 snapshot: ORANGE — 12/15 advisory controls passed; 3 have no result.**
+
+[Read the scorecard](docs/verification/scorecard.md) · [Recorded CI run](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/36139392302) · [Newer CI scorecards](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/workflows/guardrails-scorecard.yml)
+
+Evaluated PR commit: [`8bc67cb`](https://github.com/ravisingh11/ai-software-toolkit-reference-app/commit/8bc67cbcca74580b564ab2c9beb7a40285ba86d0). This release snapshot does not refresh automatically. Missing evidence: changed-code coverage, platform secret protection, and dependency remediation. No Guardrails controls are enforced in this snapshot; GitHub separately requires **Application acceptance** for merging.
+
 ## Try it locally
 
 ```sh
