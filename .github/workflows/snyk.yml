@@ -1,0 +1,84 @@
+name: Snyk
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: snyk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    name: ${{ matrix.check }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - scan: code
+            check: Snyk Code
+          - scan: open-source
+            check: Snyk Open Source
+    steps:
+      - name: Require a trusted event and configured token
+        env:
+          FORK_PR: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          if [[ "$FORK_PR" == 'true' ]]; then
+            echo 'BLOCKED: Snyk does not receive credentials on fork pull requests.' >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          if [[ -z "$SNYK_TOKEN" || "$SNYK_TOKEN" == 'GUARDRAILS_NOT_CONFIGURED' ]]; then
+            echo 'BLOCKED: Configure the SNYK_TOKEN Actions secret.' >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+      - name: Check out the exact change
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+      - name: Install dependencies without lifecycle scripts
+        if: matrix.scan == 'open-source'
+        run: npm ci --ignore-scripts
+      - name: Install the pinned Snyk CLI
+        uses: snyk/actions/setup@9adf32b1121593767fc3c057af55b55db032dc04 # v1.0.0
+        with:
+          snyk-version: 'v1.1307.4'
+      - name: Run the scan
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          SCAN_KIND: ${{ matrix.scan }}
+        run: |
+          set +e
+          if [[ "$SCAN_KIND" == 'code' ]]; then
+            snyk code test --severity-threshold=high --json-file-output=snyk-code.json
+          else
+            snyk test --file=package.json --dev --severity-threshold=high --json-file-output=snyk-open-source.json
+          fi
+          result=$?
+          case "$result" in
+            0) echo 'PASS: Snyk completed with no findings at or above the high-severity threshold.' >> "$GITHUB_STEP_SUMMARY" ;;
+            1) echo 'FAIL: Snyk found issues at or above the high-severity threshold.' >> "$GITHUB_STEP_SUMMARY" ;;
+            *) echo 'BLOCKED: Snyk could not complete. Check the scan log for authentication, quota, or project errors.' >> "$GITHUB_STEP_SUMMARY" ;;
+          esac
+          exit "$result"
+      - name: Retain scan results
+        if: ${{ always() && hashFiles(format('snyk-{0}.json', matrix.scan)) != '' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: snyk-${{ matrix.scan }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: snyk-${{ matrix.scan }}.json
+          retention-days: 14
