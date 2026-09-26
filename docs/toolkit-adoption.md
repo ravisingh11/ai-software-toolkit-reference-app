@@ -1,6 +1,6 @@
 # Toolkit adoption
 
-The runtime and workflows were installed from reviewed upstream commit `75207e17a06cdc16ace777571cac2e9f4eaceef1` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` and `tooling/install-skills.sh` entrypoints. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
+The runtime and workflows were installed from reviewed upstream commit `9a1228744679800bd7c38613aa42cb3b7ed27ea8` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` and `tooling/install-skills.sh` entrypoints. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
 
 Core and GitHub profile controls begin advisory. Application acceptance is a separate deterministic required check on main, verified with a passing implementation and an intentionally failing follow-up PR. No AI review or functional QA result is an enforced merge gate. Oversized bootstrap scope, unavailable providers, and incomplete evidence remain visible rather than changing policy to hide them.
 
@@ -28,4 +28,10 @@ The optional upstream publisher owns this repository’s dedicated GitHub Pages 
 
 After a Guardrail Scorecard run completes, the trusted default-branch publisher validates source provenance and publishes the newest acceptable PR scorecard. A six-hour reconciliation schedule recovers missed events. The public page contains only aggregate counts/status, source-run metadata, and a subject digest; detailed controls and evidence remain in Actions. Publishing never changes merge enforcement or turns missing evidence into a pass. The README and app navigation link to this live report; the [v0.1.0 snapshot](verification/scorecard.md) remains historical evidence.
 
-This upgrade advances the pin from `6e0422ae58602db39a43cb0a7bea5b28a410aa0a` to the reviewed formatting release `75207e17a06cdc16ace777571cac2e9f4eaceef1`. The supported refresh preserves application policy and adds the publisher workflow plus its two runtime files. The installed skills are unchanged between those upstream revisions.
+This upgrade pins the reviewed PR-size reporting source commit `9a1228744679800bd7c38613aa42cb3b7ed27ea8`
+([upstream PR #54](https://github.com/ravisingh11/ai-software-toolkit/pull/54)).
+The supported runtime refresh includes PR-size report formatting, validated
+aggregate metrics, matching provider identity, and upstream workflow concurrency.
+Application policy remains unchanged. The public dashboard additionally displays
+aggregate PR-size measurements and thresholds when available; no filenames are
+published. Installed application QA skills remain unchanged.
