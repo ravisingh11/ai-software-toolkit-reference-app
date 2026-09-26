@@ -66,3 +66,13 @@ Domain line/branch coverage is measured separately from Worker/UI integration co
 | `docs/` | App design, adoption, deployment, and verification evidence |
 
 Read [design](docs/design.md), [deployment and rollback](docs/deployment.md), [contribution guidance](CONTRIBUTING.md), and [security](SECURITY.md). Toolkit upgrades use a reviewed, pinned PR and rerun this consumer's acceptance checks.
+
+### PR size report
+
+The **PR Size / Files & LOC** workflow shows counted files, added lines,
+added plus deleted lines, and maximum additions per file against configured
+limits. The published check retains its compatible name `PR Change Scope`.
+Scope is advisory: exceeding a limit warns and does not block merging.
+The scorecard dashboard displays validated aggregate measurements when present;
+older evidence is explicitly unavailable. See `.guardrails/change-scope.yaml`
+for this application's thresholds and excluded paths.
