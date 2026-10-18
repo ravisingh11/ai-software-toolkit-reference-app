@@ -1,0 +1,13 @@
+{
+  "$schema": "./policy.schema.json",
+  "version": 2,
+  "name": "baseline",
+  "profiles": [
+    "core",
+    "github"
+  ],
+  "overrides": {
+    "change": {},
+    "release": {}
+  }
+}

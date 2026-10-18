@@ -3,15 +3,15 @@
 from __future__ import annotations
 
 import argparse
-from datetime import datetime, timezone
 import hashlib
 import json
 import os
-from pathlib import Path
 import re
 import subprocess
 import sys
 import time
+from datetime import datetime, timezone
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / ".artifacts/polyglot"
@@ -37,12 +37,21 @@ def git(*args):
 
 
 def setup(languages):
+    if not re.fullmatch(r"[0-9a-f]{40}", PIN["revision"]):
+        raise ValueError("Optional toolkit revision must be a full immutable commit SHA")
     CACHE.mkdir(parents=True, exist_ok=True)
-    if not (TOOLKIT / ".git").is_dir():
+    if TOOLKIT.is_symlink():
+        raise ValueError("Optional toolkit cache must not be a symlink")
+    if TOOLKIT.exists() and any(TOOLKIT.iterdir()):
+        verify_cache()
+    else:
         run(["git", "init", "-q", TOOLKIT])
         run(["git", "-C", TOOLKIT, "remote", "add", "origin", PIN["repository"]])
+    head = subprocess.run(["git", "-C", str(TOOLKIT), "rev-parse", "HEAD"],
+                          text=True, capture_output=True, check=False)
+    if head.returncode != 0 or head.stdout.strip() != PIN["revision"]:
         run(["git", "-C", TOOLKIT, "fetch", "--depth", "1", "origin", PIN["revision"]])
-        run(["git", "-C", TOOLKIT, "checkout", "--detach", PIN["revision"]])
+        run(["git", "-C", TOOLKIT, "checkout", "--detach", "--no-overwrite-ignore", PIN["revision"]])
     verify_toolkit()
     if not PYTHON.exists():
         run([sys.executable, "-m", "venv", PYTHON.parents[1]])
@@ -53,13 +62,22 @@ def setup(languages):
         run([f"examples/polyglot/{language}/check.sh", "setup"], env=environment())
 
 
+def verify_cache():
+    if TOOLKIT.is_symlink() or not (TOOLKIT / ".git").is_dir() or (TOOLKIT / ".git").is_symlink():
+        raise ValueError("Optional toolkit cache must be its own Git checkout")
+    origin = subprocess.check_output(["git", "-C", str(TOOLKIT), "remote", "get-url", "origin"], text=True).strip()
+    if origin != PIN["repository"]:
+        raise ValueError("Optional toolkit cache origin does not match its pinned repository")
+    dirty = subprocess.check_output(["git", "-C", str(TOOLKIT), "status", "--porcelain", "--untracked-files=all"], text=True).strip()
+    if dirty:
+        raise ValueError("Optional toolkit checkout must be clean")
+
+
 def verify_toolkit():
+    verify_cache()
     result = subprocess.check_output(["git", "-C", str(TOOLKIT), "rev-parse", "HEAD"], text=True).strip()
     if result != PIN["revision"]:
         raise ValueError("Optional toolkit checkout does not match its pinned revision")
-    dirty = subprocess.check_output(["git", "-C", str(TOOLKIT), "status", "--porcelain"], text=True).strip()
-    if dirty:
-        raise ValueError("Optional toolkit checkout must be clean")
 
 
 def environment():
@@ -106,7 +124,7 @@ def check(languages, stages, base, threshold):
             start = time.monotonic()
             try:
                 completed = subprocess.run([str(value) for value in command], cwd=ROOT, env=environment(),
-                                           text=True, capture_output=True, timeout=300)
+                                           text=True, capture_output=True, timeout=300, check=False)
                 exit_code = completed.returncode
                 output = completed.stdout + completed.stderr
                 status = "passed" if exit_code == 0 else "failed"

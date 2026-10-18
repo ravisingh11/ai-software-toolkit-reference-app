@@ -22,7 +22,7 @@ Compilation/syntax checks are separate from lint. Prettier is an optional
 TypeScript formatting example (`npm run polyglot:format`). Tool versions and
 checksums are recorded beside each example; npm tooling uses the root lockfile.
 Python tooling and the two quality helpers use the immutable optional toolkit
-revision in [toolkit.json](toolkit.json), separately from the installed `.guardrails`.
+revision in [toolkit.json](toolkit.json), at the same revision as the installed `.proof` runtime.
 
 ## Run it
 
