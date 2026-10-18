@@ -38,7 +38,9 @@ Choose **Editor** to create issues, move them through triage/in progress/done, a
 - Generated app-specific local agent QA skills, executed through the actual Codex browser and HTTP tools. Agent QA remains advisory and separate from deterministic tests.
 - Clean-commit Cloudflare release script, live revision verification, and a documented code rollback procedure.
 
-## Language-specific quality examples
+## Language-specific quality examples (manual and optional)
+
+**The [Optional polyglot examples workflow](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/workflows/polyglot-examples.yml) runs only when manually dispatched (`workflow_dispatch`).** It does not run on pushes or PRs and is not a required merge check. Each adopting repository decides which checks and thresholds to use and whether to enforce them.
 
 [Run the five-language examples](examples/polyglot/README.md): Java, TypeScript,
 Python, PHP and Scala exercise the same defensive issue-transition contract with
@@ -51,9 +53,42 @@ npm run polyglot:setup
 npm run polyglot:check -- --base origin/main --threshold 90
 ```
 
-Coverage requires a clean committed revision. The new workflow is manual only;
-no required checks or branch rules are added. See the guide for runtime requirements,
-coverage scopes and the separately pinned optional toolkit helpers.
+Coverage requires a clean committed revision and a meaningful comparison base;
+`origin/main` above is suitable for a committed feature branch with changed example
+code. In GitHub Actions, choose **Run workflow**, select the target branch,
+choose `all` or one language, and supply `base_ref` and `threshold` (the example
+default is 90%). See the guide for runtime requirements, coverage scopes and the
+separately pinned optional toolkit helpers.
+
+## Merged maintenance and recorded verification (2026-10-18)
+
+The merged updates include:
+
+- [Wrangler and dependency remediation (#16)](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/16): Wrangler 4.151.1, scoped Undici 7.30.1 and Ajv URI-parser fixes, and three toolchain regression tests. [Adoption notes](docs/toolkit-adoption.md) explain the overrides and their removal conditions.
+- [Playwright update (#19)](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/19): Playwright 1.64.1, retaining compatible TypeScript 5.9.3. Pinned Actions updates use [setup-node 7.1.0 (#17)](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/17) and [upload-artifact 7.0.2 (#18)](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/18).
+- [Advisory Snyk scans (#10)](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/10): separate Code and Open Source scans on PRs, pushes to `main`, or manual dispatch. Open Source analyzes the root npm lockfile including development dependencies; it does not scan all five native dependency graphs. These scans do not activate a Snyk provider in Proof policy.
+
+The following runs passed on `main` at [`2383bcf`](https://github.com/ravisingh11/ai-software-toolkit-reference-app/commit/2383bcfc9b46ad890f46bd6f4593d52c32772e49), using toolkit revision `e5d3074`:
+
+| Verification | Recorded result |
+| --- | --- |
+| [Application acceptance](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39168165520) | Build/typecheck, lint, unit coverage, migrations, repository validation, and six API/browser acceptance tests passed. |
+| [Snyk](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39168165743) | Code and Open Source scans passed with the configured high-severity threshold. |
+| [Manual optional polyglot run](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39168166046) | All five languages passed all 30 stages (versions, build, lint, tests, architecture, coverage), with 23 conformance cases per language: 115 total. |
+
+That polyglot run compared against [`2932827`](https://github.com/ravisingh11/ai-software-toolkit-reference-app/commit/2932827657d4758cdf030ab693239cfb2a23e258), before the examples were introduced, with a chosen 90% changed-line threshold:
+
+| Language | Changed-line coverage in example scope |
+| --- | --- |
+| Java | 100% |
+| TypeScript | 93% |
+| Python | 100% |
+| PHP | 100% |
+| Scala | 92% |
+
+This measures the example scopes; full-application changed-code coverage remains unconfigured. The [PR #10 Proof scorecard](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39167631000) evaluated PR head `d2747a2`: **ORANGE / allow, 13/16 advisory controls passed (81.2%), zero enforced controls**. Missing evidence remains visible. GitHub separately requires **Application acceptance**; the polyglot workflow remains manual and optional.
+
+These are recorded source/CI results, separate from the v0.1.0 release snapshot above. This maintenance did not deploy the application or attest the current live Worker; hosted agent QA remains unconfigured.
 
 ## Verification
 
