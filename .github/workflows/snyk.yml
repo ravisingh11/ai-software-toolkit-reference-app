@@ -1,0 +1,107 @@
+name: Snyk
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: snyk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    name: ${{ matrix.check }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - scan: code
+            check: Snyk Code
+          - scan: open-source
+            check: Snyk Open Source
+    steps:
+      - name: Require a trusted event and configured token
+        env:
+          FORK_PR: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          if [[ "$FORK_PR" == 'true' ]]; then
+            echo 'BLOCKED: Snyk does not receive credentials on fork pull requests.' >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          if [[ -z "$SNYK_TOKEN" || "$SNYK_TOKEN" == 'GUARDRAILS_NOT_CONFIGURED' || "$SNYK_TOKEN" == 'PROOF_NOT_CONFIGURED' ]]; then
+            echo 'BLOCKED: Configure the SNYK_TOKEN Actions secret.' >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+      - name: Check out the exact change
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Validate the application lockfile
+        if: matrix.scan == 'open-source'
+        run: |
+          python3 -I - <<'PYTHON'
+          import json
+          from pathlib import Path
+
+          for name in ('package.json', 'package-lock.json'):
+              path = Path(name)
+              if path.is_symlink() or not path.is_file():
+                  raise SystemExit(f'BLOCKED: {name} must be a regular committed file.')
+              data = json.loads(path.read_text())
+              if not isinstance(data, dict):
+                  raise SystemExit(f'BLOCKED: {name} must contain a JSON object.')
+              if name == 'package-lock.json':
+                  if type(data.get('lockfileVersion')) is not int or data['lockfileVersion'] not in (2, 3):
+                      raise SystemExit('BLOCKED: require npm lockfile version 2 or 3.')
+                  if not isinstance(data.get('packages'), dict) or '' not in data['packages']:
+                      raise SystemExit('BLOCKED: require the root package in the committed lockfile.')
+          PYTHON
+      - name: Install the verified native Snyk CLI
+        env:
+          SNYK_CLI_VERSION: 1.1307.4
+          SNYK_CLI_SHA256: b0baee4fa4d7d11b7df927a1046cf8137a8a89fafac8101a45c3c0e0777ddc35
+        run: |
+          set -euo pipefail
+          mkdir -p "${RUNNER_TEMP}/snyk-cli"
+          curl --fail --silent --show-error --location \
+            --output "${RUNNER_TEMP}/snyk-cli/snyk" \
+            "https://github.com/snyk/cli/releases/download/v${SNYK_CLI_VERSION}/snyk-linux"
+          echo "${SNYK_CLI_SHA256}  ${RUNNER_TEMP}/snyk-cli/snyk" | sha256sum --check --strict
+          chmod +x "${RUNNER_TEMP}/snyk-cli/snyk"
+      - name: Run the scan
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          SCAN_KIND: ${{ matrix.scan }}
+        run: |
+          set +e
+          if [[ "$SCAN_KIND" == 'code' ]]; then
+            /usr/bin/env -i PATH=/usr/bin:/bin HOME="$HOME" CI=true SNYK_TOKEN="$SNYK_TOKEN" \
+              "${RUNNER_TEMP}/snyk-cli/snyk" code test --severity-threshold=high --json-file-output=snyk-code.json
+          else
+            /usr/bin/env -i PATH=/usr/bin:/bin HOME="$HOME" CI=true SNYK_TOKEN="$SNYK_TOKEN" \
+              "${RUNNER_TEMP}/snyk-cli/snyk" test --file=package-lock.json --dev --severity-threshold=high --json-file-output=snyk-open-source.json
+          fi
+          result=$?
+          case "$result" in
+            0) echo 'PASS: Snyk completed with no findings at or above the high-severity threshold.' >> "$GITHUB_STEP_SUMMARY" ;;
+            1) echo 'FAIL: Snyk found issues at or above the high-severity threshold.' >> "$GITHUB_STEP_SUMMARY" ;;
+            *) echo 'BLOCKED: Snyk could not complete. Check the scan log for authentication, quota, or project errors.' >> "$GITHUB_STEP_SUMMARY" ;;
+          esac
+          exit "$result"
+      - name: Retain scan results
+        if: ${{ always() && hashFiles(format('snyk-{0}.json', matrix.scan)) != '' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: snyk-${{ matrix.scan }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: snyk-${{ matrix.scan }}.json
+          retention-days: 14
