@@ -36,7 +36,12 @@ case "${1:-}" in
     : "${POLYGLOT_COVERAGE_REPORT:?Set absolute POLYGLOT_COVERAGE_REPORT}"
     [[ "$POLYGLOT_COVERAGE_REPORT" = /* ]] || { echo 'Coverage path must be absolute' >&2; exit 2; }
     mkdir -p "$(dirname "$POLYGLOT_COVERAGE_REPORT")"
-    "${container[@]}" -v "$(dirname "$POLYGLOT_COVERAGE_REPORT"):$(dirname "$POLYGLOT_COVERAGE_REPORT")" -e POLYGLOT_COVERAGE_REPORT -e XDEBUG_MODE=coverage "$image" php examples/polyglot/php/coverage.php
+    # Docker Desktop may not share host system temp paths. Produce inside the
+    # shared checkout, then copy on the host into the verifier's fresh directory.
+    report_dir=$(mktemp -d "$artifacts/coverage-XXXXXX")
+    trap 'rm -rf "$report_dir"' EXIT
+    "${container[@]}" -v "$report_dir:$report_dir" -e "POLYGLOT_COVERAGE_REPORT=$report_dir/coverage.xml" -e XDEBUG_MODE=coverage "$image" php examples/polyglot/php/coverage.php
+    cp "$report_dir/coverage.xml" "$POLYGLOT_COVERAGE_REPORT"
     ;;
   versions) "${container[@]}" "$image" sh -c 'php --version; php /opt/phpstan.phar --version; php --ri xdebug | head -20' ;;
   *) echo 'Usage: check.sh setup|build|lint|run|coverage|architecture|versions' >&2; exit 2 ;;

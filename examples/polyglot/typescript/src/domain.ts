@@ -14,13 +14,8 @@ export function transitionIssue(
   requestedStatus: string,
 ): string {
   if (role === "anonymous" || sessionWorkspace === "") return "unauthenticated";
-  if (role !== "editor" && role !== "viewer") return "forbidden";
-  try {
-    requireEditor(role);
-  } catch (error) {
-    if (error instanceof ApiError && error.status === 403) return "forbidden";
-    throw error;
-  }
+  if (role !== "editor") return "forbidden";
+  requireEditor(role);
   if (sessionWorkspace !== issueWorkspace) return "not_found";
   try {
     const current = parseStatus({ status: currentStatus });
