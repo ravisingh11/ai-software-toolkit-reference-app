@@ -1,0 +1,23 @@
+{
+  "java": 21,
+  "tools": [
+    {
+      "file": "checkstyle.jar",
+      "version": "10.21.4",
+      "url": "https://github.com/checkstyle/checkstyle/releases/download/checkstyle-10.21.4/checkstyle-10.21.4-all.jar",
+      "sha256": "3c1d94d6ecc83e02dff587c9ba5b6b4ec4fec38c7a958eb587efec9b28e2f318"
+    },
+    {
+      "file": "jacocoagent.jar",
+      "version": "0.8.13",
+      "url": "https://repo.maven.apache.org/maven2/org/jacoco/org.jacoco.agent/0.8.13/org.jacoco.agent-0.8.13-runtime.jar",
+      "sha256": "47e700ccb0fdb9e27c5241353f8161938f4e53c3561dd35e063c5fe88dc3349b"
+    },
+    {
+      "file": "jacococli.jar",
+      "version": "0.8.13",
+      "url": "https://repo.maven.apache.org/maven2/org/jacoco/org.jacoco.cli/0.8.13/org.jacoco.cli-0.8.13-nodeps.jar",
+      "sha256": "8f748683833d4dc4d72cea5d6b43f49344687b831e0582c97bcb9b984e3de0a3"
+    }
+  ]
+}

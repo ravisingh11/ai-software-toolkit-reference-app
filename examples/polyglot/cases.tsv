@@ -1,0 +1,24 @@
+id	role	session_workspace	issue_workspace	current_status	requested_status	expected
+triage-to-triage	editor	board-a	board-a	triage	triage	triage
+triage-to-in_progress	editor	board-a	board-a	triage	in_progress	in_progress
+triage-to-done	editor	board-a	board-a	triage	done	invalid_transition
+in_progress-to-triage	editor	board-a	board-a	in_progress	triage	triage
+in_progress-to-in_progress	editor	board-a	board-a	in_progress	in_progress	in_progress
+in_progress-to-done	editor	board-a	board-a	in_progress	done	done
+done-to-triage	editor	board-a	board-a	done	triage	invalid_transition
+done-to-in_progress	editor	board-a	board-a	done	in_progress	in_progress
+done-to-done	editor	board-a	board-a	done	done	done
+anonymous	anonymous	board-a	board-a	triage	in_progress	unauthenticated
+missing-session	editor		board-a	triage	in_progress	unauthenticated
+viewer-cannot-write	viewer	board-a	board-a	triage	in_progress	forbidden
+viewer-idempotent-denied	viewer	board-a	board-a	done	done	forbidden
+unknown-role	owner	board-a	board-a	triage	in_progress	forbidden
+cross-workspace	editor	board-a	board-b	triage	in_progress	not_found
+empty-resource-workspace	editor	board-a		triage	in_progress	not_found
+invalid-current	editor	board-a	board-a	unknown	in_progress	invalid_status
+invalid-requested	editor	board-a	board-a	triage	unknown	invalid_status
+both-invalid	editor	board-a	board-a	unknown	unknown	invalid_status
+empty-status	editor	board-a	board-a	triage		invalid_status
+status-case-sensitive	editor	board-a	board-a	triage	DONE	invalid_status
+status-not-trimmed	editor	board-a	board-a	triage	 done	invalid_status
+role-case-sensitive	Editor	board-a	board-a	triage	in_progress	forbidden
