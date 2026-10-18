@@ -43,18 +43,20 @@ test('Ajv URI parser terminates when normalizing and resolving Unicode line sepa
   const script = `
     const assert = require('node:assert/strict');
     const uri = require(process.argv[1]);
+    const options = { iri: true, unicodeSupport: true };
     for (const separator of ['\\u2028', '\\u2029']) {
       const input = 'https://schemas.example.test/' + separator + '/schema.json';
-      const normalized = uri.normalize(input);
+      const normalized = uri.normalize(input, options);
       assert.equal(typeof normalized, 'string');
-      assert.equal(uri.normalize(normalized), normalized);
-      const resolved = uri.resolve('https://schemas.example.test/base/', '../' + separator + '/schema.json');
+      assert.equal(uri.normalize(normalized, options), normalized);
+      assert.ok(normalized.endsWith('/' + encodeURIComponent(separator) + '/schema.json'));
+      const resolved = uri.resolve('https://schemas.example.test/base/', '../' + separator + '/schema.json', options);
       assert.equal(typeof resolved, 'string');
-      assert.ok(resolved.includes('schema.json'));
+      assert.ok(resolved.endsWith('/' + encodeURIComponent(separator) + '/schema.json'));
     }
     process.stdout.write('completed');
   `;
-  const result = spawnSync(process.execPath, ['-e', script, ajvRequire.resolve('uri-js')], {
+  const result = spawnSync(process.execPath, ['--max-old-space-size=64', '-e', script, ajvRequire.resolve('uri-js')], {
     encoding: 'utf8',
     timeout: 3000,
   });
