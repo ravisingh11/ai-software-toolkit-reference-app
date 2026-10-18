@@ -1,7 +1,7 @@
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['.artifacts/**', '.guardrails/**', 'node_modules/**', 'dist/**', 'coverage/**'] },
+  { ignores: ['.artifacts/**', '.proof/**', 'node_modules/**', 'dist/**', 'coverage/**'] },
   {
     files: ['src/**/*.ts', 'examples/polyglot/typescript/src/**/*.ts'],
     extends: [...tseslint.configs.recommendedTypeChecked],
