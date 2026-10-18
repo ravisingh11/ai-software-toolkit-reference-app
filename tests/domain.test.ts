@@ -70,6 +70,17 @@ test('reads bounded valid JSON including chunked streams', async () => {
   assert.equal(await readJson(new Request('https://example.com', { method: 'POST', body: '"' + 'x'.repeat(8190) + '"' })), 'x'.repeat(8190));
 });
 
+test('rejects non-byte stream chunks with a safe validation error', async () => {
+  const stream = new ReadableStream({ start(controller) {
+    controller.enqueue('not bytes');
+    controller.close();
+  } });
+  const request = new Request('https://example.com', {
+    method: 'POST', body: stream, duplex: 'half',
+  } as RequestInit);
+  await assert.rejects(readJson(request), (error: unknown) => error instanceof ApiError && error.status === 400);
+});
+
 test('rejects missing, malformed, invalid UTF-8 and oversized bodies', async () => {
   const bad = async (request: Request, status: number) => assert.rejects(readJson(request), (error: unknown) => error instanceof ApiError && error.status === status);
   await bad(new Request('https://example.com'), 400);

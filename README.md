@@ -38,6 +38,23 @@ Choose **Editor** to create issues, move them through triage/in progress/done, a
 - Generated app-specific local agent QA skills, executed through the actual Codex browser and HTTP tools. Agent QA remains advisory and separate from deterministic tests.
 - Clean-commit Cloudflare release script, live revision verification, and a documented code rollback procedure.
 
+## Language-specific quality examples
+
+[Run the five-language examples](examples/polyglot/README.md): Java, TypeScript,
+Python, PHP and Scala exercise the same defensive issue-transition contract with
+native lint, integrity-checked tests, scoped changed-line coverage and architecture
+checks. TypeScript is one example; other languages use their own tools. The live
+Worker remains TypeScript. Repositories choose adoption and enforcement.
+
+```sh
+npm run polyglot:setup
+npm run polyglot:check -- --base origin/main --threshold 90
+```
+
+Coverage requires a clean committed revision. The new workflow is manual only;
+no required checks or branch rules are added. See the guide for runtime requirements,
+coverage scopes and the separately pinned optional toolkit helpers.
+
 ## Verification
 
 ```sh
@@ -60,6 +77,7 @@ Domain line/branch coverage is measured separately from Worker/UI integration co
 | `public/` | Browser UI, styles, and security headers |
 | `migrations/` | Versioned D1 schema |
 | `tests/` | Domain and real Worker/browser acceptance |
+| `examples/polyglot/` | Five native language examples and shared defensive contract |
 | `scripts/` | Migration verification, isolated test server, release smoke/release |
 | `.guardrails/` | Installed upstream runtime and policy |
 | `.agents/skills/` | Installed toolkit skills and generated app-specific QA |

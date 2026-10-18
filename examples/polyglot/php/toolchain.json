@@ -1,0 +1,5 @@
+{
+  "phpImage": "php:8.4.20-cli@sha256:c8c4d2165bf3139039094c99c9370ead168df29ffa6c12373268dca212f0c938",
+  "phpstan": {"version": "2.1.32", "url": "https://github.com/phpstan/phpstan/releases/download/2.1.32/phpstan.phar", "sha256": "14a4a22c51c88d00370e0c43d0d2b4f5d31f46a1e38d692bca1f803096d1a625"},
+  "xdebug": {"version": "3.4.7", "url": "https://xdebug.org/files/xdebug-3.4.7.tgz", "sha256": "7592923501e3fdb9741ad35b90e08fc6b3c5dd31eadc4c83b7b3c9dda0627b24"}
+}

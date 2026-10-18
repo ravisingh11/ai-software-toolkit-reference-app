@@ -27,3 +27,18 @@ explains why smaller, actionable PRs are easier for humans to review. Applicatio
 policy remains unchanged. The public dashboard displays validated aggregate
 measurements and source metadata; no filenames or private findings are published.
 Installed application QA skills remain unchanged.
+
+## Optional language examples
+
+The five [polyglot examples](../examples/polyglot/README.md) use quality helpers
+from separately pinned toolkit commit `f3d27924ea626a5c90492cf2b52e0b24bbb8105d`
+([upstream PR #98](https://github.com/ravisingh11/ai-software-toolkit/pull/98)).
+Explicit setup obtains these helpers under ignored `.artifacts/polyglot/toolkit`;
+this does not refresh the legacy runtime, its lockfile or policy defaults.
+
+`npm run toolkit:check -- --polyglot` opts the installed snapshot scanner into
+native builds, real lint, conformance tests and architecture checks. Docker and
+all example toolchains are needed. Scoped changed-line coverage is run separately
+with `npm run polyglot:check -- --base REF`; it does not activate the legacy
+full-app coverage capability. The manual `Optional polyglot examples` workflow
+is advisory. Repositories decide whether to adopt any of it or require it.
