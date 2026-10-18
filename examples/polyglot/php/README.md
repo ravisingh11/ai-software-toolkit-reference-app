@@ -21,3 +21,7 @@ container networking and mount source read-only.
 `check.sh` exposes setup/build/lint/run/coverage/architecture/versions. Coverage
 receives an absolute `POLYGLOT_COVERAGE_REPORT` from the driver. Repositories
 choose tools, thresholds, applicability and enforcement.
+
+The converter removes Xdebug's covered implicit file return at one line beyond
+EOF, because that opcode has no physical source line. Any other out-of-range
+line fails conversion; unexecuted physical source lines remain in the report.

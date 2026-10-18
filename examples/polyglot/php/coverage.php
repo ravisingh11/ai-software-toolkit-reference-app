@@ -29,7 +29,16 @@ foreach ($data as $file => $lines) {
     $nodes = $class->addChild('lines');
     $fileCovered = 0;
     $fileTotal = 0;
+    $sourceLineCount = count(file($file));
     foreach ($lines as $number => $hit) {
+        // PHP 8.4/Xdebug emits a covered implicit file return at EOF + 1.
+        // It has no physical source line. Never discard an unexecuted line.
+        if ($number === $sourceLineCount + 1 && $hit > 0) {
+            continue;
+        }
+        if ($number < 1 || $number > $sourceLineCount) {
+            throw new RuntimeException('Unexpected coverage line outside source: ' . $file);
+        }
         if ($hit === -2) {
             continue; // Xdebug identifies this as non-executable dead code.
         }
