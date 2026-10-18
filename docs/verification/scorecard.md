@@ -44,8 +44,8 @@ All controls in this snapshot are advisory, so `allow` does not mean all checks 
 
 ## How this connects to CI
 
-The repository's [Guardrail Scorecard workflow](../../.github/workflows/guardrails-scorecard.yml) runs when a PR is opened, updated, or reopened, when a review is submitted or dismissed, and on manual dispatch. It collects CI evidence for the evaluated revision, writes a readable report to the Actions run summary, and uploads Markdown/JSON artifacts.
+The release's [Guardrail Scorecard workflow](https://github.com/ravisingh11/ai-software-toolkit-reference-app/blob/8bc67cbcca74580b564ab2c9beb7a40285ba86d0/.github/workflows/guardrails-scorecard.yml) ran when a PR is opened, updated, or reopened, when a review is submitted or dismissed, and on manual dispatch. It collects CI evidence for the evaluated revision, writes a readable report to the Actions run summary, and uploads Markdown/JSON artifacts.
 
-For newer changes, use [scorecard workflow runs](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/workflows/guardrails-scorecard.yml) and check the evaluated commit in the report. A successful workflow run is not equivalent to a green scorecard: advisory gaps can produce an orange result while the workflow succeeds.
+For newer changes, use [current scorecard workflow runs](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/workflows/proof-scorecard.yml) and check the evaluated commit in the report. A successful workflow run is not equivalent to a green scorecard: advisory gaps can produce an orange result while the workflow succeeds.
 
 This historical repository page and the README release snapshot do not refresh automatically. The separate [live PR scorecard](https://ravisingh11.github.io/ai-software-toolkit-reference-app/) follows accepted CI results. When publishing a new release snapshot, update both from its verified CI artifact, retain the exact evaluated revision and run link, and preserve missing evidence. Hosted agent QA, unattended deployment, and artifact attestation remain unconfigured; they are not additional passed controls.
