@@ -1,6 +1,6 @@
 {
   "repository": "https://github.com/ravisingh11/ai-software-toolkit.git",
-  "revision": "f3d27924ea626a5c90492cf2b52e0b24bbb8105d",
-  "source": "Optional quality helpers from PR #98; separate from the installed legacy .guardrails runtime",
+  "revision": "e5d307429831220209a6455f931471310c0726e5",
+  "source": "Optional quality helpers at the same immutable revision as the installed Proof runtime",
   "mode": "advisory; no branch protection or shared policy changes"
 }
