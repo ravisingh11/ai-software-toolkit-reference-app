@@ -1,5 +1,5 @@
 # Application instructions
-This repository is Fieldnotes, the deployed reference consumer of AI Software Toolkit. Keep application contracts in docs/design.md and upstream toolkit policy in the pinned .guardrails runtime. Never modify vendored runtime merely to make a check pass.
+This repository is Fieldnotes, the deployed reference consumer of AI Software Toolkit. Keep application contracts in docs/design.md and upstream toolkit policy in the pinned .proof runtime. Never modify vendored runtime merely to make a check pass.
 
 Use PRs for normal main changes. Preserve unrelated work. Use bounded native subagents when useful; they must not overwrite another lane. No credentials, real customer data, or production identity claims in this public demo. Demo workspaces expire after 24 hours. Keep API authorization independent of UI affordances.
 
