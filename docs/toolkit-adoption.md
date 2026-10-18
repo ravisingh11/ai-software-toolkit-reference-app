@@ -1,6 +1,6 @@
 # Toolkit adoption
 
-The runtime and workflows were installed from reviewed upstream commit `9f08989980f9a5a828925d537692e8c502ccee14` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` and `tooling/install-skills.sh` entrypoints. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
+The runtime and workflows were installed from reviewed upstream commit `e5d307429831220209a6455f931471310c0726e5` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` and `tooling/install-skills.sh` entrypoints. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
 
 Core and GitHub profile controls begin advisory. Application acceptance is a separate deterministic required check on main, verified with a passing implementation and an intentionally failing follow-up PR. No AI review or functional QA result is an enforced merge gate. Oversized bootstrap scope, unavailable providers, and incomplete evidence remain visible rather than changing policy to hide them.
 
@@ -24,14 +24,35 @@ On the first implementation revision, scanning the populated developer workspace
 
 ## Live PR scorecard
 
-The optional upstream publisher owns this repository’s dedicated GitHub Pages site at https://ravisingh11.github.io/ai-software-toolkit-reference-app/. Pages uses GitHub Actions; repository variables `GUARDRAILS_SCORECARD_BADGE_ENABLED=true` and `GUARDRAILS_SCORECARD_BADGE_PAGES_MODE=dedicated` activate publication. No separate credential is needed. The application itself continues to run on Cloudflare Workers.
+The optional upstream publisher owns this repository’s dedicated GitHub Pages site at https://ravisingh11.github.io/ai-software-toolkit-reference-app/. Pages uses GitHub Actions; repository variables `PROOF_SCORECARD_BADGE_ENABLED=true` and `PROOF_SCORECARD_BADGE_PAGES_MODE=dedicated` activate publication. No separate credential is needed. The application itself continues to run on Cloudflare Workers.
 
-After a Guardrail Scorecard run completes, the trusted default-branch publisher validates source provenance and publishes the newest acceptable PR scorecard. A six-hour reconciliation schedule recovers missed events. The public page contains only aggregate counts/status, source-run metadata, and a subject digest; detailed controls and evidence remain in Actions. Publishing never changes merge enforcement or turns missing evidence into a pass. The README and app navigation link to this live report; the [v0.1.0 snapshot](verification/scorecard.md) remains historical evidence.
+After a Proof Scorecard run completes, the trusted default-branch publisher validates source provenance and publishes the newest acceptable PR scorecard. A six-hour reconciliation schedule recovers missed events. The public page contains only aggregate counts/status, source-run metadata, and a subject digest; detailed controls and evidence remain in Actions. Publishing never changes merge enforcement or turns missing evidence into a pass. The README and app navigation link to this live report; the [v0.1.0 snapshot](verification/scorecard.md) remains historical evidence.
 
-This upgrade pins metric-fidelity reporting source commit `9f08989980f9a5a828925d537692e8c502ccee14`.
+This installation pins Proof runtime source commit `e5d307429831220209a6455f931471310c0726e5`.
 The supported runtime refresh separates failed checks from unavailable evidence,
 shows snapshot identity and freshness, preserves coverage workflow identity, and
 explains why smaller, actionable PRs are easier for humans to review. Application
 policy remains unchanged. The public dashboard displays validated aggregate
 measurements and source metadata; no filenames or private findings are published.
 Installed application QA skills remain unchanged.
+
+## Optional language examples
+
+The five [polyglot examples](../examples/polyglot/README.md) use quality helpers
+from toolkit commit `e5d307429831220209a6455f931471310c0726e5`, matching the installed Proof runtime.
+The helper checkout remains separately recorded in `examples/polyglot/toolkit.json`.
+Explicit setup refreshes its clean cached checkout to that exact revision; modified
+or mismatched caches fail visibly. Setup does not change policy defaults.
+
+`npm run toolkit:check -- --polyglot` opts the installed snapshot scanner into
+native builds, real lint, conformance tests and architecture checks. Docker and
+all example toolchains are needed. Scoped changed-line coverage is run separately
+with `npm run polyglot:check -- --base REF`; it does not activate the legacy
+full-app coverage capability. The manual `Optional polyglot examples` workflow
+is advisory. Repositories decide whether to adopt any of it or require it.
+
+## Guardrails to Proof cutover
+
+The upgrade follows the upstream [migration guide](https://github.com/ravisingh11/ai-software-toolkit/blob/e5d307429831220209a6455f931471310c0726e5/docs/proof/migrating-from-guardrails.md): preserve policy and repository mappings, reinstall canonical runtime/workflows under `.proof/`, and copy the existing repository command/provider variables to `PROOF_*`. Legacy variables are retained while older open branches still use them. The only required check remains Application acceptance; the five-language workflow remains manual and optional.
+
+The first migration PR retained only the unchanged `.guardrails/policy.yaml` as temporary data for the old trusted default-branch scorecard. After the Proof workflows reached main, the follow-up removed that bridge. No legacy runtime directory remains. Refreshing the public runtime and selected-skill installers at the pinned revision produces no changes. Application-specific generated QA skills are preserved.

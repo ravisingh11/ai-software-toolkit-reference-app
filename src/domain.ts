@@ -89,8 +89,13 @@ export async function readJson(request: Request): Promise<unknown> {
   let size = 0;
   try {
     while (true) {
-      const { value, done } = await reader.read();
+      const result: ReadableStreamReadResult<unknown> = await reader.read();
+      const { value, done } = result;
       if (done) break;
+      if (!(value instanceof Uint8Array)) {
+        await reader.cancel();
+        throw new ApiError(400, 'Request body must contain bytes.');
+      }
       size += value.byteLength;
       if (size > limit) {
         await reader.cancel();

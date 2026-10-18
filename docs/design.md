@@ -30,3 +30,14 @@ Fieldnotes is a calm, polished issue board with header, environment/evidence lin
 6. Demonstrate intentional failing test PR blocked by required check, repair it, then merge only the passing revision. Store evidence links and limitations in README/docs.
 
 Hosted AI-agent QA and automatic Cloudflare deployment require separately provisioned provider credentials. Do not copy workstation OAuth into GitHub. Local agent QA and authenticated local releases are supported; unconfigured hosted producers must remain explicitly unconfigured.
+
+## Polyglot domain examples
+
+`examples/polyglot/` contains standalone Java, TypeScript, Python, PHP and Scala
+CLI/domain examples of the issue-transition contract. They do not add API routes
+or change deployment topology. A shared fixture is asserted externally against
+each implementation; native lint, coverage and boundary tools differ by language.
+See [the example guide](../examples/polyglot/README.md) for scopes and limitations.
+
+Streamed request bodies must contain byte chunks. An unexpected non-byte chunk
+is cancelled and rejected with a safe 400 error, covered by a domain regression.

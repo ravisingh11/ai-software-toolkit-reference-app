@@ -1,0 +1,32 @@
+[
+  {
+    "file": "scala-compiler-2.13.16.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/scala-lang/scala-compiler/2.13.16/scala-compiler-2.13.16.jar",
+    "sha256": "f59982714591e321ba9c087af2c8666e2f5fb92b11a0cef72c2c5e9b342152d3"
+  },
+  {
+    "file": "scala-library-2.13.16.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/2.13.16/scala-library-2.13.16.jar",
+    "sha256": "1ebb2b6f9e4eb4022497c19b1e1e825019c08514f962aaac197145f88ed730f1"
+  },
+  {
+    "file": "scala-reflect-2.13.16.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/scala-lang/scala-reflect/2.13.16/scala-reflect-2.13.16.jar",
+    "sha256": "fb49ccd9cac7464486ab993cda20a3c1569d8ef26f052e897577ad2a4970fb1d"
+  },
+  {
+    "file": "wartremover_2.13.16-3.3.4.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/wartremover/wartremover_2.13.16/3.3.4/wartremover_2.13.16-3.3.4.jar",
+    "sha256": "b25a276f1a10222e5f14504b4c9441cb74bf5a4827b9414956cfa06574a8575d"
+  },
+  {
+    "file": "org.jacoco.agent-0.8.13-runtime.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/jacoco/org.jacoco.agent/0.8.13/org.jacoco.agent-0.8.13-runtime.jar",
+    "sha256": "47e700ccb0fdb9e27c5241353f8161938f4e53c3561dd35e063c5fe88dc3349b"
+  },
+  {
+    "file": "org.jacoco.cli-0.8.13-nodeps.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/jacoco/org.jacoco.cli/0.8.13/org.jacoco.cli-0.8.13-nodeps.jar",
+    "sha256": "8f748683833d4dc4d72cea5d6b43f49344687b831e0582c97bcb9b984e3de0a3"
+  }
+]

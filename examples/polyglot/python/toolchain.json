@@ -1,0 +1,8 @@
+{
+  "runtime": "Python 3.9+",
+  "tools": {
+    "ruff": "0.16.5",
+    "coverage": "7.10.7"
+  },
+  "installation": "Common ignored venv from immutable toolkit requirements-ci.txt; see ../toolkit.json"
+}
