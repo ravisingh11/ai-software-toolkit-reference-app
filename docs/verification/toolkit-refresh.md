@@ -1,5 +1,9 @@
 # Toolkit refresh verification
 
+The subsequent [manual main-branch run 39192185020](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39192185020) passed on `7ff99c1eba782ec804cfcc59ae928503fb8f1707` using toolkit `7b8b3a1edd6a4409faaee4d359a62e5820afb749`: all 30 stages and 115 conformance cases passed with the same baseline, threshold and per-language coverage shown below. It remains historical source/CI evidence, separate from the newer provider-link refresh and deployed Worker.
+
+## Earlier runtime refresh
+
 The [manual optional polyglot run 39185524558](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39185524558) passed on source `2f9ac1fcce571ed54d51b7fdf2aa50a8aadbe3b9` with a clean working tree and toolkit `c46a7c263ea7667ea9c0fe061b628afd51ed6507`. It ran on the refresh branch, before the documentation-only evidence update; it is not a deployment result.
 
 The workflow was explicitly dispatched for `language=all`, baseline `2932827657d4758cdf030ab693239cfb2a23e258` (before the examples), and threshold `90`. All 30 stages passed: versions, build, lint, test, architecture, and scoped changed-line coverage for each language. Each language passed 23 conformance cases, 115 total. Fixture SHA-256: `54a245d4c4486c0e7439e260371cadbe213eede6325df96b96b387b78c7dede0`.
