@@ -33,7 +33,7 @@ Choose **Editor** to create issues, move them through triage/in progress/done, a
 ## What this proves
 
 - Real browser UI and JSON API with persistent D1 storage, server-side permissions, session isolation, input validation, and status transitions.
-- Toolkit installed at immutable revision [`e5d3074`](https://github.com/ravisingh11/ai-software-toolkit/commit/e5d307429831220209a6455f931471310c0726e5); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
+- Toolkit installed at immutable revision [`c46a7c2`](https://github.com/ravisingh11/ai-software-toolkit/commit/c46a7c263ea7667ea9c0fe061b628afd51ed6507); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
 - Deterministic domain, migration, API, and Chromium acceptance tests, including negative permissions and race/error regressions.
 - Generated app-specific local agent QA skills, executed through the actual Codex browser and HTTP tools. Agent QA remains advisory and separate from deterministic tests.
 - Clean-commit Cloudflare release script, live revision verification, and a documented code rollback procedure.
@@ -68,7 +68,11 @@ The merged updates include:
 - [Playwright update (#19)](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/19): Playwright 1.64.1, retaining compatible TypeScript 5.9.3. Pinned Actions updates use [setup-node 7.1.0 (#17)](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/17) and [upload-artifact 7.0.2 (#18)](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/18).
 - [Advisory Snyk scans (#10)](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/10): separate Code and Open Source scans on PRs, pushes to `main`, or manual dispatch. Open Source analyzes the root npm lockfile including development dependencies; it does not scan all five native dependency graphs. These scans do not activate a Snyk provider in Proof policy.
 
-The following runs passed on `main` at [`2383bcf`](https://github.com/ravisingh11/ai-software-toolkit-reference-app/commit/2383bcfc9b46ad890f46bd6f4593d52c32772e49), using toolkit revision `e5d3074`:
+The latest [manual five-language verification](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39185524558) passed on refresh-branch source [`2f9ac1f`](https://github.com/ravisingh11/ai-software-toolkit-reference-app/commit/2f9ac1fcce571ed54d51b7fdf2aa50a8aadbe3b9), using toolkit `c46a7c2`: all 30 stages and 115 conformance cases passed. Changed-line coverage was Java **100%**, TypeScript **93%**, Python **100%**, PHP **100%**, and Scala **92%**, against baseline `2932827` and the explicitly selected 90% threshold. [Recorded evidence](docs/verification/toolkit-refresh.md) includes exact revisions and limits.
+
+The refreshed scorecard skips waiting for an absent optional Snyk check only when its matching enable variable is explicitly `false`; queued or running checks still wait. Missing selected evidence remains visible as `no_result`. This consumer does not select Snyk in Proof policy; its separate Snyk scans remain advisory. The polyglot workflow is **manual and optional**, and the tools/configurations are **language-specific examples** for repositories to adapt or replace.
+
+Historical main-branch verification follows. The following runs passed on `main` at [`2383bcf`](https://github.com/ravisingh11/ai-software-toolkit-reference-app/commit/2383bcfc9b46ad890f46bd6f4593d52c32772e49), using toolkit revision `e5d3074`:
 
 | Verification | Recorded result |
 | --- | --- |

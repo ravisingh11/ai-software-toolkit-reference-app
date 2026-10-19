@@ -1,6 +1,6 @@
 # Toolkit adoption
 
-The runtime and workflows were installed from reviewed upstream commit `e5d307429831220209a6455f931471310c0726e5` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` and `tooling/install-skills.sh` entrypoints. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
+The runtime and workflows were installed from reviewed upstream commit `c46a7c263ea7667ea9c0fe061b628afd51ed6507` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` and `tooling/install-skills.sh` entrypoints. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
 
 Core and GitHub profile controls begin advisory. Application acceptance is a separate deterministic required check on main, verified with a passing implementation and an intentionally failing follow-up PR. No AI review or functional QA result is an enforced merge gate. Oversized bootstrap scope, unavailable providers, and incomplete evidence remain visible rather than changing policy to hide them.
 
@@ -9,6 +9,12 @@ Producer bindings: build=`npm run build`; unit tests=`npm run test:coverage`; fo
 To upgrade, clone the toolkit at an exact reviewed commit, run its installer with `--refresh-existing` and the selected profile, refresh selected skills using the installer's merge/refresh guidance, review configuration preservation and all runtime diffs, update toolkit.lock.json and the Worker TOOLKIT_REVISION, and submit a PR. Run application acceptance, migration validation, scans, and generated local agent QA before merging. Treat a failing consumer test as an upstream compatibility signal.
 
 ## Observed consumer behavior
+
+### Optional provider waiting
+
+The installed scorecard supports the upstream optional-provider wait fix. Only an explicit `false` value (case-insensitive) for `SNYK_CODE_ENABLED` or `SNYK_OPEN_SOURCE_ENABLED` stops waiting for an absent matching check. Already queued or running checks still wait; other providers retain their normal wait budget. Missing selected evidence remains `no_result`, with its existing advisory or enforced policy outcome. The setting does not deactivate a control or manufacture a pass.
+
+This consumer does not select Snyk in Proof policy, so these hints do not add a Snyk control. Its independent consumer-owned Snyk workflow continues to report its own scans. Each repository decides which checks to adopt and enforce.
 
 ### Snyk CI
 
@@ -36,7 +42,7 @@ The optional upstream publisher owns this repository’s dedicated GitHub Pages 
 
 After a Proof Scorecard run completes, the trusted default-branch publisher validates source provenance and publishes the newest acceptable PR scorecard. A six-hour reconciliation schedule recovers missed events. The public page contains only aggregate counts/status, source-run metadata, and a subject digest; detailed controls and evidence remain in Actions. Publishing never changes merge enforcement or turns missing evidence into a pass. The README and app navigation link to this live report; the [v0.1.0 snapshot](verification/scorecard.md) remains historical evidence.
 
-This installation pins Proof runtime source commit `e5d307429831220209a6455f931471310c0726e5`.
+This installation pins Proof runtime source commit `c46a7c263ea7667ea9c0fe061b628afd51ed6507`.
 The supported runtime refresh separates failed checks from unavailable evidence,
 shows snapshot identity and freshness, preserves coverage workflow identity, and
 explains why smaller, actionable PRs are easier for humans to review. Application
@@ -47,7 +53,7 @@ Installed application QA skills remain unchanged.
 ## Optional language examples
 
 The five [polyglot examples](../examples/polyglot/README.md) use quality helpers
-from toolkit commit `e5d307429831220209a6455f931471310c0726e5`, matching the installed Proof runtime.
+from toolkit commit `c46a7c263ea7667ea9c0fe061b628afd51ed6507`, matching the installed Proof runtime.
 The helper checkout remains separately recorded in `examples/polyglot/toolkit.json`.
 Explicit setup refreshes its clean cached checkout to that exact revision; modified
 or mismatched caches fail visibly. Setup does not change policy defaults.
@@ -61,6 +67,6 @@ is advisory. Repositories decide whether to adopt any of it or require it.
 
 ## Guardrails to Proof cutover
 
-The upgrade follows the upstream [migration guide](https://github.com/ravisingh11/ai-software-toolkit/blob/e5d307429831220209a6455f931471310c0726e5/docs/proof/migrating-from-guardrails.md): preserve policy and repository mappings, reinstall canonical runtime/workflows under `.proof/`, and copy the existing repository command/provider variables to `PROOF_*`. Legacy variables are retained while older open branches still use them. The only required check remains Application acceptance; the five-language workflow remains manual and optional.
+The upgrade follows the upstream [migration guide](https://github.com/ravisingh11/ai-software-toolkit/blob/c46a7c263ea7667ea9c0fe061b628afd51ed6507/docs/proof/migrating-from-guardrails.md): preserve policy and repository mappings, reinstall canonical runtime/workflows under `.proof/`, and copy the existing repository command/provider variables to `PROOF_*`. Legacy variables are retained while older open branches still use them. The only required check remains Application acceptance; the five-language workflow remains manual and optional.
 
 The first migration PR retained only the unchanged `.guardrails/policy.yaml` as temporary data for the old trusted default-branch scorecard. After the Proof workflows reached main, the follow-up removed that bridge. No legacy runtime directory remains. Refreshing the public runtime and selected-skill installers at the pinned revision produces no changes. Application-specific generated QA skills are preserved.
