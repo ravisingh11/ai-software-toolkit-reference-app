@@ -12,6 +12,22 @@ A working issue tracker that consumes [AI Software Toolkit](https://github.com/r
 
 The Pages report is published automatically from the latest accepted PR scorecard. It shows this application’s results, including missing evidence, and does not attest the current default branch or deployed Worker.
 
+### Scorecard freshness
+
+The live scorecard checks for a newer published snapshot on load, when you return
+to the tab, and every 60 seconds while the tab is visible. A persistent notice
+flags a newer publication; choose **Refresh latest** to load it while keeping the
+selected check or section. Existing results remain visible until you refresh.
+If a freshness check fails or its metadata cannot be validated, **Freshness
+unknown** remains visible; a previously detected newer snapshot stays flagged.
+
+“Matches the latest published snapshot” describes the Pages publication only. It
+does not verify current `main`, newer CI results, or the deployed Worker. Without
+JavaScript, freshness stays unchecked and the refresh link remains available.
+Tabs opened before this feature shipped need one initial reload. Refreshing does
+not run CI or enable checks: missing evidence remains visible, and all toolkit
+checks remain optional to adopt and enforce.
+
 ### Release snapshot (v0.1.0)
 
 **v0.1.0 snapshot: ORANGE — 12/15 advisory controls passed; 3 have no result.**
@@ -59,6 +75,33 @@ code. In GitHub Actions, choose **Run workflow**, select the target branch,
 choose `all` or one language, and supply `base_ref` and `threshold` (the example
 default is 90%). See the guide for runtime requirements, coverage scopes and the
 separately pinned optional toolkit helpers.
+
+## Latest recorded verification (2026-10-19)
+
+[Scorecard freshness adoption (#33)](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/33)
+merged at source [`e34993a`](https://github.com/ravisingh11/ai-software-toolkit-reference-app/commit/e34993afee31f40492dcacafcb93c5ab8e5782cb),
+using toolkit [`9ef9297`](https://github.com/ravisingh11/ai-software-toolkit/commit/9ef929780eaff0f863e9c44c5dbca8911f9f21b0).
+These recorded runs passed:
+
+| Verification | Recorded result |
+| --- | --- |
+| [Application acceptance](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39289758236) | Build/typecheck, lint, unit coverage, migrations, repository validation, and API/browser acceptance passed on `e34993a`. |
+| [Snyk](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39289758563) | Code and Open Source scans passed on `e34993a`; these remain advisory. |
+| [Manual optional five-language run](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39289785991) | All 30 stages and 115 conformance cases passed on `e34993a`. |
+| [PR #33 Proof scorecard](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39289788846) | Evaluated PR head `d3df54631961f09c8979c4e59d25017aaf53671b`: ORANGE / allow, 13/16 advisory controls passed, zero enforced controls. |
+
+The manual five-language run measured changed-line coverage in the example scopes:
+Java **100%**, TypeScript **93%**, Python **100%**, PHP **100%**, and Scala **92%**,
+against baseline [`2932827`](https://github.com/ravisingh11/ai-software-toolkit-reference-app/commit/2932827657d4758cdf030ab693239cfb2a23e258)
+and an explicitly selected **90%** threshold. Each language uses its own tools;
+these are examples to adapt or replace. The workflow remains **manual
+(`workflow_dispatch`) and optional**, with no push or PR trigger.
+
+The PR scorecard still exposes missing changed-code coverage, platform secret
+protection, and dependency remediation evidence. The separate polyglot run does
+not fill those PR evidence gaps. These are source/CI records, separate from the
+v0.1.0 release and deployed Worker; all toolkit checks remain optional, while
+GitHub separately requires **Application acceptance** for merging.
 
 ## Merged maintenance and recorded verification (2026-10-18)
 
@@ -138,6 +181,5 @@ The scorecard dashboard displays validated aggregate measurements when present;
 older evidence is explicitly unavailable. See `.proof/change-scope.yaml`
 for this application's thresholds and excluded paths.
 
-The live scorecard detects newer published snapshots and offers a refresh while
-preserving the selected check. If freshness cannot be checked, that uncertainty
-remains visible. Missing evidence is retained and Proof checks remain optional.
+See [scorecard freshness](#scorecard-freshness) for stale snapshot notices and
+refresh behavior. Missing evidence is retained and Proof checks remain optional.
