@@ -76,6 +76,35 @@ choose `all` or one language, and supply `base_ref` and `threshold` (the example
 default is 90%). See the guide for runtime requirements, coverage scopes and the
 separately pinned optional toolkit helpers.
 
+## Recorded live verification and cleanup (2026-10-19)
+
+The live Pages HTML and JSON matched the latest successful publication at the
+recorded verification: [scorecard run 39295060071, attempt 1](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39295060071/attempts/1),
+evaluating PR head `629c125831f9445962efb7e4d7ec1e0e83dcf1a3` from
+[merged PR #34](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/34),
+published by [Pages run 39296050722](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39296050722).
+An already-open older tab displayed the newer-snapshot notice; keyboard activation
+of **Refresh latest** loaded that publication and preserved `#size-title`. No
+relevant browser warnings, errors, or horizontal overflow were observed at
+1280 × 720. This verifies publication freshness, not current `main`, subsequent
+CI runs, or the deployed Worker.
+
+That snapshot remains **13/16 advisory controls passed, zero enforced controls**.
+Changed-code coverage, platform secret protection, and dependency remediation
+still have **no result**; refreshing does not fill those evidence gaps. All toolkit
+checks remain optional to adopt and enforce, and the polyglot workflow remains
+**manual (`workflow_dispatch`) and optional**. The five-language results below
+are recorded results from their linked run, not a new run from this verification.
+
+Across both repositories, cleanup archived and removed **310 ignored cache/junk
+files** (304 toolkit, 6 reference app) and hash-verified **8,589 existing
+verification/state files** unchanged. All **183 tracked YAML files** were reviewed;
+none was confirmed obsolete, so none was deleted. No tracked source, workflow,
+or enforcement configuration changed, and no application was deployed. Recovery
+archives and verification evidence were retained locally. See the
+[toolkit's matching verification record](https://github.com/ravisingh11/ai-software-toolkit#recorded-live-verification-and-cleanup-2026-10-19)
+for its separately recorded scorecard result.
+
 ## Latest recorded verification (2026-10-19)
 
 [Scorecard freshness adoption (#33)](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/33)
