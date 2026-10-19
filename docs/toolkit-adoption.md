@@ -128,10 +128,14 @@ workflow and provenance-checking collector. The repository-owned
 The lifecycle runtime is pinned to the reviewed, merged upstream revision
 `bcd7b28eb23c2578c9aa485475f084eab4aa0fe6`. All three adoption pins agree.
 
-IaC is selected advisory for change evaluation; container vulnerability, artifact
-SBOM, artifact vulnerability/provenance, deployment policy, DAST, runtime assurance
-and runtime soak are selected advisory for release evaluation. Selecting these
-controls does not make GitHub checks required. The repository's non-secret
+The new providers and manual workflow are installed. Lifecycle policy activation
+is deferred until the trusted runtime reaches main: the current trusted base
+catalog cannot yet evaluate these new producers. After that merge, IaC can be
+selected advisory for change evaluation; container vulnerability, artifact SBOM,
+artifact vulnerability/provenance, deployment policy, DAST, runtime assurance
+and runtime soak can be selected advisory for release evaluation. This bootstrap
+preserves the prior policy byte-for-byte and does not make GitHub checks required.
+The repository's non-secret
 `PROOF_LIFECYCLE_ENABLED=true` setting explicitly opts PR collection into importing
 verified manual-run receipts after this configuration and trusted runtime merge.
 
