@@ -1,6 +1,6 @@
 # Toolkit adoption
 
-The runtime and workflows were installed from reviewed upstream commit `2b82651412fd0a43ee4d4a3c1fe8d97106692c13` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` and `tooling/install-skills.sh` entrypoints. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
+The runtime and workflows were installed from reviewed upstream commit `bcd7b28eb23c2578c9aa485475f084eab4aa0fe6` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` entrypoint. Previously installed skills are preserved; their installation uses `tooling/install-skills.sh`. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
 
 Core and GitHub profile controls begin advisory. Application acceptance is a separate deterministic required check on main, verified with a passing implementation and an intentionally failing follow-up PR. No AI review or functional QA result is an enforced merge gate. Oversized bootstrap scope, unavailable providers, and incomplete evidence remain visible rather than changing policy to hide them.
 
@@ -77,7 +77,7 @@ The optional upstream publisher owns this repository’s dedicated GitHub Pages 
 
 After a Proof Scorecard run completes, the trusted default-branch publisher validates source provenance and publishes the newest acceptable PR scorecard. A six-hour reconciliation schedule recovers missed events. The public page contains aggregate counts/status, source-run metadata, a subject digest, and allowlisted built-in control and provider labels. Custom providers use a generic label. The explicit public configuration path and validated same-repository GitHub evidence links are published; raw findings and private evidence payloads remain in the source Actions reports. Publishing never changes merge enforcement or turns missing evidence into a pass. The README and app navigation link to this live report; the [v0.1.0 snapshot](verification/scorecard.md) remains historical evidence.
 
-This installation pins Proof runtime source commit `2b82651412fd0a43ee4d4a3c1fe8d97106692c13`.
+This installation pins Proof runtime source commit `bcd7b28eb23c2578c9aa485475f084eab4aa0fe6`.
 The supported runtime refresh separates failed checks from unavailable evidence,
 shows snapshot identity and freshness, preserves coverage workflow identity, and
 explains why smaller, actionable PRs are easier for humans to review. Application
@@ -88,7 +88,7 @@ Installed application QA skills remain unchanged.
 ## Optional language examples
 
 The five [polyglot examples](../examples/polyglot/README.md) use quality helpers
-from toolkit commit `2b82651412fd0a43ee4d4a3c1fe8d97106692c13`, matching the installed Proof runtime.
+from toolkit commit `bcd7b28eb23c2578c9aa485475f084eab4aa0fe6`, matching the installed Proof runtime.
 The helper checkout remains separately recorded in `examples/polyglot/toolkit.json`.
 Explicit setup refreshes its clean cached checkout to that exact revision; modified
 or mismatched caches fail visibly. Setup does not change policy defaults.
@@ -102,7 +102,7 @@ is advisory. Repositories decide whether to adopt any of it or require it.
 
 ## Guardrails to Proof cutover
 
-The upgrade follows the upstream [migration guide](https://github.com/ravisingh11/ai-software-toolkit/blob/2b82651412fd0a43ee4d4a3c1fe8d97106692c13/docs/proof/migrating-from-guardrails.md): preserve policy and repository mappings, reinstall canonical runtime/workflows under `.proof/`, and copy the existing repository command/provider variables to `PROOF_*`. Legacy variables are retained while older open branches still use them. The only required check remains Application acceptance; the five-language workflow remains manual and optional.
+The upgrade follows the upstream [migration guide](https://github.com/ravisingh11/ai-software-toolkit/blob/bcd7b28eb23c2578c9aa485475f084eab4aa0fe6/docs/proof/migrating-from-guardrails.md): preserve policy and repository mappings, reinstall canonical runtime/workflows under `.proof/`, and copy the existing repository command/provider variables to `PROOF_*`. Legacy variables are retained while older open branches still use them. The only required check remains Application acceptance; the five-language workflow remains manual and optional.
 
 The first migration PR retained only the unchanged `.guardrails/policy.yaml` as temporary data for the old trusted default-branch scorecard. After the Proof workflows reached main, the follow-up removed that bridge. No legacy runtime directory remains. Refreshing the public runtime and selected-skill installers at the pinned revision produces no changes. Application-specific generated QA skills are preserved.
 
@@ -119,3 +119,41 @@ anchor when refreshing. A failed freshness check remains explicit, and results
 are never silently replaced or treated as current when the check cannot complete.
 This detects publication changes, not unreported CI results. Missing evidence
 stays visible and all Proof checks remain optional.
+
+## Optional lifecycle verification
+
+The supported installer installs the manual `lifecycle-verification.yml`
+workflow and provenance-checking collector. The repository-owned
+`.proof/lifecycle.json` and `examples/lifecycle/` fixture are preserved on refresh.
+The lifecycle runtime is pinned to the reviewed, merged upstream revision
+`bcd7b28eb23c2578c9aa485475f084eab4aa0fe6`. All three adoption pins agree.
+
+IaC is selected advisory for change evaluation; container vulnerability, artifact
+SBOM, artifact vulnerability/provenance, deployment policy, DAST, runtime assurance
+and runtime soak are selected advisory for release evaluation. Selecting these
+controls does not make GitHub checks required. The repository's non-secret
+`PROOF_LIFECYCLE_ENABLED=true` setting explicitly opts PR collection into importing
+verified manual-run receipts after this configuration and trusted runtime merge.
+
+Dispatch `Lifecycle Verification` from main against an open same-repository PR
+number and its full current head SHA. A fresh PR scorecard event after completion
+imports only provenance-checked receipts. A PR changing trusted lifecycle files
+needs those changes merged before its new producer can supply accepted evidence.
+Do not weaken that boundary or relabel an initial missing snapshot as passed.
+
+The fixture builds with the locked dependencies inside Docker using explicit
+`build_network: default`, which allows outbound build dependency retrieval and
+is not a registry-only firewall. Dependency install scripts are disabled. The
+runtime stays on an internal network without credentials or host source mounts,
+with a read-only root, non-root user and ephemeral local D1. Health reads the real
+schema and returns the source SHA. Negative probes require unauthenticated issue
+and session reads to return 401. The 30-second workload is a short endurance
+smoke; runtime/container evidence describes this local verification environment,
+not production Worker deployment, approvals or telemetry.
+
+Configuration regression tests pass locally; the attempted local image build
+failed before execution due to Docker disk exhaustion and unavailable BuildKit.
+Actual build, scanner and accepted hosted scorecard evidence remain pending.
+Missing evidence remains visible. No Snyk finding is ignored or suppressed; the
+existing picomatch finding remains an independent CI blocker. The polyglot workflow
+is unchanged, manual and optional.

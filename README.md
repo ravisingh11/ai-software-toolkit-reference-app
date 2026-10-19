@@ -49,7 +49,7 @@ Choose **Editor** to create issues, move them through triage/in progress/done, a
 ## What this proves
 
 - Real browser UI and JSON API with persistent D1 storage, server-side permissions, session isolation, input validation, and status transitions.
-- Toolkit installed at immutable revision [`2b82651`](https://github.com/ravisingh11/ai-software-toolkit/commit/2b82651412fd0a43ee4d4a3c1fe8d97106692c13); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
+- Toolkit installed at immutable revision [`bcd7b28`](https://github.com/ravisingh11/ai-software-toolkit/commit/bcd7b28eb23c2578c9aa485475f084eab4aa0fe6); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
 - Deterministic domain, migration, API, and Chromium acceptance tests, including negative permissions and race/error regressions.
 - Generated app-specific local agent QA skills, executed through the actual Codex browser and HTTP tools. Agent QA remains advisory and separate from deterministic tests.
 - Clean-commit Cloudflare release script, live revision verification, and a documented code rollback procedure.
@@ -208,7 +208,26 @@ python3 .proof/validators/validate_repository.py
 npm run toolkit:check          # clean committed snapshot; Docker required for scans
 ```
 
-Domain line/branch coverage is measured separately from Worker/UI integration coverage; **full changed-code line coverage is not activated**. Core/GitHub Proof profiles are advisory. Hosted agent QA, artifact attestation, and automatic Cloudflare deployment are unconfigured. A missing provider is never passed. See [the evidence index](docs/verification/README.md) for actual results, revisions, and remaining limits.
+Domain line/branch coverage is measured separately from Worker/UI integration coverage; **full changed-code line coverage is not activated**. Core/GitHub Proof profiles are advisory. Hosted agent QA and automatic Cloudflare deployment are unconfigured. Lifecycle artifact attestation is available through the optional manual verification workflow; accepted hosted evidence is still pending. A missing provider is never passed. See [the evidence index](docs/verification/README.md) for actual results, revisions, and remaining limits.
+
+## Optional lifecycle verification
+
+The manual **Lifecycle Verification** workflow builds the actual Fieldnotes
+Worker in a pinned Node container and starts the built bundle with isolated
+local D1 storage. Its configured probes use the real health/revision endpoint
+and require unauthenticated API access to fail. It can produce IaC, container,
+SBOM, artifact vulnerability/provenance, local deployment policy, DAST, runtime
+and short endurance evidence. These controls are advisory and optional.
+
+This is a verification container, not a production Cloudflare deployment.
+Thirty seconds of endurance probes does not prove production stability. Scanner
+findings, blocked runs and absent evidence remain explicit. The initial local
+container build was blocked by Docker disk exhaustion; configuration tests alone
+do not prove the image or hosted scanners work. Accepted hosted lifecycle
+verification is pending. See [setup and limitations](docs/toolkit-adoption.md#optional-lifecycle-verification)
+and [fixture details](examples/lifecycle/README.md).
+
+The five-language polyglot workflow remains separate, manual and optional.
 
 ## Repository map
 

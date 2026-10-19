@@ -7,7 +7,18 @@
     "github"
   ],
   "overrides": {
-    "change": {},
-    "release": {}
+    "change": {
+      "iac-misconfiguration": "advisory"
+    },
+    "release": {
+      "container-vulnerability": "advisory",
+      "artifact-sbom": "advisory",
+      "artifact-vulnerability": "advisory",
+      "artifact-provenance": "advisory",
+      "deployment-policy": "advisory",
+      "dynamic-application-security": "advisory",
+      "runtime-assurance": "advisory",
+      "runtime-soak": "advisory"
+    }
   }
 }

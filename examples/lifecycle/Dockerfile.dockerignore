@@ -1,0 +1,16 @@
+# An allowlist prevents local credentials, dependencies and evidence entering Docker.
+**
+!package.json
+!package-lock.json
+!tsconfig.json
+!worker-configuration.d.ts
+!wrangler.jsonc
+!src/
+!src/**
+!public/
+!public/**
+!migrations/
+!migrations/**
+!examples/
+!examples/lifecycle/
+!examples/lifecycle/**
