@@ -33,7 +33,7 @@ Choose **Editor** to create issues, move them through triage/in progress/done, a
 ## What this proves
 
 - Real browser UI and JSON API with persistent D1 storage, server-side permissions, session isolation, input validation, and status transitions.
-- Toolkit installed at immutable revision [`0267191`](https://github.com/ravisingh11/ai-software-toolkit/commit/0267191aab9cd56c68867d107c71a19b190b0ded); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
+- Toolkit installed at immutable revision [`2f5c4bb`](https://github.com/ravisingh11/ai-software-toolkit/commit/2f5c4bb0e415d5e77831c6e1db1e90fce2b0dbc7); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
 - Deterministic domain, migration, API, and Chromium acceptance tests, including negative permissions and race/error regressions.
 - Generated app-specific local agent QA skills, executed through the actual Codex browser and HTTP tools. Agent QA remains advisory and separate from deterministic tests.
 - Clean-commit Cloudflare release script, live revision verification, and a documented code rollback procedure.
@@ -95,6 +95,8 @@ That polyglot run compared against [`2932827`](https://github.com/ravisingh11/ai
 This measures the example scopes; full-application changed-code coverage remains unconfigured. The [PR #10 Proof scorecard](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39167631000) evaluated PR head `d2747a2`: **ORANGE / allow, 13/16 advisory controls passed (81.2%), zero enforced controls**. Missing evidence remains visible. GitHub separately requires **Application acceptance**; the polyglot workflow remains manual and optional.
 
 These are recorded source/CI results, separate from the v0.1.0 release snapshot above. This maintenance did not deploy the application or attest the current live Worker; hosted agent QA remains unconfigured.
+
+Repeated trusted PR-size runs now resolve only when their subject and metrics agree; conflicting or missing evidence remains visible. Scope-limit failures stay advisory, and all toolkit checks remain optional to adopt.
 
 ## Verification
 
