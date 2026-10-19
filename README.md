@@ -217,8 +217,8 @@ Worker in a pinned Node container and starts the built bundle with isolated
 local D1 storage. Its configured probes use the real health/revision endpoint
 and require unauthenticated API access to fail. It can produce IaC, container,
 SBOM, artifact vulnerability/provenance, local deployment policy, DAST, runtime
-and short endurance evidence. These providers are installed and optional;
-advisory activation and hosted collection await the trusted runtime merge.
+and short endurance evidence. The trusted runtime is installed; these nine controls are now selected advisory
+and remain optional. Accepted hosted lifecycle evidence is still pending.
 
 This is a verification container, not a production Cloudflare deployment.
 Thirty seconds of endurance probes does not prove production stability. Scanner
