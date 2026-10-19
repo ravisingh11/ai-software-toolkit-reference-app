@@ -33,7 +33,7 @@ Choose **Editor** to create issues, move them through triage/in progress/done, a
 ## What this proves
 
 - Real browser UI and JSON API with persistent D1 storage, server-side permissions, session isolation, input validation, and status transitions.
-- Toolkit installed at immutable revision [`e5d3074`](https://github.com/ravisingh11/ai-software-toolkit/commit/e5d307429831220209a6455f931471310c0726e5); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
+- Toolkit installed at immutable revision [`c46a7c2`](https://github.com/ravisingh11/ai-software-toolkit/commit/c46a7c263ea7667ea9c0fe061b628afd51ed6507); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
 - Deterministic domain, migration, API, and Chromium acceptance tests, including negative permissions and race/error regressions.
 - Generated app-specific local agent QA skills, executed through the actual Codex browser and HTTP tools. Agent QA remains advisory and separate from deterministic tests.
 - Clean-commit Cloudflare release script, live revision verification, and a documented code rollback procedure.
