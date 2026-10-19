@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "scope": "verification",
+  "dockerfile": "examples/lifecycle/Dockerfile",
+  "context": ".",
+  "build_network": "default",
+  "iac_paths": ["examples/lifecycle/Dockerfile"],
+  "port": 8080,
+  "health_path": "/api/health",
+  "health_revision_key": "revision",
+  "required_headers": {"X-Content-Type-Options": "nosniff", "Cache-Control": "no-store"},
+  "negative_probes": [{"path": "/api/issues", "status": 401}, {"path": "/api/session", "status": 401}],
+  "soak_seconds": 30,
+  "max_latency_ms": 2000,
+  "max_image_bytes": 2147483648
+}

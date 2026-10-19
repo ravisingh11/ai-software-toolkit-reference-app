@@ -18,7 +18,7 @@
   "version_metadata": { "binding": "CF_VERSION_METADATA" },
   "vars": {
     "APP_REVISION": "development",
-    "TOOLKIT_REVISION": "9ef929780eaff0f863e9c44c5dbca8911f9f21b0"
+    "TOOLKIT_REVISION": "bcd7b28eb23c2578c9aa485475f084eab4aa0fe6"
   },
   "observability": { "enabled": true, "traces": { "enabled": true } }
 }

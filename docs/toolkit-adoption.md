@@ -1,10 +1,10 @@
 # Toolkit adoption
 
-The runtime and workflows were installed from reviewed upstream commit `9ef929780eaff0f863e9c44c5dbca8911f9f21b0` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` and `tooling/install-skills.sh` entrypoints. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
+The runtime and workflows were installed from reviewed upstream commit `bcd7b28eb23c2578c9aa485475f084eab4aa0fe6` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` entrypoint. Previously installed skills are preserved; their installation uses `tooling/install-skills.sh`. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
 
 Core and GitHub profile controls begin advisory. Application acceptance is a separate deterministic required check on main, verified with a passing implementation and an intentionally failing follow-up PR. No AI review or functional QA result is an enforced merge gate. Oversized bootstrap scope, unavailable providers, and incomplete evidence remain visible rather than changing policy to hide them.
 
-Producer bindings: build=`npm run build`; unit tests=`npm run test:coverage`; format/lint=`npm run lint`; migrations=`npm run validate:migrations`; setup=`npm ci`. CodeQL uses JavaScript/TypeScript. Changed-code coverage is **not activated**: current coverage measures pure domain validation, while real Worker/D1 and frontend flows are verified by API/browser acceptance without line instrumentation. That test evidence must not be reported as full changed-line coverage. Artifact provenance and hosted agent QA are likewise not activated.
+Producer bindings: build=`npm run build`; unit tests=`npm run test:coverage`; format/lint=`npm run lint`; migrations=`npm run validate:migrations`; setup=`npm ci`. CodeQL default setup analyzes its configured Actions, JavaScript/TypeScript, and Python languages. Changed-code coverage is **not activated**: current coverage measures pure domain validation, while real Worker/D1 and frontend flows are verified by API/browser acceptance without line instrumentation. That test evidence must not be reported as full changed-line coverage. Artifact provenance and hosted agent QA are likewise not activated.
 
 To upgrade, clone the toolkit at an exact reviewed commit, run its installer with `--refresh-existing` and the selected profile, refresh selected skills using the installer's merge/refresh guidance, review configuration preservation and all runtime diffs, update toolkit.lock.json and the Worker TOOLKIT_REVISION, and submit a PR. Run application acceptance, migration validation, scans, and generated local agent QA before merging. Treat a failing consumer test as an upstream compatibility signal.
 
@@ -15,6 +15,33 @@ To upgrade, clone the toolkit at an exact reviewed commit, run its installer wit
 The installed scorecard supports the upstream optional-provider wait fix. Only an explicit `false` value (case-insensitive) for `SNYK_CODE_ENABLED` or `SNYK_OPEN_SOURCE_ENABLED` stops waiting for an absent matching check. Already queued or running checks still wait; other providers retain their normal wait budget. Missing selected evidence remains `no_result`, with its existing advisory or enforced policy outcome. The setting does not deactivate a control or manufacture a pass.
 
 The dependency-vulnerability control is not activated in this consumer’s Proof policy, although the default Snyk Open Source provider binding remains configured. These hints do not activate a control. Its independent consumer-owned Snyk workflow continues to report its own scans. Each repository decides which checks to adopt and enforce.
+
+### GitHub CodeQL default setup
+
+The supported installer refresh and
+`python3 .proof/configure.py --select-provider deep-sast=github-codeql-default-setup`
+select the separate **GitHub CodeQL Default Setup** provider. GitHub default setup
+is already configured; the advanced workflow opt-in `PROOF_CODEQL_LANGUAGES`
+remains unset to avoid conflicting uploads. The scorecard workflow has only
+read access to security events for inspecting platform analysis provenance.
+
+The collector requires the exact PR head and trusted base, GitHub Advanced
+Security aggregate-check identity, the GitHub-managed dynamic workflow and
+GitHub Actions job identities, and complete successful code-scanning analyses
+for all configured languages. The configuration must predate the run and match
+the trusted base; language aliases normalize to a complete configured set.
+Missing permissions, missing or warning-bearing analyses, changed configuration,
+reruns or ambiguous runs, and unsupported configuration remain explicit
+`no_result` evidence. A scan conclusion or check name alone cannot pass this
+provider. The existing advanced-workflow provider contract is unchanged.
+
+A PR installing a new trusted runtime may still be evaluated by its older base
+runtime. Its initial missing deep-SAST result is historical evidence, not a pass;
+a fresh hosted collection after merge is required to verify this provider with
+the updated trusted runtime and workflow token permissions. The provider does
+not fill changed-code coverage, platform secret protection, or dependency
+remediation gaps. All checks remain optional and the polyglot workflow remains
+manual; only Application acceptance is separately required by GitHub.
 
 ### Snyk CI
 
@@ -50,7 +77,7 @@ The optional upstream publisher owns this repository’s dedicated GitHub Pages 
 
 After a Proof Scorecard run completes, the trusted default-branch publisher validates source provenance and publishes the newest acceptable PR scorecard. A six-hour reconciliation schedule recovers missed events. The public page contains aggregate counts/status, source-run metadata, a subject digest, and allowlisted built-in control and provider labels. Custom providers use a generic label. The explicit public configuration path and validated same-repository GitHub evidence links are published; raw findings and private evidence payloads remain in the source Actions reports. Publishing never changes merge enforcement or turns missing evidence into a pass. The README and app navigation link to this live report; the [v0.1.0 snapshot](verification/scorecard.md) remains historical evidence.
 
-This installation pins Proof runtime source commit `9ef929780eaff0f863e9c44c5dbca8911f9f21b0`.
+This installation pins Proof runtime source commit `bcd7b28eb23c2578c9aa485475f084eab4aa0fe6`.
 The supported runtime refresh separates failed checks from unavailable evidence,
 shows snapshot identity and freshness, preserves coverage workflow identity, and
 explains why smaller, actionable PRs are easier for humans to review. Application
@@ -61,7 +88,7 @@ Installed application QA skills remain unchanged.
 ## Optional language examples
 
 The five [polyglot examples](../examples/polyglot/README.md) use quality helpers
-from toolkit commit `9ef929780eaff0f863e9c44c5dbca8911f9f21b0`, matching the installed Proof runtime.
+from toolkit commit `bcd7b28eb23c2578c9aa485475f084eab4aa0fe6`, matching the installed Proof runtime.
 The helper checkout remains separately recorded in `examples/polyglot/toolkit.json`.
 Explicit setup refreshes its clean cached checkout to that exact revision; modified
 or mismatched caches fail visibly. Setup does not change policy defaults.
@@ -75,7 +102,7 @@ is advisory. Repositories decide whether to adopt any of it or require it.
 
 ## Guardrails to Proof cutover
 
-The upgrade follows the upstream [migration guide](https://github.com/ravisingh11/ai-software-toolkit/blob/9ef929780eaff0f863e9c44c5dbca8911f9f21b0/docs/proof/migrating-from-guardrails.md): preserve policy and repository mappings, reinstall canonical runtime/workflows under `.proof/`, and copy the existing repository command/provider variables to `PROOF_*`. Legacy variables are retained while older open branches still use them. The only required check remains Application acceptance; the five-language workflow remains manual and optional.
+The upgrade follows the upstream [migration guide](https://github.com/ravisingh11/ai-software-toolkit/blob/bcd7b28eb23c2578c9aa485475f084eab4aa0fe6/docs/proof/migrating-from-guardrails.md): preserve policy and repository mappings, reinstall canonical runtime/workflows under `.proof/`, and copy the existing repository command/provider variables to `PROOF_*`. Legacy variables are retained while older open branches still use them. The only required check remains Application acceptance; the five-language workflow remains manual and optional.
 
 The first migration PR retained only the unchanged `.guardrails/policy.yaml` as temporary data for the old trusted default-branch scorecard. After the Proof workflows reached main, the follow-up removed that bridge. No legacy runtime directory remains. Refreshing the public runtime and selected-skill installers at the pinned revision produces no changes. Application-specific generated QA skills are preserved.
 
@@ -92,3 +119,45 @@ anchor when refreshing. A failed freshness check remains explicit, and results
 are never silently replaced or treated as current when the check cannot complete.
 This detects publication changes, not unreported CI results. Missing evidence
 stays visible and all Proof checks remain optional.
+
+## Optional lifecycle verification
+
+The supported installer installs the manual `lifecycle-verification.yml`
+workflow and provenance-checking collector. The repository-owned
+`.proof/lifecycle.json` and `examples/lifecycle/` fixture are preserved on refresh.
+The lifecycle runtime is pinned to the reviewed, merged upstream revision
+`bcd7b28eb23c2578c9aa485475f084eab4aa0fe6`. All three adoption pins agree.
+
+The new providers and manual workflow are installed. Lifecycle policy activation
+is deferred until the trusted runtime reaches main: the current trusted base
+catalog cannot yet evaluate these new producers. After that merge, IaC can be
+selected advisory for change evaluation; container vulnerability, artifact SBOM,
+artifact vulnerability/provenance, deployment policy, DAST, runtime assurance
+and runtime soak can be selected advisory for release evaluation. This bootstrap
+preserves the prior policy byte-for-byte and does not make GitHub checks required.
+The repository's non-secret
+`PROOF_LIFECYCLE_ENABLED=true` setting explicitly opts PR collection into importing
+verified manual-run receipts after this configuration and trusted runtime merge.
+
+Dispatch `Lifecycle Verification` from main against an open same-repository PR
+number and its full current head SHA. A fresh PR scorecard event after completion
+imports only provenance-checked receipts. A PR changing trusted lifecycle files
+needs those changes merged before its new producer can supply accepted evidence.
+Do not weaken that boundary or relabel an initial missing snapshot as passed.
+
+The fixture builds with the locked dependencies inside Docker using explicit
+`build_network: default`, which allows outbound build dependency retrieval and
+is not a registry-only firewall. Dependency install scripts are disabled. The
+runtime stays on an internal network without credentials or host source mounts,
+with a read-only root, non-root user and ephemeral local D1. Health reads the real
+schema and returns the source SHA. Negative probes require unauthenticated issue
+and session reads to return 401. The 30-second workload is a short endurance
+smoke; runtime/container evidence describes this local verification environment,
+not production Worker deployment, approvals or telemetry.
+
+Configuration regression tests pass locally; the attempted local image build
+failed before execution due to Docker disk exhaustion and unavailable BuildKit.
+Actual build, scanner and accepted hosted scorecard evidence remain pending.
+Missing evidence remains visible. No Snyk finding is ignored or suppressed; the
+existing picomatch finding remains an independent CI blocker. The polyglot workflow
+is unchanged, manual and optional.

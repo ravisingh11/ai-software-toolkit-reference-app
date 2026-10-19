@@ -49,7 +49,7 @@ Choose **Editor** to create issues, move them through triage/in progress/done, a
 ## What this proves
 
 - Real browser UI and JSON API with persistent D1 storage, server-side permissions, session isolation, input validation, and status transitions.
-- Toolkit installed at immutable revision [`9ef9297`](https://github.com/ravisingh11/ai-software-toolkit/commit/9ef929780eaff0f863e9c44c5dbca8911f9f21b0); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
+- Toolkit installed at immutable revision [`bcd7b28`](https://github.com/ravisingh11/ai-software-toolkit/commit/bcd7b28eb23c2578c9aa485475f084eab4aa0fe6); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
 - Deterministic domain, migration, API, and Chromium acceptance tests, including negative permissions and race/error regressions.
 - Generated app-specific local agent QA skills, executed through the actual Codex browser and HTTP tools. Agent QA remains advisory and separate from deterministic tests.
 - Clean-commit Cloudflare release script, live revision verification, and a documented code rollback procedure.
@@ -109,10 +109,27 @@ Since that linked PR snapshot was produced, GitHub CodeQL default setup was
 enabled for Actions, JavaScript/TypeScript, and Python. It conflicts with uploads
 from the separate advanced CodeQL workflow. During this README update, the
 optional `PROOF_CODEQL_LANGUAGES` activation variable was unset to avoid duplicate
-uploads; default setup remains enabled. Its analysis results are separate from
-the unchanged Proof provider contract: the selected advanced deep-SAST check may
-be skipped or unverified, and missing evidence must remain visible. This does not
+uploads; default setup remains enabled. At that time, its analysis results were separate from
+the selected advanced Proof provider contract: the deep-SAST check was
+unverified, and that historical missing evidence remains visible. This does not
 reinterpret the recorded 13/16 snapshot or make any toolkit check required.
+
+## GitHub CodeQL default setup
+
+Deep SAST now selects **GitHub CodeQL Default Setup** through the supported
+provider configuration. The collector verifies GitHub app identity, the exact PR
+head and trusted base, the managed dynamic workflow, and complete successful
+analyses for every configured language (Actions, JavaScript/TypeScript, and
+Python). It also rejects changed scan configuration, ambiguous runs, and
+incomplete or inaccessible platform evidence. A successful check name alone is
+not accepted. [Provider contract and adoption](docs/toolkit-adoption.md#github-codeql-default-setup)
+describe the boundaries.
+
+The separate advanced workflow remains unactivated. Missing changed-code
+coverage, platform secret protection, and dependency remediation results remain
+explicit; selecting this provider does not supply them. All toolkit checks
+remain optional, and the polyglot workflow remains manual (`workflow_dispatch`).
+This adoption does not alter historical verification snapshots or deploy the app.
 
 ## Latest recorded verification (2026-10-19)
 
@@ -191,7 +208,27 @@ python3 .proof/validators/validate_repository.py
 npm run toolkit:check          # clean committed snapshot; Docker required for scans
 ```
 
-Domain line/branch coverage is measured separately from Worker/UI integration coverage; **full changed-code line coverage is not activated**. Core/GitHub Proof profiles are advisory. Hosted agent QA, artifact attestation, and automatic Cloudflare deployment are unconfigured. A missing provider is never passed. See [the evidence index](docs/verification/README.md) for actual results, revisions, and remaining limits.
+Domain line/branch coverage is measured separately from Worker/UI integration coverage; **full changed-code line coverage is not activated**. Core/GitHub Proof profiles are advisory. Hosted agent QA and automatic Cloudflare deployment are unconfigured. Lifecycle artifact attestation is available through the optional manual verification workflow; accepted hosted evidence is still pending. A missing provider is never passed. See [the evidence index](docs/verification/README.md) for actual results, revisions, and remaining limits.
+
+## Optional lifecycle verification
+
+The manual **Lifecycle Verification** workflow builds the actual Fieldnotes
+Worker in a pinned Node container and starts the built bundle with isolated
+local D1 storage. Its configured probes use the real health/revision endpoint
+and require unauthenticated API access to fail. It can produce IaC, container,
+SBOM, artifact vulnerability/provenance, local deployment policy, DAST, runtime
+and short endurance evidence. These providers are installed and optional;
+advisory activation and hosted collection await the trusted runtime merge.
+
+This is a verification container, not a production Cloudflare deployment.
+Thirty seconds of endurance probes does not prove production stability. Scanner
+findings, blocked runs and absent evidence remain explicit. The initial local
+container build was blocked by Docker disk exhaustion; configuration tests alone
+do not prove the image or hosted scanners work. Accepted hosted lifecycle
+verification is pending. See [setup and limitations](docs/toolkit-adoption.md#optional-lifecycle-verification)
+and [fixture details](examples/lifecycle/README.md).
+
+The five-language polyglot workflow remains separate, manual and optional.
 
 ## Repository map
 
