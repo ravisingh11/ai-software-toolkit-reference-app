@@ -105,6 +105,15 @@ archives and verification evidence were retained locally. See the
 [toolkit's matching verification record](https://github.com/ravisingh11/ai-software-toolkit#recorded-live-verification-and-cleanup-2026-10-19)
 for its separately recorded scorecard result.
 
+Since that linked PR snapshot was produced, GitHub CodeQL default setup was
+enabled for Actions, JavaScript/TypeScript, and Python. It conflicts with uploads
+from the separate advanced CodeQL workflow. During this README update, the
+optional `PROOF_CODEQL_LANGUAGES` activation variable was unset to avoid duplicate
+uploads; default setup remains enabled. Its analysis results are separate from
+the unchanged Proof provider contract: the selected advanced deep-SAST check may
+be skipped or unverified, and missing evidence must remain visible. This does not
+reinterpret the recorded 13/16 snapshot or make any toolkit check required.
+
 ## Latest recorded verification (2026-10-19)
 
 [Scorecard freshness adoption (#33)](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/33)
