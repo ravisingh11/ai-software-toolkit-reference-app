@@ -33,7 +33,7 @@ Choose **Editor** to create issues, move them through triage/in progress/done, a
 ## What this proves
 
 - Real browser UI and JSON API with persistent D1 storage, server-side permissions, session isolation, input validation, and status transitions.
-- Toolkit installed at immutable revision [`2f5c4bb`](https://github.com/ravisingh11/ai-software-toolkit/commit/2f5c4bb0e415d5e77831c6e1db1e90fce2b0dbc7); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
+- Toolkit installed at immutable revision [`9ef9297`](https://github.com/ravisingh11/ai-software-toolkit/commit/9ef929780eaff0f863e9c44c5dbca8911f9f21b0); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
 - Deterministic domain, migration, API, and Chromium acceptance tests, including negative permissions and race/error regressions.
 - Generated app-specific local agent QA skills, executed through the actual Codex browser and HTTP tools. Agent QA remains advisory and separate from deterministic tests.
 - Clean-commit Cloudflare release script, live revision verification, and a documented code rollback procedure.
@@ -137,3 +137,7 @@ Scope is advisory: exceeding a limit warns and does not block merging.
 The scorecard dashboard displays validated aggregate measurements when present;
 older evidence is explicitly unavailable. See `.proof/change-scope.yaml`
 for this application's thresholds and excluded paths.
+
+The live scorecard detects newer published snapshots and offers a refresh while
+preserving the selected check. If freshness cannot be checked, that uncertainty
+remains visible. Missing evidence is retained and Proof checks remain optional.
