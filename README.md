@@ -241,7 +241,7 @@ trusted baseline; it does not prove new lifecycle scans have passed. Fresh manua
 lifecycle and five-language runs are being verified separately. The [live
 scorecard](https://ravisingh11.github.io/ai-software-toolkit-reference-app/) identifies
 accepted snapshots, their subjects and actual missing/failed evidence. CodeQL's
-optional configuration credential remains unconfigured.
+optional configuration credential was unconfigured at the recorded PR #39 verification.
 
 
 The manual **Lifecycle Verification** workflow builds the actual Fieldnotes
@@ -272,9 +272,12 @@ remains pending; consult the live scorecard for later accepted snapshots. See [s
 and [fixture details](examples/lifecycle/README.md).
 
 The five-language polyglot workflow remains separate, manual and optional.
-CodeQL default-setup evidence remains unverified. The installed collector supports an optional
-`PROOF_CODEQL_CONFIGURATION_TOKEN` path for repository Administration read access;
-that credential has not been stored here, and no hosted verification is claimed.
+At [PR #39 verification](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39353272529),
+CodeQL default-setup evidence was unverified because the optional configuration
+credential was absent. The installed collector supports
+`PROOF_CODEQL_CONFIGURATION_TOKEN` for repository Administration read access.
+See the [read-only credential setup and verification checklist](docs/toolkit-adoption.md#optional-codeql-configuration-credential);
+saving a credential alone does not prove that a fresh hosted scorecard accepted CodeQL evidence.
 
 The [PR #36 native Snyk run](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39339879707)
 failed for [picomatch ReDoS SNYK-JS-PICOMATCH-21248802](https://security.snyk.io/vuln/SNYK-JS-PICOMATCH-21248802)
