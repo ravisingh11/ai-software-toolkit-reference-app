@@ -212,6 +212,21 @@ Domain line/branch coverage is measured separately from Worker/UI integration co
 
 ## Optional lifecycle verification
 
+[PR #37](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/37)
+merged the optional advisory lifecycle controls, revised verification fixture and
+toolkit `698409630ce7de4ca0398994908fcde92f2fc893` at application source
+[`92c2778`](https://github.com/ravisingh11/ai-software-toolkit-reference-app/commit/92c27786b157f5770a9a032f2fd2a823e22142d0).
+[Source Proof CI](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39348583465)
+passed; the unchanged [native Snyk failure](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39348587300)
+remained visible under the scoped rollout exception below. Other current CI
+passed or was intentionally skipped/neutral. This source merge establishes the
+trusted baseline; it does not prove new lifecycle scans have passed. Fresh manual
+lifecycle and five-language runs are being verified separately. The [live
+scorecard](https://ravisingh11.github.io/ai-software-toolkit-reference-app/) identifies
+accepted snapshots, their subjects and actual missing/failed evidence. CodeQL's
+optional configuration credential remains unconfigured.
+
+
 The manual **Lifecycle Verification** workflow builds the actual Fieldnotes
 Worker in a pinned Node container and starts the built bundle with isolated
 local D1 storage. Its configured probes use the real health/revision endpoint
