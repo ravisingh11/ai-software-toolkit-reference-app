@@ -12,6 +12,34 @@ A working issue tracker that consumes [AI Software Toolkit](https://github.com/r
 
 The Pages report is published automatically from the latest accepted PR scorecard. It shows this application’s results, including missing evidence, and does not attest the current default branch or deployed Worker.
 
+### Latest recorded CodeQL verification
+
+[PR #40](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/40)
+merged the credential setup documentation. Its [hosted Proof run 39359728920](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39359728920)
+accepted real **GitHub CodeQL Default Setup** evidence for PR head
+[`8170fa5`](https://github.com/ravisingh11/ai-software-toolkit-reference-app/commit/8170fa54ca12abf682c91b689f6a6e1b17ab8523).
+The [managed CodeQL run 39359727461](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39359727461)
+completed analyses for **Actions, JavaScript/TypeScript, and Python**. The
+collector verified configuration, GitHub app identity, exact revision, managed
+workflow and complete analysis provenance; saving the optional read-only
+credential alone was not treated as evidence.
+
+That snapshot records **20/25 advisory controls passed, zero enforced controls**.
+Changed-code coverage, platform secret protection, and dependency remediation
+still have **no result**. Container and artifact vulnerability checks remain
+**failed**, with findings visible. The [separate Snyk run](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39359728840)
+retains the previously authorized picomatch finding and quota failure; it is not
+passing security evidence. [Manual lifecycle run 39359753235](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39359753235)
+supplied seven accepted passing lifecycle controls and those two failed scans.
+
+[Reference app Deep SAST scorecard](https://ravisingh11.github.io/ai-software-toolkit-reference-app/#check-deep-sast)
+· [Toolkit scorecard](https://ravisingh11.github.io/ai-software-toolkit/#check-deep-sast).
+These live links can advance to newer publications; the runs above identify the
+recorded snapshot, not current `main` or the deployed Worker. **All toolkit
+checks remain optional** to adopt and enforce. The separate five-language
+polyglot workflow stays **manual (`workflow_dispatch`) and optional**; these
+three CodeQL languages do not claim CodeQL coverage for Java, PHP or Scala.
+
 ### Scorecard freshness
 
 The live scorecard checks for a newer published snapshot on load, when you return
@@ -131,7 +159,9 @@ explicit; selecting this provider does not supply them. All toolkit checks
 remain optional, and the polyglot workflow remains manual (`workflow_dispatch`).
 This adoption does not alter historical verification snapshots or deploy the app.
 
-## Latest recorded verification (2026-10-19)
+<a id="latest-recorded-verification-2026-10-19"></a>
+
+## Historical freshness verification (2026-10-19)
 
 [Scorecard freshness adoption (#33)](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/33)
 merged at source [`e34993a`](https://github.com/ravisingh11/ai-software-toolkit-reference-app/commit/e34993afee31f40492dcacafcb93c5ab8e5782cb),
@@ -217,7 +247,7 @@ python3 .proof/validators/validate_repository.py
 npm run toolkit:check          # clean committed snapshot; Docker required for scans
 ```
 
-Domain line/branch coverage is measured separately from Worker/UI integration coverage; **full changed-code line coverage is not activated**. Core/GitHub Proof profiles are advisory. Hosted agent QA and automatic Cloudflare deployment are unconfigured. Lifecycle artifact attestation has accepted historical hosted evidence; during this adoption bootstrap, fresh evidence for the updated fixture and remaining optional controls is pending. A missing provider is never passed. See [the evidence index](docs/verification/README.md) for actual results, revisions, and remaining limits.
+Domain line/branch coverage is measured separately from Worker/UI integration coverage; **full changed-code line coverage is not activated**. Core/GitHub Proof profiles are advisory. Hosted agent QA and automatic Cloudflare deployment are unconfigured. The recorded PR #40 scorecard above accepted lifecycle artifact attestation and six other lifecycle controls; container and artifact vulnerability checks remained failed. A missing provider is never passed. See [the evidence index](docs/verification/README.md) for actual results, revisions, and remaining limits.
 
 ## Optional lifecycle verification
 
@@ -225,8 +255,8 @@ The current adoption pins toolkit `bb4130d4a27eb2d127fc832200797c732443119a`,
 which fixes ZAP informational-warning exit/report classification without
 suppressing findings. Historical [run 39349413608](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39349413608)
 remains blocked for the original mismatch; no corrected result is claimed for
-that run. Fresh verification requires this collector to reach the trusted main
-baseline, followed by a new manual run. All checks stay optional and advisory.
+that run. The collector subsequently reached the trusted main baseline; PR #40 verification
+above records the accepted follow-up results. All checks stay optional and advisory.
 
 
 [PR #37](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/37)
@@ -237,8 +267,11 @@ toolkit `698409630ce7de4ca0398994908fcde92f2fc893` at application source
 passed; the unchanged [native Snyk failure](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39348587300)
 remained visible under the scoped rollout exception below. Other current CI
 passed or was intentionally skipped/neutral. This source merge establishes the
-trusted baseline; it does not prove new lifecycle scans have passed. Fresh manual
-lifecycle and five-language runs are being verified separately. The [live
+trusted baseline; it does not prove new lifecycle scans have passed. Subsequent manual lifecycle verification is recorded above. The later
+[manual five-language run 39352901729](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39352901729)
+passed 25 non-coverage stages and 115 conformance cases; all five changed-line
+coverage stages were not applicable because the example sources were unchanged.
+That run does not supply new measured coverage or full-application PR coverage. The [live
 scorecard](https://ravisingh11.github.io/ai-software-toolkit-reference-app/) identifies
 accepted snapshots, their subjects and actual missing/failed evidence. CodeQL's
 optional configuration credential was unconfigured at the recorded PR #39 verification.
@@ -250,8 +283,8 @@ local D1 storage. Its configured probes use the real health/revision endpoint
 and require unauthenticated API access to fail. It can produce IaC, container,
 SBOM, artifact vulnerability/provenance, local deployment policy, DAST, runtime
 and short endurance evidence. The trusted runtime is installed; these nine controls are now selected advisory
-and remain optional. During this adoption bootstrap, fresh accepted evidence for the updated fixture
-is pending.
+and remain optional. The recorded PR #40 scorecard above contains the subsequent
+accepted evidence for this fixture.
 
 This is a verification container, not a production Cloudflare deployment.
 Thirty seconds of endurance probes does not prove production stability. Scanner
@@ -259,16 +292,16 @@ findings, blocked runs and absent evidence remain explicit. The initial local
 container build was blocked by Docker disk exhaustion. The first hosted run
 subsequently built the actual Worker and passed 429 probes over 30 seconds,
 while reporting real container/artifact vulnerabilities and blocked ZAP output.
-A fresh hosted scorecard accepted signed artifact provenance; the other new
-controls await this advisory policy merge. The updated image then ran in
+At that bootstrap stage, a hosted scorecard accepted signed artifact provenance;
+the other new controls awaited the advisory policy merge. The updated image then ran in
 [diagnostic run 39345279160](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39345279160):
 432 probes, zero errors, and **43 HIGH / zero CRITICAL** vulnerability entries
 with no fixed versions reported. The container and SBOM scans describe the same
 43 findings, not 86 unique findings, and remain failed. These raw diagnostics
-are not accepted scorecard evidence: the revised fixture must first reach the
-trusted baseline, then run again using the updated default-branch producer.
-During this adoption bootstrap, fresh ZAP verification with the updated producer
-remains pending; consult the live scorecard for later accepted snapshots. See [setup and limitations](docs/toolkit-adoption.md#optional-lifecycle-verification)
+were not accepted scorecard evidence: the revised fixture still needed to reach
+the trusted baseline and run again using the updated default-branch producer.
+ZAP verification was pending at that bootstrap stage; the PR #40 record above
+links the subsequent accepted hosted evidence. See [setup and limitations](docs/toolkit-adoption.md#optional-lifecycle-verification)
 and [fixture details](examples/lifecycle/README.md).
 
 The five-language polyglot workflow remains separate, manual and optional.
