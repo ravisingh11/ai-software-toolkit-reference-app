@@ -223,12 +223,22 @@ and remain optional. Accepted hosted lifecycle evidence is still pending.
 This is a verification container, not a production Cloudflare deployment.
 Thirty seconds of endurance probes does not prove production stability. Scanner
 findings, blocked runs and absent evidence remain explicit. The initial local
-container build was blocked by Docker disk exhaustion; configuration tests alone
-do not prove the image or hosted scanners work. Accepted hosted lifecycle
-verification is pending. See [setup and limitations](docs/toolkit-adoption.md#optional-lifecycle-verification)
+container build was blocked by Docker disk exhaustion. The first hosted run
+subsequently built the actual Worker and passed 429 probes over 30 seconds,
+while reporting real container/artifact vulnerabilities and blocked ZAP output.
+A fresh hosted scorecard accepted signed artifact provenance; the other new
+controls await this advisory policy merge. Fresh verification of the updated
+image and upstream ZAP fix remains pending. See [setup and limitations](docs/toolkit-adoption.md#optional-lifecycle-verification)
 and [fixture details](examples/lifecycle/README.md).
 
 The five-language polyglot workflow remains separate, manual and optional.
+
+The [PR #36 native Snyk run](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39339879707)
+failed for [picomatch ReDoS SNYK-JS-PICOMATCH-21248802](https://security.snyk.io/vuln/SNYK-JS-PICOMATCH-21248802)
+and reported an exhausted private-test quota. At review there was no fixed release.
+The user explicitly authorized this rollout's merges with that unchanged failure
+visible when other CI passes. This is an independent native CI result, not
+accepted passing Proof evidence; no finding was suppressed or rule relaxed.
 
 ## Repository map
 

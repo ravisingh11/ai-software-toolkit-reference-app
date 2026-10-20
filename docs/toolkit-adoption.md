@@ -154,9 +154,31 @@ and session reads to return 401. The 30-second workload is a short endurance
 smoke; runtime/container evidence describes this local verification environment,
 not production Worker deployment, approvals or telemetry.
 
-Configuration regression tests pass locally; the attempted local image build
-failed before execution due to Docker disk exhaustion and unavailable BuildKit.
-Actual build, scanner and accepted hosted scorecard evidence remain pending.
+Configuration regression tests pass locally. After an initial local Docker disk
+failure, [hosted lifecycle run 39340897859](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39340897859)
+built and ran the actual Worker at `e0b588854d0989b43a27ee64396ccea938354159`:
+429 probes over 30 seconds, zero errors. Trivy reported 68 high/critical entries;
+ZAP was blocked by the upstream report-path bug. These historical findings remain
+visible, independently of the orchestration workflow succeeding.
+[Hosted scorecard 39341694688](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39341694688)
+verified the signed artifact/environment bindings and accepted artifact provenance
+(13/17 advisory controls passed). Other new lifecycle controls remained inactive
+under the trusted base policy. Fresh verification of the revised image and ZAP
+fix remains pending. CodeQL default-setup evidence remains unverified because
+its configuration API requires repository Administration read access beyond the
+workflow token; successful native analyses alone do not satisfy provenance.
 Missing evidence remains visible. No Snyk finding is ignored or suppressed; the
 existing picomatch finding remains an independent CI blocker. The polyglot workflow
 is unchanged, manual and optional.
+
+### Existing Snyk rollout exception
+
+[PR #36 Snyk run 39339879707](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39339879707)
+evaluated head `d18c7e7122c82dfbf951c89cf6fc4f0dbaf00a05` and failed for
+[picomatch ReDoS SNYK-JS-PICOMATCH-21248802](https://security.snyk.io/vuln/SNYK-JS-PICOMATCH-21248802),
+with no fixed release available at review, and reported exhausted monthly private
+test quota. The user explicitly authorized this rollout's reference merges with
+this unchanged failure visible when all other current CI passes. This is a
+scoped merge decision, not a suppression, rule change, successful scan or accepted
+passing Proof evidence. Preserve fresh native Snyk results separately from
+lifecycle receipts and scorecard evidence; any different failure needs review.
