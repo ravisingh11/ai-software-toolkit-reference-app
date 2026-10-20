@@ -35,3 +35,13 @@ node --test examples/lifecycle/config.test.mjs
 Actual container build, runtime, scanner and collected scorecard evidence are
 separate verification steps. Keep failures and unavailable evidence visible.
 The existing polyglot workflow remains manual and independent.
+
+## Verification-image dependency maintenance
+
+The image now pins the official Node 24 Debian Trixie base and installs vendor
+npm 11.21.1 from its SHA-256-verified official registry archive before switching
+to the application's non-root user/home. This addresses available base/toolchain
+updates identified by the first real scan. The application's lockfile and real
+Wrangler/D1 execution are unchanged. Fresh scanning of this exact revised image
+is pending; historical findings remain recorded and no remaining finding is
+suppressed or presumed fixed.

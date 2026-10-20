@@ -1,6 +1,6 @@
 # Toolkit adoption
 
-The runtime and workflows were installed from reviewed upstream commit `bcd7b28eb23c2578c9aa485475f084eab4aa0fe6` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` entrypoint. Previously installed skills are preserved; their installation uses `tooling/install-skills.sh`. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
+The runtime and workflows were installed from reviewed upstream commit `698409630ce7de4ca0398994908fcde92f2fc893` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` entrypoint. Previously installed skills are preserved; their installation uses `tooling/install-skills.sh`. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
 
 Core and GitHub profile controls begin advisory. Application acceptance is a separate deterministic required check on main, verified with a passing implementation and an intentionally failing follow-up PR. No AI review or functional QA result is an enforced merge gate. Oversized bootstrap scope, unavailable providers, and incomplete evidence remain visible rather than changing policy to hide them.
 
@@ -77,7 +77,7 @@ The optional upstream publisher owns this repository’s dedicated GitHub Pages 
 
 After a Proof Scorecard run completes, the trusted default-branch publisher validates source provenance and publishes the newest acceptable PR scorecard. A six-hour reconciliation schedule recovers missed events. The public page contains aggregate counts/status, source-run metadata, a subject digest, and allowlisted built-in control and provider labels. Custom providers use a generic label. The explicit public configuration path and validated same-repository GitHub evidence links are published; raw findings and private evidence payloads remain in the source Actions reports. Publishing never changes merge enforcement or turns missing evidence into a pass. The README and app navigation link to this live report; the [v0.1.0 snapshot](verification/scorecard.md) remains historical evidence.
 
-This installation pins Proof runtime source commit `bcd7b28eb23c2578c9aa485475f084eab4aa0fe6`.
+This installation pins Proof runtime source commit `698409630ce7de4ca0398994908fcde92f2fc893`.
 The supported runtime refresh separates failed checks from unavailable evidence,
 shows snapshot identity and freshness, preserves coverage workflow identity, and
 explains why smaller, actionable PRs are easier for humans to review. Application
@@ -88,7 +88,7 @@ Installed application QA skills remain unchanged.
 ## Optional language examples
 
 The five [polyglot examples](../examples/polyglot/README.md) use quality helpers
-from toolkit commit `bcd7b28eb23c2578c9aa485475f084eab4aa0fe6`, matching the installed Proof runtime.
+from toolkit commit `698409630ce7de4ca0398994908fcde92f2fc893`, matching the installed Proof runtime.
 The helper checkout remains separately recorded in `examples/polyglot/toolkit.json`.
 Explicit setup refreshes its clean cached checkout to that exact revision; modified
 or mismatched caches fail visibly. Setup does not change policy defaults.
@@ -102,7 +102,7 @@ is advisory. Repositories decide whether to adopt any of it or require it.
 
 ## Guardrails to Proof cutover
 
-The upgrade follows the upstream [migration guide](https://github.com/ravisingh11/ai-software-toolkit/blob/bcd7b28eb23c2578c9aa485475f084eab4aa0fe6/docs/proof/migrating-from-guardrails.md): preserve policy and repository mappings, reinstall canonical runtime/workflows under `.proof/`, and copy the existing repository command/provider variables to `PROOF_*`. Legacy variables are retained while older open branches still use them. The only required check remains Application acceptance; the five-language workflow remains manual and optional.
+The upgrade follows the upstream [migration guide](https://github.com/ravisingh11/ai-software-toolkit/blob/698409630ce7de4ca0398994908fcde92f2fc893/docs/proof/migrating-from-guardrails.md): preserve policy and repository mappings, reinstall canonical runtime/workflows under `.proof/`, and copy the existing repository command/provider variables to `PROOF_*`. Legacy variables are retained while older open branches still use them. The only required check remains Application acceptance; the five-language workflow remains manual and optional.
 
 The first migration PR retained only the unchanged `.guardrails/policy.yaml` as temporary data for the old trusted default-branch scorecard. After the Proof workflows reached main, the follow-up removed that bridge. No legacy runtime directory remains. Refreshing the public runtime and selected-skill installers at the pinned revision produces no changes. Application-specific generated QA skills are preserved.
 
@@ -126,15 +126,15 @@ The supported installer installs the manual `lifecycle-verification.yml`
 workflow and provenance-checking collector. The repository-owned
 `.proof/lifecycle.json` and `examples/lifecycle/` fixture are preserved on refresh.
 The lifecycle runtime is pinned to the reviewed, merged upstream revision
-`bcd7b28eb23c2578c9aa485475f084eab4aa0fe6`. All three adoption pins agree.
+`698409630ce7de4ca0398994908fcde92f2fc893`. All three adoption pins agree.
 
-The new providers and manual workflow are installed. Lifecycle policy activation
-is deferred until the trusted runtime reaches main: the current trusted base
-catalog cannot yet evaluate these new producers. After that merge, IaC can be
-selected advisory for change evaluation; container vulnerability, artifact SBOM,
-artifact vulnerability/provenance, deployment policy, DAST, runtime assurance
-and runtime soak can be selected advisory for release evaluation. This bootstrap
-preserves the prior policy byte-for-byte and does not make GitHub checks required.
+The runtime and manual workflow reached the trusted main branch in PR #36.
+IaC is now selected advisory for change evaluation; container vulnerability,
+artifact SBOM, artifact vulnerability/provenance, deployment policy, DAST,
+runtime assurance and runtime soak are selected advisory for release evaluation.
+These optional choices do not add required checks or change branch protection.
+During this adoption bootstrap, fresh accepted lifecycle evidence remains pending;
+selection is not a pass.
 The repository's non-secret
 `PROOF_LIFECYCLE_ENABLED=true` setting explicitly opts PR collection into importing
 verified manual-run receipts after this configuration and trusted runtime merge.
@@ -155,9 +155,50 @@ and session reads to return 401. The 30-second workload is a short endurance
 smoke; runtime/container evidence describes this local verification environment,
 not production Worker deployment, approvals or telemetry.
 
-Configuration regression tests pass locally; the attempted local image build
-failed before execution due to Docker disk exhaustion and unavailable BuildKit.
-Actual build, scanner and accepted hosted scorecard evidence remain pending.
+Configuration regression tests pass locally. After an initial local Docker disk
+failure, [hosted lifecycle run 39340897859](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39340897859)
+built and ran the actual Worker at `e0b588854d0989b43a27ee64396ccea938354159`:
+429 probes over 30 seconds, zero errors. Trivy reported 68 high/critical entries;
+ZAP was blocked by the upstream report-path bug. These historical findings remain
+visible, independently of the orchestration workflow succeeding.
+[Hosted scorecard 39341694688](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39341694688)
+verified the signed artifact/environment bindings and accepted artifact provenance
+(13/17 advisory controls passed). Other new lifecycle controls remained inactive
+under the trusted base policy.
+
+The updated verification image ran in [diagnostic 39345279160](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39345279160)
+at `694b81751f5c8df46fdbb91818acd017f2446ba6`, using trusted workflow/base
+`5ae91e812042fee3b27f01a284d808cfbcaa7d94`. The real Worker completed 432 probes
+over 30.18 seconds with zero errors. Both container and SBOM scans report the
+same **43 HIGH / zero CRITICAL** entries, with no fixed versions reported. They
+remain failed; those are 43 findings represented twice, not 86 unique findings.
+The protected fixture differs from the trusted baseline, so these are raw
+diagnostics, not accepted scorecard evidence. Merge the reviewed fixture first,
+then collect a fresh default-branch producer run. ZAP remains blocked in this
+historical diagnostic; verification with the installed fix is pending during this bootstrap phase.
+The live scorecard identifies later accepted snapshots and their exact source runs.
+
+CodeQL default-setup evidence remains unverified because its configuration API
+requires repository Administration read access beyond the workflow token.
+The installed collector at the pinned revision supports the optional `PROOF_CODEQL_CONFIGURATION_TOKEN` path for
+that narrowly scoped configuration read. No credential has been stored here;
+credential handoff and fresh hosted verification remain pending. Successful
+native analyses alone do not satisfy provenance.
 Missing evidence remains visible. No Snyk finding is ignored or suppressed; the
-existing picomatch finding remains an independent CI blocker. The polyglot workflow
+existing picomatch finding remains an independent failed CI result under the
+scoped rollout exception below. The polyglot workflow
 is unchanged, manual and optional.
+
+### Existing Snyk rollout exception
+
+[PR #36 Snyk run 39339879707](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39339879707)
+evaluated head `d18c7e7122c82dfbf951c89cf6fc4f0dbaf00a05` and failed for
+[picomatch ReDoS SNYK-JS-PICOMATCH-21248802](https://security.snyk.io/vuln/SNYK-JS-PICOMATCH-21248802),
+with no fixed release available at review, and reported exhausted monthly private
+test quota. [PR #37 Snyk run 39345281350](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39345281350)
+at `694b81751f5c8df46fdbb91818acd017f2446ba6` reports the same single advisory ID
+and 200-test quota failure. The user explicitly authorized this rollout's reference merges with
+this unchanged failure visible when all other current CI passes. This is a
+scoped merge decision, not a suppression, rule change, successful scan or accepted
+passing Proof evidence. Preserve fresh native Snyk results separately from
+lifecycle receipts and scorecard evidence; any different failure needs review.
