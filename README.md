@@ -49,7 +49,7 @@ Choose **Editor** to create issues, move them through triage/in progress/done, a
 ## What this proves
 
 - Real browser UI and JSON API with persistent D1 storage, server-side permissions, session isolation, input validation, and status transitions.
-- Toolkit installed at immutable revision [`bcd7b28`](https://github.com/ravisingh11/ai-software-toolkit/commit/bcd7b28eb23c2578c9aa485475f084eab4aa0fe6); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
+- Toolkit installed at immutable revision [`6984096`](https://github.com/ravisingh11/ai-software-toolkit/commit/698409630ce7de4ca0398994908fcde92f2fc893); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
 - Deterministic domain, migration, API, and Chromium acceptance tests, including negative permissions and race/error regressions.
 - Generated app-specific local agent QA skills, executed through the actual Codex browser and HTTP tools. Agent QA remains advisory and separate from deterministic tests.
 - Clean-commit Cloudflare release script, live revision verification, and a documented code rollback procedure.
@@ -208,7 +208,7 @@ python3 .proof/validators/validate_repository.py
 npm run toolkit:check          # clean committed snapshot; Docker required for scans
 ```
 
-Domain line/branch coverage is measured separately from Worker/UI integration coverage; **full changed-code line coverage is not activated**. Core/GitHub Proof profiles are advisory. Hosted agent QA and automatic Cloudflare deployment are unconfigured. Lifecycle artifact attestation is available through the optional manual verification workflow; accepted hosted evidence is still pending. A missing provider is never passed. See [the evidence index](docs/verification/README.md) for actual results, revisions, and remaining limits.
+Domain line/branch coverage is measured separately from Worker/UI integration coverage; **full changed-code line coverage is not activated**. Core/GitHub Proof profiles are advisory. Hosted agent QA and automatic Cloudflare deployment are unconfigured. Lifecycle artifact attestation has accepted historical hosted evidence; during this adoption bootstrap, fresh evidence for the updated fixture and remaining optional controls is pending. A missing provider is never passed. See [the evidence index](docs/verification/README.md) for actual results, revisions, and remaining limits.
 
 ## Optional lifecycle verification
 
@@ -218,7 +218,8 @@ local D1 storage. Its configured probes use the real health/revision endpoint
 and require unauthenticated API access to fail. It can produce IaC, container,
 SBOM, artifact vulnerability/provenance, local deployment policy, DAST, runtime
 and short endurance evidence. The trusted runtime is installed; these nine controls are now selected advisory
-and remain optional. Accepted hosted lifecycle evidence is still pending.
+and remain optional. During this adoption bootstrap, fresh accepted evidence for the updated fixture
+is pending.
 
 This is a verification container, not a production Cloudflare deployment.
 Thirty seconds of endurance probes does not prove production stability. Scanner
@@ -227,15 +228,26 @@ container build was blocked by Docker disk exhaustion. The first hosted run
 subsequently built the actual Worker and passed 429 probes over 30 seconds,
 while reporting real container/artifact vulnerabilities and blocked ZAP output.
 A fresh hosted scorecard accepted signed artifact provenance; the other new
-controls await this advisory policy merge. Fresh verification of the updated
-image and upstream ZAP fix remains pending. See [setup and limitations](docs/toolkit-adoption.md#optional-lifecycle-verification)
+controls await this advisory policy merge. The updated image then ran in
+[diagnostic run 39345279160](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39345279160):
+432 probes, zero errors, and **43 HIGH / zero CRITICAL** vulnerability entries
+with no fixed versions reported. The container and SBOM scans describe the same
+43 findings, not 86 unique findings, and remain failed. These raw diagnostics
+are not accepted scorecard evidence: the revised fixture must first reach the
+trusted baseline, then run again using the updated default-branch producer.
+During this adoption bootstrap, fresh ZAP verification with the updated producer
+remains pending; consult the live scorecard for later accepted snapshots. See [setup and limitations](docs/toolkit-adoption.md#optional-lifecycle-verification)
 and [fixture details](examples/lifecycle/README.md).
 
 The five-language polyglot workflow remains separate, manual and optional.
+CodeQL default-setup evidence remains unverified. The installed collector supports an optional
+`PROOF_CODEQL_CONFIGURATION_TOKEN` path for repository Administration read access;
+that credential has not been stored here, and no hosted verification is claimed.
 
 The [PR #36 native Snyk run](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39339879707)
 failed for [picomatch ReDoS SNYK-JS-PICOMATCH-21248802](https://security.snyk.io/vuln/SNYK-JS-PICOMATCH-21248802)
-and reported an exhausted private-test quota. At review there was no fixed release.
+and reported an exhausted private-test quota. The [PR #37 native Snyk run](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39345281350)
+at `694b817` reports the same finding and quota failure. At review there was no fixed release.
 The user explicitly authorized this rollout's merges with that unchanged failure
 visible when other CI passes. This is an independent native CI result, not
 accepted passing Proof evidence; no finding was suppressed or rule relaxed.
