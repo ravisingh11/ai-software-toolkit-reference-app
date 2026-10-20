@@ -1,6 +1,6 @@
 # Toolkit adoption
 
-The runtime and workflows were installed from reviewed upstream commit `698409630ce7de4ca0398994908fcde92f2fc893` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` entrypoint. Previously installed skills are preserved; their installation uses `tooling/install-skills.sh`. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
+The runtime and workflows were installed from reviewed upstream commit `bb4130d4a27eb2d127fc832200797c732443119a` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` entrypoint. Previously installed skills are preserved; their installation uses `tooling/install-skills.sh`. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
 
 Core and GitHub profile controls begin advisory. Application acceptance is a separate deterministic required check on main, verified with a passing implementation and an intentionally failing follow-up PR. No AI review or functional QA result is an enforced merge gate. Oversized bootstrap scope, unavailable providers, and incomplete evidence remain visible rather than changing policy to hide them.
 
@@ -77,7 +77,7 @@ The optional upstream publisher owns this repository’s dedicated GitHub Pages 
 
 After a Proof Scorecard run completes, the trusted default-branch publisher validates source provenance and publishes the newest acceptable PR scorecard. A six-hour reconciliation schedule recovers missed events. The public page contains aggregate counts/status, source-run metadata, a subject digest, and allowlisted built-in control and provider labels. Custom providers use a generic label. The explicit public configuration path and validated same-repository GitHub evidence links are published; raw findings and private evidence payloads remain in the source Actions reports. Publishing never changes merge enforcement or turns missing evidence into a pass. The README and app navigation link to this live report; the [v0.1.0 snapshot](verification/scorecard.md) remains historical evidence.
 
-This installation pins Proof runtime source commit `698409630ce7de4ca0398994908fcde92f2fc893`.
+This installation pins Proof runtime source commit `bb4130d4a27eb2d127fc832200797c732443119a`.
 The supported runtime refresh separates failed checks from unavailable evidence,
 shows snapshot identity and freshness, preserves coverage workflow identity, and
 explains why smaller, actionable PRs are easier for humans to review. Application
@@ -88,7 +88,7 @@ Installed application QA skills remain unchanged.
 ## Optional language examples
 
 The five [polyglot examples](../examples/polyglot/README.md) use quality helpers
-from toolkit commit `698409630ce7de4ca0398994908fcde92f2fc893`, matching the installed Proof runtime.
+from toolkit commit `bb4130d4a27eb2d127fc832200797c732443119a`, matching the installed Proof runtime.
 The helper checkout remains separately recorded in `examples/polyglot/toolkit.json`.
 Explicit setup refreshes its clean cached checkout to that exact revision; modified
 or mismatched caches fail visibly. Setup does not change policy defaults.
@@ -102,7 +102,7 @@ is advisory. Repositories decide whether to adopt any of it or require it.
 
 ## Guardrails to Proof cutover
 
-The upgrade follows the upstream [migration guide](https://github.com/ravisingh11/ai-software-toolkit/blob/698409630ce7de4ca0398994908fcde92f2fc893/docs/proof/migrating-from-guardrails.md): preserve policy and repository mappings, reinstall canonical runtime/workflows under `.proof/`, and copy the existing repository command/provider variables to `PROOF_*`. Legacy variables are retained while older open branches still use them. The only required check remains Application acceptance; the five-language workflow remains manual and optional.
+The upgrade follows the upstream [migration guide](https://github.com/ravisingh11/ai-software-toolkit/blob/bb4130d4a27eb2d127fc832200797c732443119a/docs/proof/migrating-from-guardrails.md): preserve policy and repository mappings, reinstall canonical runtime/workflows under `.proof/`, and copy the existing repository command/provider variables to `PROOF_*`. Legacy variables are retained while older open branches still use them. The only required check remains Application acceptance; the five-language workflow remains manual and optional.
 
 The first migration PR retained only the unchanged `.guardrails/policy.yaml` as temporary data for the old trusted default-branch scorecard. After the Proof workflows reached main, the follow-up removed that bridge. No legacy runtime directory remains. Refreshing the public runtime and selected-skill installers at the pinned revision produces no changes. Application-specific generated QA skills are preserved.
 
@@ -126,7 +126,7 @@ The supported installer installs the manual `lifecycle-verification.yml`
 workflow and provenance-checking collector. The repository-owned
 `.proof/lifecycle.json` and `examples/lifecycle/` fixture are preserved on refresh.
 The lifecycle runtime is pinned to the reviewed, merged upstream revision
-`698409630ce7de4ca0398994908fcde92f2fc893`. All three adoption pins agree.
+`bb4130d4a27eb2d127fc832200797c732443119a`. All three adoption pins agree.
 
 The runtime and manual workflow reached the trusted main branch in PR #36.
 IaC is now selected advisory for change evaluation; container vulnerability,
@@ -202,3 +202,14 @@ this unchanged failure visible when all other current CI passes. This is a
 scoped merge decision, not a suppression, rule change, successful scan or accepted
 passing Proof evidence. Preserve fresh native Snyk results separately from
 lifecycle receipts and scorecard evidence; any different failure needs review.
+
+### ZAP warning classification adoption
+
+The current immutable toolkit pin includes the strict mapping correction from
+upstream PR #119. The real [reference run 39349413608](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39349413608)
+reported one informational alert (rule10031) with ZAP's warning exit status.
+The prior adapter marked the mismatch blocked; that historical result remains
+unchanged. The updated adapter preserves raw alerts and handles this documented
+exit/report combination without suppressing findings or relaxing provenance.
+Fresh accepted evidence is pending this trusted-baseline adoption and a new
+manual run. CodeQL configuration credentials remain unconfigured.

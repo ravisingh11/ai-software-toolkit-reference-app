@@ -49,7 +49,7 @@ Choose **Editor** to create issues, move them through triage/in progress/done, a
 ## What this proves
 
 - Real browser UI and JSON API with persistent D1 storage, server-side permissions, session isolation, input validation, and status transitions.
-- Toolkit installed at immutable revision [`6984096`](https://github.com/ravisingh11/ai-software-toolkit/commit/698409630ce7de4ca0398994908fcde92f2fc893); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
+- Toolkit installed at immutable revision [`bb4130d`](https://github.com/ravisingh11/ai-software-toolkit/commit/bb4130d4a27eb2d127fc832200797c732443119a); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
 - Deterministic domain, migration, API, and Chromium acceptance tests, including negative permissions and race/error regressions.
 - Generated app-specific local agent QA skills, executed through the actual Codex browser and HTTP tools. Agent QA remains advisory and separate from deterministic tests.
 - Clean-commit Cloudflare release script, live revision verification, and a documented code rollback procedure.
@@ -211,6 +211,14 @@ npm run toolkit:check          # clean committed snapshot; Docker required for s
 Domain line/branch coverage is measured separately from Worker/UI integration coverage; **full changed-code line coverage is not activated**. Core/GitHub Proof profiles are advisory. Hosted agent QA and automatic Cloudflare deployment are unconfigured. Lifecycle artifact attestation has accepted historical hosted evidence; during this adoption bootstrap, fresh evidence for the updated fixture and remaining optional controls is pending. A missing provider is never passed. See [the evidence index](docs/verification/README.md) for actual results, revisions, and remaining limits.
 
 ## Optional lifecycle verification
+
+The current adoption pins toolkit `bb4130d4a27eb2d127fc832200797c732443119a`,
+which fixes ZAP informational-warning exit/report classification without
+suppressing findings. Historical [run 39349413608](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39349413608)
+remains blocked for the original mismatch; no corrected result is claimed for
+that run. Fresh verification requires this collector to reach the trusted main
+baseline, followed by a new manual run. All checks stay optional and advisory.
+
 
 [PR #37](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/37)
 merged the optional advisory lifecycle controls, revised verification fixture and
