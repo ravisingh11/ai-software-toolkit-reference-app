@@ -166,7 +166,7 @@ The merged updates include:
 - [Playwright update (#19)](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/19): Playwright 1.64.1, retaining compatible TypeScript 5.9.3. Pinned Actions updates use [setup-node 7.1.0 (#17)](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/17) and [upload-artifact 7.0.2 (#18)](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/18).
 - [Advisory Snyk scans (#10)](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/10): separate Code and Open Source scans on PRs, pushes to `main`, or manual dispatch. Open Source analyzes the root npm lockfile including development dependencies; it does not scan all five native dependency graphs. These scans do not activate a Snyk provider in Proof policy.
 
-The latest completed [manual five-language run](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39349416084)
+The recorded [manual five-language run](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39349416084)
 verified main source `92c27786b157f5770a9a032f2fd2a823e22142d0` with toolkit
 `698409630ce7de4ca0398994908fcde92f2fc893`: **25 non-coverage stages passed and
 115 conformance cases passed** across Java, TypeScript, Python, PHP and Scala.
