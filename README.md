@@ -166,6 +166,15 @@ The merged updates include:
 - [Playwright update (#19)](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/19): Playwright 1.64.1, retaining compatible TypeScript 5.9.3. Pinned Actions updates use [setup-node 7.1.0 (#17)](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/17) and [upload-artifact 7.0.2 (#18)](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/18).
 - [Advisory Snyk scans (#10)](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/10): separate Code and Open Source scans on PRs, pushes to `main`, or manual dispatch. Open Source analyzes the root npm lockfile including development dependencies; it does not scan all five native dependency graphs. These scans do not activate a Snyk provider in Proof policy.
 
+The latest completed [manual five-language run](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39349416084)
+verified main source `92c27786b157f5770a9a032f2fd2a823e22142d0` with toolkit
+`698409630ce7de4ca0398994908fcde92f2fc893`: **25 non-coverage stages passed and
+115 conformance cases passed** across Java, TypeScript, Python, PHP and Scala.
+All five changed-line coverage stages were explicitly **not applicable** because
+the example sources were unchanged against `5ae91e812042fee3b27f01a284d808cfbcaa7d94`;
+this is not new measured coverage. The workflow remains manual and optional.
+The older percentages below are historical measurements from their linked run.
+
 The recorded [manual five-language verification](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39192185020) passed on main source [`7ff99c1`](https://github.com/ravisingh11/ai-software-toolkit-reference-app/commit/7ff99c1eba782ec804cfcc59ae928503fb8f1707), using toolkit `7b8b3a1`: all 30 stages and 115 conformance cases passed. Changed-line coverage was Java **100%**, TypeScript **93%**, Python **100%**, PHP **100%**, and Scala **92%**, against baseline `2932827` and the explicitly selected 90% threshold. [Recorded evidence](docs/verification/toolkit-refresh.md) includes exact revisions and limits.
 
 The scorecard now names each check’s configured provider, including inactive checks. Explicitly unselected providers show **Not configured**; missing selection data in older artifacts shows **Not reported**. Provider names link to the public provider configuration at the evaluated revision. A separate **Latest reported run** link appears only when valid evidence supplies one; missing evidence remains visible. Labels describe configuration, not credential readiness or a passing scan. See [provider semantics](docs/toolkit-adoption.md#configured-providers-in-the-scorecard).
