@@ -178,12 +178,11 @@ then collect a fresh default-branch producer run. ZAP remains blocked in this
 historical diagnostic; verification with the installed fix is pending during this bootstrap phase.
 The live scorecard identifies later accepted snapshots and their exact source runs.
 
-CodeQL default-setup evidence remains unverified because its configuration API
-requires repository Administration read access beyond the workflow token.
-The installed collector at the pinned revision supports the optional `PROOF_CODEQL_CONFIGURATION_TOKEN` path for
-that narrowly scoped configuration read. No credential has been stored here;
-credential handoff and fresh hosted verification remain pending. Successful
-native analyses alone do not satisfy provenance.
+At [PR #39 verification](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39353272529),
+CodeQL default-setup evidence was unverified: its configuration API required
+repository Administration read access beyond the workflow token, and the optional
+configuration credential was absent. The installed collector supports that
+narrowly scoped read; successful native analyses alone do not satisfy provenance.
 Missing evidence remains visible. No Snyk finding is ignored or suppressed; the
 existing picomatch finding remains an independent failed CI result under the
 scoped rollout exception below. The polyglot workflow
@@ -212,4 +211,33 @@ The prior adapter marked the mismatch blocked; that historical result remains
 unchanged. The updated adapter preserves raw alerts and handles this documented
 exit/report combination without suppressing findings or relaxing provenance.
 Fresh accepted evidence is pending this trusted-baseline adoption and a new
-manual run. CodeQL configuration credentials remain unconfigured.
+manual run. CodeQL configuration credentials were still unconfigured at the
+recorded PR #39 verification; later status requires fresh hosted evidence.
+
+
+### Optional CodeQL configuration credential
+
+This credential is optional and does not make any check required. To let the
+collector verify GitHub CodeQL default setup:
+
+1. Create an expiring fine-grained GitHub personal access token scoped only to
+   `ravisingh11/ai-software-toolkit-reference-app`, with repository
+   **Administration: read** and the automatically included **Metadata: read**.
+   Use a bounded expiration, such as 30 days; no write permission is needed.
+2. Save it as the repository Actions secret `PROOF_CODEQL_CONFIGURATION_TOKEN`.
+   Keep its value out of commits, PRs, logs and evidence files. The installed
+   collector uses it only to read default-setup configuration; other collection
+   retains the workflow token.
+3. Use a fresh open PR and inspect its hosted Proof Scorecard after the managed
+   CodeQL analyses finish. Confirm that accepted evidence binds the exact PR
+   revision and each configured language's analysis and run. A saved secret or
+   successful native analysis alone is insufficient.
+4. For a full scorecard, manually dispatch Lifecycle Verification from the trusted
+   default branch for that exact open PR head, then inspect the collected artifact
+   and environment evidence. Missing, expired or insufficient credentials must
+   remain visible as unverified evidence. Rotate or remove the secret when needed.
+
+Consult the [live scorecard](https://ravisingh11.github.io/ai-software-toolkit-reference-app/)
+for the accepted snapshot and source run. This checklist does not claim a new
+successful CodeQL verification. All checks stay optional; the separate five-language
+polyglot workflow stays manual and is unchanged by credential setup.
