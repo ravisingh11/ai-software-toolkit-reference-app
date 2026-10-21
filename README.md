@@ -77,10 +77,24 @@ Choose **Editor** to create issues, move them through triage/in progress/done, a
 ## What this proves
 
 - Real browser UI and JSON API with persistent D1 storage, server-side permissions, session isolation, input validation, and status transitions.
-- Toolkit installed at immutable revision [`bb4130d`](https://github.com/ravisingh11/ai-software-toolkit/commit/bb4130d4a27eb2d127fc832200797c732443119a); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
+- Toolkit **[v2.1.0](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.1.0)** installed at immutable revision [`9e72693`](https://github.com/ravisingh11/ai-software-toolkit/commit/9e72693f08e9137467e4651d9e7b9fbff6070b1b); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
 - Deterministic domain, migration, API, and Chromium acceptance tests, including negative permissions and race/error regressions.
 - Generated app-specific local agent QA skills, executed through the actual Codex browser and HTTP tools. Agent QA remains advisory and separate from deterministic tests.
 - Clean-commit Cloudflare release script, live revision verification, and a documented code rollback procedure.
+
+## Use with Claude Code
+
+Start with this application's [CLAUDE.md](CLAUDE.md) for repository context and
+execution limits. Toolkit v2.1.0 provides [Claude Code onboarding](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.1.0/docs/quickstart.md#claude-code-setup),
+[installation and updates](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.1.0/docs/install.md),
+and the [release notes](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.1.0/docs/releases/v2.1.0.md).
+See [the app's Claude setup](docs/toolkit-adoption.md#claude-code-setup) for a
+preview-first skills install from the pinned release.
+
+Skills guide work; installing them does not run checks or provide passing
+evidence. All toolkit checks remain optional to adopt and enforce. GitHub
+separately requires **Application acceptance** here. The polyglot workflow stays
+**manual (`workflow_dispatch`) and optional**.
 
 ## Language-specific quality examples (manual and optional)
 
