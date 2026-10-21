@@ -1,6 +1,6 @@
 # Toolkit adoption
 
-The runtime and workflows were installed from the [toolkit v2.1.0 baseline](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.1.0) plus post-release updates at immutable upstream commit `375354b9fe65250aaa828c00dfae69330b414ca5` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` entrypoint. Previously installed skills are preserved; their installation uses `tooling/install-skills.sh`. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
+The runtime and workflows were installed from the [toolkit v2.1.0 baseline](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.1.0) plus post-release updates at immutable upstream commit `c85e9d78f478d258e6b39ede3aeb742e527ace38` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` entrypoint. Previously installed skills are preserved; their installation uses `tooling/install-skills.sh`. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
 
 Core and GitHub profile controls begin advisory. Application acceptance is a separate deterministic required check on main, verified with a passing implementation and an intentionally failing follow-up PR. No AI review or functional QA result is an enforced merge gate. Oversized bootstrap scope, unavailable providers, and incomplete evidence remain visible rather than changing policy to hide them.
 
@@ -19,11 +19,11 @@ source metadata does not update the deployed Worker or establish new scan result
 
 Read [CLAUDE.md](../CLAUDE.md) before working in this application. To add starter
 skills for Claude Code, use a separate trusted toolkit checkout at the pinned
-release and preview the selection first:
+revision and preview the selection first:
 
 ```sh
 git clone https://github.com/ravisingh11/ai-software-toolkit.git /path/to/toolkit
-git -C /path/to/toolkit checkout --detach 375354b9fe65250aaa828c00dfae69330b414ca5
+git -C /path/to/toolkit checkout --detach c85e9d78f478d258e6b39ede3aeb742e527ace38
 python3 /path/to/toolkit/tooling/ai_toolkit init --target /path/to/ai-software-toolkit-reference-app --components skills --clients claude-code --skills starter --preview
 # After reviewing the preview, apply the same selection:
 python3 /path/to/toolkit/tooling/ai_toolkit init --target /path/to/ai-software-toolkit-reference-app --components skills --clients claude-code --skills starter --yes
@@ -42,6 +42,27 @@ with file references. Do not run tests or commands unless I ask.” Review the
 and [CLI guide](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.1.0/docs/install.md).
 All toolkit checks remain optional. Application acceptance remains the only
 required CI check; the polyglot workflow remains manual and optional.
+
+## Safe skill-replacement refresh
+
+The current pin includes upstream [PR #129](https://github.com/ravisingh11/ai-software-toolkit/pull/129),
+which fixes the standalone shell skill installer's no-rsync replacement path.
+It stages the complete new copy beside the destination before moving the
+installed skill. Failed promotion and handled interruptions restore the original;
+if restoration cannot complete, it retains the original and reports its
+recovery path. Recovery is per skill, and uncatchable termination can require
+manual recovery from staging.
+
+The shell installer is used from a separate trusted toolkit checkout and is
+not vendored into this app. The supported Proof refresh from this exact commit
+produced no runtime or workflow differences; existing skills and generated app
+QA were preserved. Use the pinned checkout above when invoking
+`tooling/install-skills.sh` to get the fix. The toolkit lock, optional polyglot
+helper pin, and Worker source metadata agree on the new revision.
+
+All toolkit checks remain optional, Application acceptance remains separately
+required, and polyglot stays manual (`workflow_dispatch`). This source update
+neither runs the polyglot examples nor deploys the Worker.
 
 ## Scorecard wording refresh
 
