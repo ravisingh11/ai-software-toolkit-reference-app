@@ -40,6 +40,20 @@ checks remain optional** to adopt and enforce. The separate five-language
 polyglot workflow stays **manual (`workflow_dispatch`) and optional**; these
 three CodeQL languages do not claim CodeQL coverage for Java, PHP or Scala.
 
+### Selected checks and evidence outcomes
+
+The scorecard calls policy-selected checks **Selected checks**; selection does
+not prove a check ran or is enforced. **Failed**, **Blocked**, **Unverified**,
+and **Inactive** counts appear separately. Inactive checks are excluded from
+the selected denominator, and unreported rows are not assumed inactive. An
+empty enforced set reads **No checks enforced**. Incomplete or inconsistent
+evidence keeps an unavailable breakdown instead of invented counts.
+
+This source adopts [upstream wording fix #128](https://github.com/ravisingh11/ai-software-toolkit/pull/128).
+The live page picks up the wording on a subsequent successful publication.
+All toolkit checks remain optional, **Application acceptance** remains the
+separate required merge check, and polyglot stays **manual and optional**.
+
 ### Scorecard freshness
 
 The live scorecard checks for a newer published snapshot on load, when you return
@@ -77,7 +91,7 @@ Choose **Editor** to create issues, move them through triage/in progress/done, a
 ## What this proves
 
 - Real browser UI and JSON API with persistent D1 storage, server-side permissions, session isolation, input validation, and status transitions.
-- Toolkit **[v2.1.0](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.1.0)** installed at immutable revision [`9e72693`](https://github.com/ravisingh11/ai-software-toolkit/commit/9e72693f08e9137467e4651d9e7b9fbff6070b1b); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
+- Toolkit **[v2.1.0 baseline](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.1.0)** plus the post-release scorecard wording fix, installed at immutable revision [`375354b`](https://github.com/ravisingh11/ai-software-toolkit/commit/375354b9fe65250aaa828c00dfae69330b414ca5); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
 - Deterministic domain, migration, API, and Chromium acceptance tests, including negative permissions and race/error regressions.
 - Generated app-specific local agent QA skills, executed through the actual Codex browser and HTTP tools. Agent QA remains advisory and separate from deterministic tests.
 - Clean-commit Cloudflare release script, live revision verification, and a documented code rollback procedure.

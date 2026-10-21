@@ -1,6 +1,6 @@
 # Toolkit adoption
 
-The runtime and workflows were installed from [toolkit v2.1.0](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.1.0) at immutable upstream commit `9e72693f08e9137467e4651d9e7b9fbff6070b1b` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` entrypoint. Previously installed skills are preserved; their installation uses `tooling/install-skills.sh`. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
+The runtime and workflows were installed from the [toolkit v2.1.0 baseline](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.1.0) plus post-release updates at immutable upstream commit `375354b9fe65250aaa828c00dfae69330b414ca5` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` entrypoint. Previously installed skills are preserved; their installation uses `tooling/install-skills.sh`. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
 
 Core and GitHub profile controls begin advisory. Application acceptance is a separate deterministic required check on main, verified with a passing implementation and an intentionally failing follow-up PR. No AI review or functional QA result is an enforced merge gate. Oversized bootstrap scope, unavailable providers, and incomplete evidence remain visible rather than changing policy to hide them.
 
@@ -10,11 +10,11 @@ To upgrade, clone the toolkit at an exact reviewed commit, run its installer wit
 
 ## Claude Code setup
 
-The v2.1.0 release refreshes onboarding and Claude guidance; its runtime,
-workflows, and skills are unchanged from this app's previous toolkit pin.
-The supported installer refresh produced no runtime or workflow differences.
+The initial v2.1.0 upgrade refreshed onboarding and Claude guidance without
+runtime, workflow, or skill differences at that time. The subsequent scorecard
+refresh below updates the installed renderer and action pins.
 `toolkit.lock.json`, `examples/polyglot/toolkit.json`, and the Worker
-`TOOLKIT_REVISION` now identify the same immutable release commit. Updating
+`TOOLKIT_REVISION` now identify the same immutable toolkit commit. Updating
 source metadata does not update the deployed Worker or establish new scan results.
 
 Read [CLAUDE.md](../CLAUDE.md) before working in this application. To add starter
@@ -23,7 +23,7 @@ release and preview the selection first:
 
 ```sh
 git clone https://github.com/ravisingh11/ai-software-toolkit.git /path/to/toolkit
-git -C /path/to/toolkit checkout --detach 9e72693f08e9137467e4651d9e7b9fbff6070b1b
+git -C /path/to/toolkit checkout --detach 375354b9fe65250aaa828c00dfae69330b414ca5
 python3 /path/to/toolkit/tooling/ai_toolkit init --target /path/to/ai-software-toolkit-reference-app --components skills --clients claude-code --skills starter --preview
 # After reviewing the preview, apply the same selection:
 python3 /path/to/toolkit/tooling/ai_toolkit init --target /path/to/ai-software-toolkit-reference-app --components skills --clients claude-code --skills starter --yes
@@ -42,6 +42,28 @@ with file references. Do not run tests or commands unless I ask.” Review the
 and [CLI guide](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.1.0/docs/install.md).
 All toolkit checks remain optional. Application acceptance remains the only
 required CI check; the polyglot workflow remains manual and optional.
+
+## Scorecard wording refresh
+
+Upstream [PR #128](https://github.com/ravisingh11/ai-software-toolkit/pull/128)
+clarifies the published HTML and Markdown summaries. **Selected checks** counts
+advisory and enforced checks selected for the evaluation, without claiming
+execution. Failed, blocked, and unverified outcomes remain distinct. Reported
+inactive checks are shown separately and excluded from the selected total;
+this can include checks evaluated on another subject. A missing row is not
+assumed inactive, and inconsistent evidence does not acquire fabricated counts.
+An empty enforcement set says **No checks enforced**.
+
+The supported installer refresh also carries the synchronized upstream action
+updates: `actions/attest` v4.2.2 and `sigstore/cosign-installer` v4.1.2. The
+lifecycle workflow retains `cosign-release: v2.6.0`; installer v4 supports it.
+No producer, policy mode, permissions, workflow triggers, required checks, or
+application-specific QA skills are changed. All toolkit checks remain optional;
+Application acceptance stays separately required, and polyglot remains manual.
+
+The published page uses the trusted default-branch renderer on its next
+successful publication. Source installation alone does not prove publication,
+a new scan, or a Worker deployment.
 
 ## Observed consumer behavior
 

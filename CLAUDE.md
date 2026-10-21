@@ -6,7 +6,7 @@ TypeScript issue tracker using Cloudflare Workers and D1. Keep application
 contracts here and upstream toolkit policy in the pinned `.proof/` runtime.
 Never edit vendored runtime merely to make a check pass.
 
-Toolkit v2.1.0 provenance is recorded in [toolkit.lock.json](toolkit.lock.json).
+Toolkit v2.1.0 baseline and reviewed post-release updates are recorded in [toolkit.lock.json](toolkit.lock.json).
 See [toolkit adoption](docs/toolkit-adoption.md#claude-code-setup) for optional
 Claude skills and [README.md](README.md) for setup and evidence links.
 
