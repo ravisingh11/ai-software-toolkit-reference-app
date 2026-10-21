@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/ravisingh11/ai-software-toolkit",
-  "revision": "bb4130d4a27eb2d127fc832200797c732443119a",
-  "installerVersion": "2.0.0",
+  "revision": "9e72693f08e9137467e4651d9e7b9fbff6070b1b",
+  "installerVersion": "2.1.0",
   "profiles": [
     "core",
     "github"
@@ -13,5 +13,6 @@
   "upgradePolicy": "Review exact upstream commit in a PR, run installers with documented refresh options, review generated diffs, run application acceptance and agent QA before merge. Never follow an unpinned branch in CI.",
   "optionalFeatures": [
     "scorecard-badge"
-  ]
+  ],
+  "release": "v2.1.0"
 }

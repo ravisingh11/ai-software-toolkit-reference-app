@@ -1,12 +1,47 @@
 # Toolkit adoption
 
-The runtime and workflows were installed from reviewed upstream commit `bb4130d4a27eb2d127fc832200797c732443119a` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` entrypoint. Previously installed skills are preserved; their installation uses `tooling/install-skills.sh`. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
+The runtime and workflows were installed from [toolkit v2.1.0](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.1.0) at immutable upstream commit `9e72693f08e9137467e4651d9e7b9fbff6070b1b` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` entrypoint. Previously installed skills are preserved; their installation uses `tooling/install-skills.sh`. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
 
 Core and GitHub profile controls begin advisory. Application acceptance is a separate deterministic required check on main, verified with a passing implementation and an intentionally failing follow-up PR. No AI review or functional QA result is an enforced merge gate. Oversized bootstrap scope, unavailable providers, and incomplete evidence remain visible rather than changing policy to hide them.
 
 Producer bindings: build=`npm run build`; unit tests=`npm run test:coverage`; format/lint=`npm run lint`; migrations=`npm run validate:migrations`; setup=`npm ci`. CodeQL default setup analyzes its configured Actions, JavaScript/TypeScript, and Python languages. Changed-code coverage is **not activated**: current coverage measures pure domain validation, while real Worker/D1 and frontend flows are verified by API/browser acceptance without line instrumentation. That test evidence must not be reported as full changed-line coverage. Artifact provenance and hosted agent QA are likewise not activated.
 
 To upgrade, clone the toolkit at an exact reviewed commit, run its installer with `--refresh-existing` and the selected profile, refresh selected skills using the installer's merge/refresh guidance, review configuration preservation and all runtime diffs, update toolkit.lock.json and the Worker TOOLKIT_REVISION, and submit a PR. Run application acceptance, migration validation, scans, and generated local agent QA before merging. Treat a failing consumer test as an upstream compatibility signal.
+
+## Claude Code setup
+
+The v2.1.0 release refreshes onboarding and Claude guidance; its runtime,
+workflows, and skills are unchanged from this app's previous toolkit pin.
+The supported installer refresh produced no runtime or workflow differences.
+`toolkit.lock.json`, `examples/polyglot/toolkit.json`, and the Worker
+`TOOLKIT_REVISION` now identify the same immutable release commit. Updating
+source metadata does not update the deployed Worker or establish new scan results.
+
+Read [CLAUDE.md](../CLAUDE.md) before working in this application. To add starter
+skills for Claude Code, use a separate trusted toolkit checkout at the pinned
+release and preview the selection first:
+
+```sh
+git clone https://github.com/ravisingh11/ai-software-toolkit.git /path/to/toolkit
+git -C /path/to/toolkit checkout --detach 9e72693f08e9137467e4651d9e7b9fbff6070b1b
+python3 /path/to/toolkit/tooling/ai_toolkit init --target /path/to/ai-software-toolkit-reference-app --components skills --clients claude-code --skills starter --preview
+# After reviewing the preview, apply the same selection:
+python3 /path/to/toolkit/tooling/ai_toolkit init --target /path/to/ai-software-toolkit-reference-app --components skills --clients claude-code --skills starter --yes
+```
+
+This selection installs skills into `.claude/skills/` without installing Proof
+workflows or running checks. Use `--clients codex,claude-code` when adopting both
+clients. This upgrade preserves the existing Codex skills and app-specific QA;
+it does not install the optional Claude skill selection automatically. Keep
+application instructions in this repository's CLAUDE.md; the installer does not
+write that file.
+
+For example: “Use the code-review skill to review this change. Explain risks
+with file references. Do not run tests or commands unless I ask.” Review the
+[versioned upstream onboarding](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.1.0/docs/quickstart.md#claude-code-setup)
+and [CLI guide](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.1.0/docs/install.md).
+All toolkit checks remain optional. Application acceptance remains the only
+required CI check; the polyglot workflow remains manual and optional.
 
 ## Observed consumer behavior
 
