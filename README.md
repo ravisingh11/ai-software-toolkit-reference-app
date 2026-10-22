@@ -4,6 +4,9 @@ A working issue tracker that consumes [AI Software Toolkit](https://github.com/r
 
 **[Open the live demo](https://ai-software-toolkit-reference-app.navivision-account.workers.dev)** · [Release and verification evidence](https://github.com/ravisingh11/ai-software-toolkit-reference-app/releases/tag/v0.1.0) · [Evidence guide](docs/verification/README.md)
 
+**Deployment report:** [Latest deployment attempt — blocked by D1 quota](docs/verification/deployment-v2.2.1.md).
+This report tracks live revision and browser/API verification separately from the PR scorecard.
+
 ## Toolkit scorecard
 
 [![Latest PR Scorecard](https://ravisingh11.github.io/ai-software-toolkit-reference-app/proof-badge.svg)](https://ravisingh11.github.io/ai-software-toolkit-reference-app/)
