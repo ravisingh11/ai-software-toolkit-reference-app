@@ -10,6 +10,11 @@ A working issue tracker that consumes [AI Software Toolkit](https://github.com/r
 
 [Open the live PR scorecard](https://ravisingh11.github.io/ai-software-toolkit-reference-app/) · [Scorecard CI runs](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/workflows/proof-scorecard.yml)
 
+The **All 33 checks** overview near the top of the report links every built-in
+check to its details, grouped as **Selected**, **Available to adopt**, and
+**Relevant later**. Only selected applicable checks count toward the score.
+Checks remain optional to adopt; lifecycle and polyglot workflows stay manual.
+
 The Pages report is published automatically from the latest accepted PR scorecard. It shows this application’s results, including missing evidence, and does not attest the current default branch or deployed Worker.
 
 ### Latest recorded CodeQL verification

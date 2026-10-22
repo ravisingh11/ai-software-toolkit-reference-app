@@ -6,7 +6,7 @@ interface __BaseEnv_Env {
 	CF_VERSION_METADATA: WorkerVersionMetadata;
 	ASSETS: Fetcher;
 	APP_REVISION: "development";
-	TOOLKIT_REVISION: "4706e359dd1478036457613e6c7dd2a23466985d";
+	TOOLKIT_REVISION: "3997edd64e32cfc6412526000e6613ff7fa5ab36";
 }
 declare namespace Cloudflare {
 	interface GlobalProps {

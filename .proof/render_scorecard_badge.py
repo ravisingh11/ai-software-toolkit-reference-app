@@ -209,7 +209,8 @@ PUBLIC_CONTROLS = (
     ('runtime-assurance', 'Runtime Assurance', 'Verify runtime security and operational safeguards', 'Release & runtime'),
  )
 # Publish built-in identities only; custom configuration labels stay in the source report.
-PUBLIC_PROVIDERS = {'repository-validator': ('Repository Validators',
+PUBLIC_PROVIDERS = {'trivy-repository-vulnerabilities': ('Trivy Repository Dependencies', ('dependency-vulnerability',)),
+ 'trivy-repository-iac': ('Trivy Repository IaC', ('iac-misconfiguration',)), 'repository-validator': ('Repository Validators',
                           ('repository-validation', 'documentation-validation', 'repository-ground-truth')),
  'repository-change-scope': ('PR Size / Files & LOC', ('change-scope',)),
  'repository-pr-metadata': ('Repository PR Metadata', ('pr-metadata',)),
@@ -255,6 +256,11 @@ LIFECYCLE_PROVIDERS = {
 for _control, (_provider, _name, _kind) in LIFECYCLE_PROVIDERS.items():
     PUBLIC_PROVIDERS[_provider] = (_name, [_control])
 
+
+
+def _is_manual_lifecycle(row: dict[str, Any]) -> bool:
+    # Provider labels here are already projected through the built-in allowlist.
+    return row["id"] in LIFECYCLE_PROVIDERS and row.get("provider") != "Trivy Repository IaC"
 
 def _lifecycle_context(document: dict[str, Any], repository: str | None) -> dict[str, str]:
     """Validate the collector projection again before labeling typed public outcomes."""
@@ -837,7 +843,7 @@ def _control_details(document: dict[str, Any], repository: str | None = None) ->
                         "status": status if valid else "not_reported",
                         "separate_subject": "pull-request" if separate else None,
                         "diagnostic": _public_diagnostic(row) if valid else None,
-                        "evaluation_scope": "manual-lifecycle" if control_id in LIFECYCLE_PROVIDERS else "pull-request",
+                        "evaluation_scope": "manual-lifecycle" if _is_manual_lifecycle({"id": control_id, "provider": provider}) else "pull-request",
                         "provider": provider,
                         "verification_scope": labels.get(control_id),
                         **links,
@@ -892,7 +898,7 @@ def _unverified_note(row: dict[str, Any]) -> str:
     if diagnostic:
         return diagnostic["message"] + " This is not a passing result."
     control_id = row["id"]
-    if control_id in LIFECYCLE_PROVIDERS:
+    if _is_manual_lifecycle(row):
         kind = LIFECYCLE_PROVIDERS[control_id][2]
         subject = {"git-commit": "evaluated commit", "artifact": "verification artifact",
                    "environment": "verification environment"}[kind]
@@ -1001,7 +1007,7 @@ def _attention_html(controls: list[dict[str, Any]], breakdown: dict[str, Any]) -
     for row in flagged:
         label, tone = _result_label(row)
         name = html.escape(row["name"])
-        target_items = lifecycle_items if row["id"] in LIFECYCLE_PROVIDERS else items
+        target_items = lifecycle_items if _is_manual_lifecycle(row) else items
         target_items.append(f'<li><span class="size-result {tone}">{label}</span> <a href="#{_check_target(row["id"])}">{name}</a> <span class="attention-mode">{_CONTROL_MODES[row["mode"]]}</span></li>')
     if unnamed:
         plural = "s" if unnamed != 1 else ""
@@ -1198,7 +1204,7 @@ def _controls_html(controls: list[dict[str, Any]], run_url: str, scope: dict[str
                 measurements += _scope_html(scope)
             note_html = f'<p class="check-note">{note}</p>' if note else ''
             mode_html = '' if row["mode"] in _INACTIVE_STATUSES else f'<p class="check-mode">{_CONTROL_MODES[row["mode"]]}</p>'
-            if row["id"] in LIFECYCLE_PROVIDERS:
+            if _is_manual_lifecycle(row):
                 mode_html += '<p class="check-note">Manual lifecycle check · evaluated separately from PR checks.</p>'
             card = f'<article class="check-detail {tone}" id="check-{safe["id"]}" tabindex="-1"><div class="check-top"><h3>{safe["name"]} <code class="check-id">{safe["id"]}</code></h3><span class="size-result">{label}</span></div><p>{safe["purpose"]}</p><p class="check-provider">Provider: {provider_html}</p>{mode_html}{note_html}{run_facts}{measurements}<div class="check-links">{evidence}<a href="#checks-title">Back to checks ↑</a></div></article>'
             detail_status = "separate" if row.get("separate_subject") else row["status"]
@@ -1687,6 +1693,12 @@ h1{margin:0;font-size:clamp(30px,4.5vw,42px);font-weight:650;line-height:1.2;let
 .decision dt{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1px}
 .decision dd{color:var(--tone);margin:4px 0 0;font-size:20px;font-weight:750}
 .stage-nav{display:flex;flex-wrap:wrap;gap:12px;margin:16px 0}.stage-nav a{padding:8px 12px;border:1px solid var(--line);border-radius:8px}
+.catalog-overview{margin:24px 0;padding:24px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.catalog-overview h2{margin:0 0 8px;font-size:22px}.catalog-overview p{color:var(--muted);font-size:13px}
+.catalog-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:20px}
+.catalog-group{min-width:0}.catalog-group h3{margin:0;font-size:15px}.catalog-group h3 span{color:var(--muted)}
+.catalog-group p{margin:8px 0;min-height:40px}.catalog-group ul{padding-left:18px;margin:12px 0 0}
+.catalog-group li{margin:6px 0;font-size:13px;overflow-wrap:anywhere}
 .metrics-note{margin:12px 2px 0;color:var(--muted);font-size:13px}
 .metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .metric{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:24px}
@@ -1776,6 +1788,7 @@ footer img{display:block;max-width:100%;height:auto}
   main{padding-top:30px}.intro{font-size:14px}
   .status-panel{align-items:flex-start;padding:20px;gap:16px}
   .status-panel h2{font-size:18px}.decision dd{font-size:17px}
+  .catalog-grid{grid-template-columns:1fr;gap:20px}.catalog-overview{padding:20px}.catalog-group p{min-height:0}
   .overview-grid{grid-template-columns:1fr;gap:12px}.overview-card{padding:20px}
   .metrics{grid-template-columns:1fr;gap:12px}
   .check-detail{padding:18px}.checks-table th,.checks-table td{padding:7px 9px;white-space:normal}
@@ -1904,6 +1917,29 @@ _FRESHNESS_SCRIPT = r"""
 """
 
 
+def _catalog_overview(controls: list[dict[str, Any]]) -> str:
+    groups = []
+    for group, label, note in (
+        ("selected", "Selected", "Included in this evaluation; selection does not mean passed."),
+        ("available-to-adopt", "Available to adopt", "Optional checks outside this evaluation’s score."),
+        ("relevant-later", "Relevant later", "Checks for later stages. Lifecycle verification stays manual."),
+        ("unknown", "Selection unknown", "This snapshot does not establish whether these checks are selected."),
+        ("evaluation-context", "Other evaluation context", "Checked on a separate subject; excluded from these totals."),
+    ):
+        members = [row for row in controls if _selection_group(row) == group]
+        if not members:
+            continue
+        links = ''.join(f'<li><a href="#check-{html.escape(row["id"], quote=True)}">{html.escape(row["name"])}</a></li>'
+                        for row in members)
+        groups.append(f'<section class="catalog-group" data-selection="{group}">'
+                      f'<h3>{label} <span>({len(members)})</span></h3><p>{note}</p><ul>{links}</ul></section>')
+    return ('<section class="catalog-overview" aria-labelledby="catalog-title">'
+            f'<h2 id="catalog-title">All {len(controls)} checks</h2>'
+            '<p>Explore the full built-in catalog. All checks are optional to adopt. '
+            'Only selected checks applicable to this evaluation count toward the score.</p>'
+            '<div class="catalog-grid">' + ''.join(groups) + '</div></section>')
+
+
 def _html(metadata: dict[str, Any]) -> str:
     safe = {key: html.escape(str(value), quote=True) for key, value in metadata.items()}
     tone, headline = {
@@ -2018,6 +2054,7 @@ def _html(metadata: dict[str, Any]) -> str:
   <p class="intro">Latest published PR results for <strong>{safe['repository']}</strong>.</p>
   <p class="stage-context"><strong>Evaluation stage:</strong> {"Lifecycle verification" if metadata["evaluation_stage"] == "lifecycle-verification" else "Pull-request development"}. The catalog offers tools to adopt as your project needs them; it is not a checklist every project must complete.</p>
   {discovery_navigation}
+  {_catalog_overview(metadata["controls"])}
   {_snapshot_identity(metadata)}
   <aside class="freshness" id="snapshot-freshness" data-snapshot="{snapshot}" data-freshness="unknown" aria-label="Snapshot freshness">
     <p id="snapshot-freshness-status" role="status" aria-live="polite">Freshness not checked. These are published snapshot results; refresh to request the latest publication.</p>
@@ -2031,7 +2068,7 @@ def _html(metadata: dict[str, Any]) -> str:
   </section>
   {_attention_html(metadata["controls"], metadata["result_breakdown"])}
   <div class="metrics">{''.join(cards)}</div>
-  <p class="metrics-note">{html.escape(_count_reconciliation(metadata))} <a href="#checks-title">See all checks ↓</a></p>
+  <p class="metrics-note">{html.escape(_count_reconciliation(metadata))} <a href="#catalog-title">See all checks ↑</a></p>
   {_breakdown_html(metadata["result_breakdown"])}
   {_controls_html(metadata["controls"], metadata["source_run_url"], metadata["change_scope"])}
   <section class="evidence" aria-labelledby="evidence-title">

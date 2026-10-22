@@ -1,6 +1,6 @@
 # Toolkit adoption
 
-The runtime and workflows were installed from the [toolkit v2.1.0 baseline](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.1.0) plus reviewed post-release updates through stage-specific scorecard PR #141 at immutable upstream commit `4706e359dd1478036457613e6c7dd2a23466985d` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` entrypoint. Previously installed skills are preserved; their installation uses `tooling/install-skills.sh`. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
+The runtime and workflows were installed from the [toolkit v2.1.1 baseline](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.1.1) plus reviewed post-release updates through the full-catalog overview in PR #144 at immutable upstream commit `3997edd64e32cfc6412526000e6613ff7fa5ab36` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` entrypoint. Previously installed skills are preserved; their installation uses `tooling/install-skills.sh`. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
 
 Core and GitHub profile controls begin advisory. Application acceptance is a separate deterministic required check on main, verified with a passing implementation and an intentionally failing follow-up PR. No AI review or functional QA result is an enforced merge gate. Oversized bootstrap scope, unavailable providers, and incomplete evidence remain visible rather than changing policy to hide them.
 
@@ -204,7 +204,7 @@ The supported installer installs the manual `lifecycle-verification.yml`
 workflow and provenance-checking collector. The repository-owned
 `.proof/lifecycle.json` and `examples/lifecycle/` fixture are preserved on refresh.
 The current runtime is pinned to reviewed upstream revision
-`4706e359dd1478036457613e6c7dd2a23466985d`. The toolkit lock, optional helper pin and Worker source metadata agree.
+`3997edd64e32cfc6412526000e6613ff7fa5ab36`. The toolkit lock, optional helper pin and Worker source metadata agree.
 
 The runtime and manual workflow reached the trusted main branch in PR #36.
 That historical bootstrap selected IaC advisory for change evaluation; container vulnerability,
@@ -362,3 +362,32 @@ The Pages publisher uses the trusted renderer after merge and fresh evidence
 collection. A changed source pin does not update the deployed Worker; its health
 metadata continues describing the previously deployed revision until an authorized
 deployment. No toolkit release or application deployment is part of this update.
+
+
+## Full 33-check overview refresh
+
+The supported installer refreshed the installed runtime and managed workflows
+from reviewed upstream commit `3997edd64e32cfc6412526000e6613ff7fa5ab36`
+(upstream PR #144). The toolkit lock, optional polyglot helper pin, and Worker
+source metadata identify that same immutable revision; the installer version is
+2.1.1. Previously installed skills and generated application QA skills are
+preserved.
+
+The live Pages report now has an always-visible **All 33 checks** overview above
+its results. Each name links to its detail card. Selected, available-to-adopt,
+and relevant-later groups use validated snapshot selection; unknown selection
+and separate evaluation context remain explicit. Selected failures stay selected,
+and only selected applicable checks enter the score. The overview stacks on mobile.
+
+This supported refresh also installs the upstream independent provenance and
+Trivy starters and their provider definitions. Their opt-in variables and provider
+selections are not enabled by this refresh. Application policy and existing
+provider selections, the consumer-owned Snyk workflow and its visible finding
+example, and lifecycle fixtures remain unchanged. Lifecycle and polyglot remain
+manual. GitHub still requires only Application acceptance.
+
+No extra local tests, scans, dependency installation, agent QA, Worker deployment,
+or release publication were run for this update. Required hosted CI validates the
+PR. Updating Worker source metadata does not change the deployed application's
+health revision. The Pages renderer update presents historical PR evidence without
+rerunning its producers or applying newer policy to old results.

@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/ravisingh11/ai-software-toolkit",
-  "revision": "4706e359dd1478036457613e6c7dd2a23466985d",
-  "installerVersion": "2.1.0",
+  "revision": "3997edd64e32cfc6412526000e6613ff7fa5ab36",
+  "installerVersion": "2.1.1",
   "profiles": [
     "core",
     "github"
@@ -14,6 +14,6 @@
   "optionalFeatures": [
     "scorecard-badge"
   ],
-  "release": "v2.1.0",
-  "revisionNote": "Reviewed source through upstream PR #141: stage-specific selected/adoption/later scorecard groups, separate activation and policy modes, hidden zero counts, exact snapshot identity and evidence diagnostics; retains the earlier safe skill-replacement fix."
+  "release": "v2.1.1",
+  "revisionNote": "Reviewed post-v2.1.1 source through upstream PR #144: always-visible 33-check overview, preserving stage-specific selection, optional adoption, manual lifecycle, and prior installer safety fixes."
 }
