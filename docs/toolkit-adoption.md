@@ -1,6 +1,13 @@
 # Toolkit adoption
 
-The runtime and workflows were installed from the [toolkit v2.1.1 baseline](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.1.1) plus reviewed post-release updates through the full-catalog overview in PR #144 at immutable upstream commit `3997edd64e32cfc6412526000e6613ff7fa5ab36` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` entrypoint. Previously installed skills are preserved; their installation uses `tooling/install-skills.sh`. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
+The runtime and workflows are pinned to published [toolkit v2.2.1](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.2.1)
+at immutable upstream commit `bf05798e4b03610551f9882620767f31de03d1df`. The supported
+`tooling/install.py --profile github --refresh-existing --scorecard-badge`
+refresh produced no runtime or workflow changes relative to the previously
+reviewed source. Previously installed skills and generated application QA remain
+preserved. Exact commands and versions are recorded in `toolkit.lock.json`:
+standalone installer 2.0.0, CLI 2.2.1. Historical refresh records below retain
+their original source and evidence identities.
 
 Core and GitHub profile controls begin advisory. Application acceptance is a separate deterministic required check on main, verified with a passing implementation and an intentionally failing follow-up PR. No AI review or functional QA result is an enforced merge gate. Oversized bootstrap scope, unavailable providers, and incomplete evidence remain visible rather than changing policy to hide them.
 
@@ -23,7 +30,7 @@ revision and preview the selection first:
 
 ```sh
 git clone https://github.com/ravisingh11/ai-software-toolkit.git /path/to/toolkit
-git -C /path/to/toolkit checkout --detach 4706e359dd1478036457613e6c7dd2a23466985d
+git -C /path/to/toolkit checkout --detach bf05798e4b03610551f9882620767f31de03d1df
 python3 /path/to/toolkit/tooling/ai_toolkit init --target /path/to/ai-software-toolkit-reference-app --components skills --clients claude-code --skills starter --preview
 # After reviewing the preview, apply the same selection:
 python3 /path/to/toolkit/tooling/ai_toolkit init --target /path/to/ai-software-toolkit-reference-app --components skills --clients claude-code --skills starter --yes
@@ -38,8 +45,8 @@ write that file.
 
 For example: “Use the code-review skill to review this change. Explain risks
 with file references. Do not run tests or commands unless I ask.” Review the
-[versioned upstream onboarding](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.1.0/docs/quickstart.md#claude-code-setup)
-and [CLI guide](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.1.0/docs/install.md).
+[versioned upstream onboarding](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.2.1/docs/quickstart.md#claude-code-setup)
+and [CLI guide](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.2.1/docs/install.md).
 All toolkit checks remain optional. Application acceptance remains the only
 required CI check; the polyglot workflow remains manual and optional.
 
@@ -166,7 +173,7 @@ Installed application QA skills remain unchanged.
 ## Optional language examples
 
 The five [polyglot examples](../examples/polyglot/README.md) use quality helpers
-from toolkit commit `4706e359dd1478036457613e6c7dd2a23466985d`, matching the installed Proof runtime.
+from toolkit v2.2.1 commit `bf05798e4b03610551f9882620767f31de03d1df`, matching the installed Proof runtime.
 The helper checkout remains separately recorded in `examples/polyglot/toolkit.json`.
 Explicit setup refreshes its clean cached checkout to that exact revision; modified
 or mismatched caches fail visibly. Setup does not change policy defaults.
@@ -203,8 +210,8 @@ stays visible and all Proof checks remain optional.
 The supported installer installs the manual `lifecycle-verification.yml`
 workflow and provenance-checking collector. The repository-owned
 `.proof/lifecycle.json` and `examples/lifecycle/` fixture are preserved on refresh.
-The current runtime is pinned to reviewed upstream revision
-`3997edd64e32cfc6412526000e6613ff7fa5ab36`. The toolkit lock, optional helper pin and Worker source metadata agree.
+The current runtime is pinned to published v2.2.1 upstream revision
+`bf05798e4b03610551f9882620767f31de03d1df`. The toolkit lock, optional helper pin and Worker source metadata agree.
 
 The runtime and manual workflow reached the trusted main branch in PR #36.
 That historical bootstrap selected IaC advisory for change evaluation; container vulnerability,
@@ -322,7 +329,7 @@ for the accepted snapshot and source run. This checklist does not claim a new
 successful CodeQL verification. All checks stay optional; the separate five-language
 polyglot workflow stays manual and is unchanged by credential setup.
 
-## Stage-specific selection and adoption refresh
+## Historical stage-specific selection and adoption refresh
 
 The supported installer was run from the exact merged upstream source revision
 `4706e359dd1478036457613e6c7dd2a23466985d` (upstream PR #141):
@@ -364,13 +371,14 @@ metadata continues describing the previously deployed revision until an authoriz
 deployment. No toolkit release or application deployment is part of this update.
 
 
-## Full 33-check overview refresh
+## Historical full 33-check overview refresh
 
 The supported installer refreshed the installed runtime and managed workflows
 from reviewed upstream commit `3997edd64e32cfc6412526000e6613ff7fa5ab36`
-(upstream PR #144). The toolkit lock, optional polyglot helper pin, and Worker
-source metadata identify that same immutable revision; the installer version is
-2.1.1. Previously installed skills and generated application QA skills are
+(upstream PR #144). At that refresh, the toolkit lock, optional polyglot helper pin, and Worker
+source metadata identified that same immutable revision. The recorded 2.1.1
+version referred to the CLI; the current lock distinguishes it from the standalone
+installer version. Previously installed skills and generated application QA skills are
 preserved.
 
 The live Pages report now has an always-visible **All 33 checks** overview above
@@ -391,3 +399,19 @@ or release publication were run for this update. Required hosted CI validates th
 PR. Updating Worker source metadata does not change the deployed application's
 health revision. The Pages renderer update presents historical PR evidence without
 rerunning its producers or applying newer policy to old results.
+
+## Published v2.2.1 alignment
+
+The supported installer was run from exact tag commit `bf05798e4b03610551f9882620767f31de03d1df`.
+Its generated runtime and workflows are unchanged from the preceding reviewed
+pin. This update aligns the toolkit lock, optional helper pin, Worker source
+metadata, README, and Claude guidance with the published release. It preserves
+app-specific provider configuration, advisory policy, generated QA skills,
+manual polyglot/lifecycle triggers, dependencies and the intentional independent
+Snyk failure example. Historical reports and deployed Worker metadata are not
+relabelled as current verification. No Worker deployment is part of this update.
+
+The v2.2.1 upstream patch renames the composite action to AI Software Toolkit
+Proof Attestation and advances the CLI version. This application continues to
+consume its pinned installed runtime; it does not add a new action invocation,
+activate providers or make toolkit checks mandatory.
