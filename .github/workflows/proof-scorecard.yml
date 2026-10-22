@@ -86,6 +86,7 @@ jobs:
           import json
           import os
           import re
+          import subprocess
           from pathlib import Path
 
           event = json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text(encoding="utf-8"))
@@ -106,7 +107,8 @@ jobs:
           if not isinstance(base_sha, str) or re.fullmatch(r"[0-9a-f]{40}", base_sha) is None:
               raise SystemExit("pull-request base SHA is invalid")
           source = {
-              "version": 1,
+              "version": 2,
+              "runtime_sha": subprocess.check_output(["git", "-C", ".proof-trusted", "rev-parse", "HEAD"], text=True).strip(),
               "run_id": int(os.environ["SOURCE_RUN_ID"]),
               "run_attempt": int(os.environ["SOURCE_RUN_ATTEMPT"]),
               "event": os.environ["GITHUB_EVENT_NAME"],
@@ -134,6 +136,9 @@ jobs:
           PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number || '' }}
           SNYK_CODE_ENABLED: ${{ vars.SNYK_CODE_ENABLED }}
           SNYK_OPEN_SOURCE_ENABLED: ${{ vars.SNYK_OPEN_SOURCE_ENABLED }}
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+          FOSSA_ENABLED: ${{ vars.FOSSA_ENABLED }}
+          AI_REVIEW_COMMAND: ${{ vars.AI_REVIEW_COMMAND }}
         run: |
           set -euo pipefail
           mkdir -p .artifacts/proof
@@ -142,13 +147,33 @@ jobs:
           EVIDENCE_JSON=".artifacts/proof/evidence-${PROOF_TIMESTAMP}.json"
           # Disabled optional jobs will not publish checks. Keep their missing
           # evidence, but do not spend the collection budget waiting for absence.
-          collector_args=(--wait-seconds 1800)
+          # Manual QA and native reviews are sampled now; later PR review events
+          # refresh the scorecard without reserving a runner for absent reviews.
+          collector_args=(--wait-seconds 1800
+            --no-wait-provider qa-bootstrap-workflow
+            --provider-activation qa-bootstrap-workflow=awaiting_manual_run
+            --no-wait-provider codex-github-review)
+          if [ -z "${SONAR_HOST_URL:-}" ]; then
+            collector_args+=(--no-wait-provider sonarqube --provider-activation sonarqube=not_configured)
+          fi
+          case "${FOSSA_ENABLED:-}" in
+            [Ff][Aa][Ll][Ss][Ee]) collector_args+=(--no-wait-provider fossa --provider-activation fossa=disabled) ;;
+          esac
+          if [ -z "${AI_REVIEW_COMMAND:-}" ]; then
+            collector_args+=(--no-wait-provider ai-engineering-adapter
+              --no-wait-provider ai-qa-adapter --no-wait-provider ai-security-adapter
+              --no-wait-provider ai-repository-standards-adapter
+              --provider-activation ai-engineering-adapter=not_configured
+              --provider-activation ai-qa-adapter=not_configured
+              --provider-activation ai-security-adapter=not_configured
+              --provider-activation ai-repository-standards-adapter=not_configured)
+          fi
           # Match the Snyk jobs' case-insensitive GitHub string comparison.
           case "${SNYK_CODE_ENABLED:-}" in
-            [Ff][Aa][Ll][Ss][Ee]) collector_args+=(--no-wait-provider snyk-code) ;;
+            [Ff][Aa][Ll][Ss][Ee]) collector_args+=(--no-wait-provider snyk-code --provider-activation snyk-code=disabled) ;;
           esac
           case "${SNYK_OPEN_SOURCE_ENABLED:-}" in
-            [Ff][Aa][Ll][Ss][Ee]) collector_args+=(--no-wait-provider snyk-open-source) ;;
+            [Ff][Aa][Ll][Ss][Ee]) collector_args+=(--no-wait-provider snyk-open-source --provider-activation snyk-open-source=disabled) ;;
           esac
           if [ -n "${PULL_REQUEST_NUMBER}" ] && \
             python3 .proof-trusted/.proof/github_evidence.py --help 2>&1 | \
@@ -168,7 +193,7 @@ jobs:
             --output "${EVIDENCE_JSON}"
           cp "${EVIDENCE_JSON}" .artifacts/proof/evidence.json
       - name: Collect optional artifact and verification-environment evidence
-        if: ${{ github.event.pull_request != null && vars.PROOF_LIFECYCLE_ENABLED == 'true' }}
+        if: ${{ github.event.pull_request != null && vars.PROOF_LIFECYCLE_ENABLED == 'true' && vars.PROOF_SCORECARD_STAGE == 'lifecycle' }}
         env:
           GH_TOKEN: ${{ github.token }}
           REVISION: ${{ github.event.pull_request.head.sha }}

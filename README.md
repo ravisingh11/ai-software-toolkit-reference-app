@@ -40,19 +40,28 @@ checks remain optional** to adopt and enforce. The separate five-language
 polyglot workflow stays **manual (`workflow_dispatch`) and optional**; these
 three CodeQL languages do not claim CodeQL coverage for Java, PHP or Scala.
 
-### Selected checks and evidence outcomes
+### Stage-specific scorecard
 
-The scorecard calls policy-selected checks **Selected checks**; selection does
-not prove a check ran or is enforced. **Failed**, **Blocked**, **Unverified**,
-and **Inactive** counts appear separately. Inactive checks are excluded from
-the selected denominator, and unreported rows are not assumed inactive. An
-empty enforced set reads **No checks enforced**. Incomplete or inconsistent
-evidence keeps an unavailable breakdown instead of invented counts.
+The live report separates **Selected checks**, **Tools available to adopt**, and
+**Checks relevant later**, with direct links to each group and setup guidance.
+For this app's **pull-request development** stage, the existing Core/GitHub
+profiles select 16 advisory checks. Nine optional tools are available to adopt;
+eight release/deployment/runtime checks are relevant later. Only selected,
+applicable checks enter the score. Selected failures and missing evidence remain
+visible; unselected tools are not reported as failures or silently counted as passes.
 
-This source adopts [upstream wording fix #128](https://github.com/ravisingh11/ai-software-toolkit/pull/128).
-The live page picks up the wording on a subsequent successful publication.
-All toolkit checks remain optional, **Application acceptance** remains the
-separate required merge check, and polyglot stays **manual and optional**.
+Advisory/Enforced is separate from status: Passed, Failed, Blocked, Not configured,
+Disabled, Awaiting manual run, or Unable to verify. Zero-count categories are
+hidden. Missing changed-line coverage or security-settings evidence for a selected
+check remains unverifiable. This does not change the separately reported Snyk
+finding example or the app's dependencies.
+
+This source adopts [upstream stage-specific groups #141](https://github.com/ravisingh11/ai-software-toolkit/pull/141)
+from immutable source revision [`4706e35`](https://github.com/ravisingh11/ai-software-toolkit/commit/4706e359dd1478036457613e6c7dd2a23466985d)
+through the supported installer. All toolkit checks remain optional;
+**Application acceptance** remains the separate required merge check. Polyglot
+and lifecycle producers stay **manual and optional**. The source update does not
+deploy the Worker or rerun a historical snapshot using a newer policy.
 
 ### Scorecard freshness
 
@@ -91,7 +100,7 @@ Choose **Editor** to create issues, move them through triage/in progress/done, a
 ## What this proves
 
 - Real browser UI and JSON API with persistent D1 storage, server-side permissions, session isolation, input validation, and status transitions.
-- Toolkit **[v2.1.0 baseline](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.1.0)** plus the scorecard wording and safe skill-replacement fixes, installed at immutable revision [`c85e9d7`](https://github.com/ravisingh11/ai-software-toolkit/commit/c85e9d78f478d258e6b39ede3aeb742e527ace38); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
+- Toolkit **[v2.1.0 baseline](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.1.0)** plus reviewed stage-specific scorecard and safe skill-replacement updates, installed at immutable revision [`4706e35`](https://github.com/ravisingh11/ai-software-toolkit/commit/4706e359dd1478036457613e6c7dd2a23466985d); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
 - Deterministic domain, migration, API, and Chromium acceptance tests, including negative permissions and race/error regressions.
 - Generated app-specific local agent QA skills, executed through the actual Codex browser and HTTP tools. Agent QA remains advisory and separate from deterministic tests.
 - Clean-commit Cloudflare release script, live revision verification, and a documented code rollback procedure.

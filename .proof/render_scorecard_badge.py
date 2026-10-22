@@ -329,12 +329,32 @@ def _lifecycle_context(document: dict[str, Any], repository: str | None) -> dict
 
 _CONTROL_RESULTS = {
     "passed": ("Passed", "good"), "failed": ("Failed", "danger"),
-    "blocked": ("Blocked", "caution"), "no_result": ("Unverified", "neutral"),
+    "blocked": ("Blocked", "caution"), "no_result": ("Unable to verify", "neutral"),
     "not_activated": ("Not activated", "neutral"),
     "not_reported": ("Not reported", "neutral"),
 }
 _CONTROL_MODES = {"enforced": "Enforced", "advisory": "Advisory",
                   "not_activated": "Not activated", "not_reported": "Not reported"}
+
+
+# Built-in catalog stages outside a pull-request development evaluation.
+# Never derive scope from a producer result: selected failures remain selected.
+_LATER_STAGES = {
+    "artifact-provenance": "Release", "container-vulnerability": "Release",
+    "artifact-sbom": "Release", "artifact-vulnerability": "Release",
+    "runtime-soak": "Pre-release", "deployment-policy": "Deployment",
+    "dynamic-application-security": "Post-deployment", "runtime-assurance": "Runtime",
+}
+
+
+def _selection_group(row: dict[str, Any]) -> str:
+    if row["mode"] in {"advisory", "enforced"}:
+        return "selected"
+    if row.get("separate_subject"):
+        return "evaluation-context"
+    if row["status"] != "not_activated":
+        return "unknown"
+    return "relevant-later" if row["id"] in _LATER_STAGES else "available-to-adopt"
 
 
 _REVIEW_FINDING_METRICS = 'Findings by severity (P0 to P3); unresolved P0/P1 findings'
@@ -733,6 +753,62 @@ def _provider_links(row: dict[str, Any], label: str, repository: str | None,
     return links
 
 
+# Map only exact collector conditions to public language. Raw reasons remain private.
+_PUBLIC_REASONS = {
+    "Provider activation: disabled by repository configuration.": (
+        "disabled", "The provider is explicitly disabled in repository configuration. Policy mode is unchanged; enable the provider to obtain evidence."),
+    "Provider activation: required configuration is absent.": (
+        "not_configured", "Required provider configuration is absent. Configure the provider before requesting evidence; advisory selection alone does not configure it."),
+    "Provider activation: awaiting a manual run for this revision.": (
+        "awaiting_manual_run", "No manual producer run reported this revision. Start the optional manual workflow and publish its evidence."),
+    "Duplicate matching GitHub check names make provider provenance ambiguous.": (
+        "ambiguous_producer", "Multiple matching producer checks were found for this revision. "
+        "Unambiguous evidence provenance is missing. Inspect the duplicate CI runs and collect a fresh snapshot; "
+        "the collector does not choose a passing result from ambiguous matches."),
+    "Lifecycle evidence unavailable: Lifecycle run is absent or ambiguous for this PR revision": (
+        "lifecycle_run_missing_or_ambiguous", "No unique manual lifecycle run was found for this PR revision. "
+        "Run manual Proof Lifecycle for this revision and collect its signed evidence."),
+    "Lifecycle evidence unavailable: PR/head/base identity differs": (
+        "pr_context_mismatch", "Evidence rejected: the PR is not open or its head/base context does not match the lifecycle requirements. "
+        "Use a matching open PR to run manual Proof Lifecycle for the evaluated revision."),
+    "Waiting is disabled for this provider; its check did not report this revision.": (
+        "provider_not_reported_no_wait", "No provider result was reported for this revision, and collection was configured "
+        "not to wait for this provider. Inspect its workflow activation and skipped runs."),
+    "The selected provider check did not report this revision.": (
+        "provider_not_reported", "No provider result was reported for this revision. Inspect the producer workflow and its evidence publication."),
+    "The artifact-backed check has not completed.": (
+        "producer_pending", "The evidence-producing check had not completed when this snapshot was collected."),
+    "Complete GitHub check-run enumeration could not be proven.": (
+        "collection_unavailable", "The collector could not obtain a complete check listing. Inspect its API access and retry collection."),
+}
+
+
+def _public_diagnostic(row: dict[str, Any]) -> dict[str, str] | None:
+    result = row.get("authoritative_result")
+    provider = row.get("authoritative_provider")
+    if not isinstance(result, dict) or not isinstance(provider, dict):
+        return None
+    contract = PUBLIC_PROVIDERS.get(provider.get("id")) if isinstance(provider.get("id"), str) else None
+    if not contract or row.get("id") not in contract[1]:
+        return None
+    status = "no_result" if result.get("status") == "not_run" else result.get("status")
+    if status != row.get("evidence_status"):
+        return None
+    if status == "no_result":
+        reason = result.get("reason")
+        known = _PUBLIC_REASONS.get(reason) if isinstance(reason, str) else None
+        if known:
+            return {"code": known[0], "message": known[1]}
+        execution = _execution_details(row)
+        if execution.get("conclusion") == "skipped":
+            return {"code": "producer_skipped", "message": "The producer was skipped for this revision; no passing evidence was supplied."}
+    if row.get("id") == "pr-metadata" and status == "failed":
+        evidence = result.get("evidence")
+        if isinstance(evidence, list) and "Pull-request body is missing required marker: ## Verification" in evidence:
+            return {"code": "missing_verification_section", "message": "Missing required PR body section: ## Verification. Update the PR description and collect a fresh metadata result."}
+    return None
+
+
 def _control_details(document: dict[str, Any], repository: str | None = None) -> list[dict[str, Any]]:
     """Project bounded results for known controls; fail closed on bad totals."""
     labels = _lifecycle_context(document, repository)
@@ -760,12 +836,18 @@ def _control_details(document: dict[str, Any], repository: str | None = None) ->
                         "mode": mode if valid else "not_reported",
                         "status": status if valid else "not_reported",
                         "separate_subject": "pull-request" if separate else None,
+                        "diagnostic": _public_diagnostic(row) if valid else None,
+                        "evaluation_scope": "manual-lifecycle" if control_id in LIFECYCLE_PROVIDERS else "pull-request",
                         "provider": provider,
                         "verification_scope": labels.get(control_id),
                         **links,
                         "execution": _execution_details(row) if valid else {"availability": "unavailable"},
                         "measurements": _measurements(control_id, row) if valid else {"availability": "unavailable"},
                         "detail": _pr_metadata_detail(control_id, row) if valid else {"availability": "unavailable"}})
+    for detail in details:
+        detail["activation"] = _activation_state(detail)
+        detail["selection_group"] = _selection_group(detail)
+        detail["relevant_stage"] = _LATER_STAGES.get(detail["id"], "Pull-request development")
     return details
 
 
@@ -776,19 +858,97 @@ _SEPARATE_NOTE = ("Policy activates this check on the pull request itself, becau
 
 
 def _result_label(row: dict[str, Any]) -> tuple[str, str]:
-    return _SEPARATE_RESULT if row.get("separate_subject") else _CONTROL_RESULTS[row["status"]]
+    if row.get("separate_subject"):
+        return _SEPARATE_RESULT
+    if row["status"] == "not_activated":
+        return ("Relevant later" if _selection_group(row) == "relevant-later" else "Available to adopt"), "neutral"
+    if row["status"] == "no_result":
+        label = {"not_configured": "Not configured", "disabled": "Disabled",
+                 "awaiting_manual_run": "Awaiting manual run"}.get(_activation_state(row))
+        if label:
+            return label, "neutral"
+    return _CONTROL_RESULTS[row["status"]]
+
+
+def _activation_state(row: dict[str, Any]) -> str:
+    code = (row.get("diagnostic") or {}).get("code")
+    if row["status"] == "no_result":
+        if code in {"not_configured", "disabled", "awaiting_manual_run"}:
+            return code
+        return "unverified"
+    return "reported" if row["status"] in {"passed", "failed", "blocked"} else row["status"]
+
+
+def _activation_summary(controls: list[dict[str, Any]]) -> str:
+    labels = {"not_configured": "Not configured", "disabled": "Disabled",
+              "awaiting_manual_run": "Awaiting manual run", "unverified": "Unable to verify"}
+    counts = {key: sum(_activation_state(row) == key for row in controls) for key in labels}
+    return "Built-in activation and evidence availability: " + (" · ".join(f"{label}: {counts[key]}" for key, label in labels.items() if counts[key]) or "No unavailable evidence reported") + ". Advisory is a policy mode, independent of provider activation. These categories split unavailable evidence for built-in checks; none counts as passed."
+
+
+def _unverified_note(row: dict[str, Any]) -> str:
+    """Publish trusted guidance, never free-form reasons from candidate artifacts."""
+    diagnostic = row.get("diagnostic")
+    if diagnostic:
+        return diagnostic["message"] + " This is not a passing result."
+    control_id = row["id"]
+    if control_id in LIFECYCLE_PROVIDERS:
+        kind = LIFECYCLE_PROVIDERS[control_id][2]
+        subject = {"git-commit": "evaluated commit", "artifact": "verification artifact",
+                   "environment": "verification environment"}[kind]
+        guidance = (f"Missing: usable {row['name']} evidence bound to the {subject}. "
+                    "Run the manual Proof Lifecycle verification for this PR revision and inspect its producer result, "
+                    "required inputs, and evidence publication. Enabling the workflow alone does not supply evidence.")
+    elif control_id == "dependency-vulnerability":
+        guidance = ("Missing: a usable dependency scan result for this revision. Check the selected provider's workflow "
+                    "for missing credentials, unsupported dependency inputs, fork credential withholding, or skipped execution; "
+                    "then run the provider and publish its evidence.")
+    elif control_id == "functional-qa":
+        guidance = ("Missing: a QA report for this revision. Configure and run the repository-owned QA producer manually "
+                    "and publish its evidence. Selecting advisory mode does not run QA or polyglot tests.")
+    elif control_id.startswith("ai-"):
+        guidance = ("Missing: a result from the selected AI reviewer for this revision. Configure or request that reviewer "
+                    "and publish its exact-revision review evidence. Advisory selection does not configure credentials or invoke a model.")
+    elif control_id == "dependency-remediation":
+        guidance = ("Missing: verified Dependabot settings evidence for this revision. Check Dependabot Verification and "
+                    "whether SECURITY_SETTINGS_TOKEN can read vulnerability alerts and automated security fix settings. "
+                    "Dependabot may already be enabled even when its verification evidence is missing.")
+    else:
+        guidance = ("Missing: a usable producer result for this evaluated revision. Open the source CI run to check "
+                    "whether the producer ran, has its required configuration, and published revision-bound evidence.")
+    return guidance + " This snapshot does not establish the exact cause. This is not a passing result."
 
 
 def _controls_markdown(controls: list[dict[str, Any]]) -> str:
-    lines = ["## Individual checks", "", "Every built-in catalog check is listed. Provider links open configuration at the evaluated revision; Latest reported run links open available evidence for this snapshot. Not reported means this snapshot has no validated row; it does not imply disabled or passed.", "",
-             "| Check | ID | Provider | Mode | Result | Purpose |", "| --- | --- | --- | --- | --- | --- |"]
-    for row in controls:
-        provider = row["provider"]
-        if row.get("provider_config_url"):
-            provider = f"[{provider}]({row['provider_config_url']})"
-        if row.get("provider_run_url"):
-            provider += f" · [Latest reported run]({row['provider_run_url']})"
-        lines.append(f"| {row['name']} | `{row['id']}` | {provider} | {_CONTROL_MODES[row['mode']]} | {_result_label(row)[0]} | {row['purpose']} |")
+    lines = ["## Checks by stage", "", _activation_summary(controls), "",
+             "Only policy-selected checks for the evaluated stage enter the score. Unselected tools are adoption options, not failures.", ""]
+    for group, heading in (("selected", "Selected checks"), ("available-to-adopt", "Tools available to adopt"),
+                           ("relevant-later", "Checks relevant later"), ("evaluation-context", "Other evaluation context"),
+                           ("unknown", "Selection unknown")):
+        members = [row for row in controls if _selection_group(row) == group]
+        if not members:
+            continue
+        lines += ["### " + heading, "", "| Check | ID | Provider | Mode | Result | Purpose |",
+                  "| --- | --- | --- | --- | --- | --- |"]
+        for row in members:
+            provider = row["provider"]
+            if row.get("provider_config_url"):
+                provider = f"[{provider}]({row['provider_config_url']})"
+            if row.get("provider_run_url"):
+                provider += f" · [Latest reported run]({row['provider_run_url']})"
+            mode = "—" if row["mode"] in _INACTIVE_STATUSES else _CONTROL_MODES[row["mode"]]
+            lines.append(f"| {row['name']} | `{row['id']}` | {provider} | {mode} | {_result_label(row)[0]} | {row['purpose']} |")
+        if group in {"available-to-adopt", "relevant-later"}:
+            lines += ["", "Excluded from this stage's score. Adopt when useful: add the producer workflow, configure its inputs, then select Advisory in .proof/policy.yaml. Manual workflows remain manual.", ""]
+            lines += [f"- {row['name']}: useful during {_LATER_STAGES.get(row['id'], 'pull-request development')}." for row in members]
+    failures = [row for row in controls if row["status"] == "failed" and row.get("diagnostic")]
+    if failures:
+        lines += ["", "### Failure details", ""]
+        lines += [f"- {row['name']}: {row['diagnostic']['message']}" for row in failures]
+    unverified = [row for row in controls if row["status"] == "no_result"]
+    if unverified:
+        lines += ["", "### Missing verification evidence", ""]
+        lines += [f"- {row['name']}: {_unverified_note(row)}" for row in unverified]
     measured = [(row["name"], _measurement_summary(row["measurements"]), row["measurements"]) for row in controls]
     measured = [(name, summary, values) for name, summary, values in measured if summary]
     if measured:
@@ -837,14 +997,20 @@ def _attention_html(controls: list[dict[str, Any]], breakdown: dict[str, Any]) -
     if not flagged and not unnamed:
         return ""
     items = []
+    lifecycle_items = []
     for row in flagged:
-        label, tone = _CONTROL_RESULTS[row["status"]]
+        label, tone = _result_label(row)
         name = html.escape(row["name"])
-        items.append(f'<li><span class="size-result {tone}">{label}</span> <a href="#{_check_target(row["id"])}">{name}</a> <span class="attention-mode">{_CONTROL_MODES[row["mode"]]}</span></li>')
+        target_items = lifecycle_items if row["id"] in LIFECYCLE_PROVIDERS else items
+        target_items.append(f'<li><span class="size-result {tone}">{label}</span> <a href="#{_check_target(row["id"])}">{name}</a> <span class="attention-mode">{_CONTROL_MODES[row["mode"]]}</span></li>')
     if unnamed:
         plural = "s" if unnamed != 1 else ""
         items.append(f'<li class="attention-private">{unnamed} custom control{plural} without a passing result. Custom control names are not published.</li>')
-    return '<section class="attention" aria-labelledby="attention-title"><h2 id="attention-title">Needs attention</h2><ul>' + ''.join(items) + '</ul></section>'
+    pr_list = '<h3>Pull-request checks</h3><ul>' + ''.join(items) + '</ul>' if items else ''
+    manual_list = ('<details class="manual-attention"><summary>Manual lifecycle checks needing evidence '
+                   f'({len(lifecycle_items)})</summary><p>These checks require manual verification for the evaluated revision. '
+                   'They remain optional according to repository policy.</p><ul>' + ''.join(lifecycle_items) + '</ul></details>') if lifecycle_items else ''
+    return '<section class="attention" aria-labelledby="attention-title"><h2 id="attention-title">Needs attention</h2>' + pr_list + manual_list + '</section>'
 
 
 # Repository-owned commands whose only portable signal is their exit status.
@@ -923,39 +1089,74 @@ def _count_reconciliation(metadata: dict[str, Any]) -> str:
     if separate:
         breakdown.append(verb(separate, "is checked on the pull request", "are checked on the pull request"))
     if inactive:
-        breakdown.append(verb(inactive, "is not activated", "are not activated"))
+        available = sum(_selection_group(row) == "available-to-adopt" for row in controls)
+        later = sum(_selection_group(row) == "relevant-later" for row in controls)
+        if available:
+            breakdown.append(f"{available} available to adopt")
+        if later:
+            breakdown.append(f"{later} relevant later")
     if missing:
         breakdown.append(verb(missing, "is not reported", "are not reported"))
     joined = breakdown[0] if len(breakdown) == 1 else ", ".join(breakdown[:-1]) + " and " + breakdown[-1]
     parts.append(f"Of the {listed} built-in checks listed below, {joined}.")
     if separate or inactive or missing:
-        parts.append("Only selected checks count toward the totals; selection does not mean execution or enforcement.")
+        parts.append("Only selected checks applicable to this evaluation count toward the totals; adoption options and later-stage checks are excluded. Selection does not mean execution or enforcement.")
     if custom > 0:
         parts.append(f"{plural(custom, 'custom check')} also {'counts' if custom == 1 else 'count'} but "
                      f"{'is' if custom == 1 else 'are'} not listed by name.")
     return " ".join(parts)
 
 
+def _opportunity_card(row: dict[str, Any]) -> str:
+    later = _selection_group(row) == "relevant-later"
+    label = "Relevant later" if later else "Available to adopt"
+    name, control_id = html.escape(row["name"]), html.escape(row["id"])
+    when = html.escape(_LATER_STAGES.get(row["id"], "Pull-request development, when this tool fits your project"))
+    operation = "release" if later else "change"
+    setup = (f'<a href="{html.escape(row["provider_config_url"], quote=True)}">Provider setup</a> · '
+             if row.get("provider_config_url") else '')
+    anchor = ' id="size-title"' if row["id"] == "change-scope" else ''
+    return (f'<article class="check-detail neutral" id="check-{control_id}" tabindex="-1">'
+            f'<div class="check-top"><h3{anchor}>{name} <code class="check-id">{control_id}</code></h3>'
+            f'<span class="size-result">{label}</span></div><p>{html.escape(row["purpose"])}</p>'
+            f'<p><strong>Useful during:</strong> {when}.</p><p class="check-note">Optional; excluded from this stage’s score. No passing or failing result is implied.</p>'
+            f'<p>Example provider: {html.escape(row["provider"])}</p><ol>'
+            '<li>Add the producer workflow and configure its required inputs or credentials.</li>'
+            f'<li>Select <code>{control_id}</code> as <code>advisory</code> under <code>overrides.{operation}</code> in <code>.proof/policy.yaml</code>.</li>'
+            '<li>Run the producer for the matching revision and evaluate its applicable stage. Manual producers remain manual.</li></ol>'
+            f'<div class="check-links">{setup}<a href="https://github.com/ravisingh11/ai-software-toolkit/blob/main/workflows/README.md">Adoption guide ↗</a>'
+            '<a href="#checks-title">Back to checks ↑</a></div></article>')
+
+
 def _controls_html(controls: list[dict[str, Any]], run_url: str, scope: dict[str, Any]) -> str:
     groups = []
     active_details = []
     inactive_details = []
+    opportunities: dict[str, list[dict[str, Any]]] = {"available-to-adopt": [], "relevant-later": []}
     for group in ("Build & quality", "Security & dependencies", "AI & QA", "Release & runtime"):
         rows = []
         for row in controls:
             if row["group"] != group:
                 continue
+            selection_group = _selection_group(row)
+            if selection_group in opportunities:
+                opportunities[selection_group].append(row)
+                continue
             label, tone = _result_label(row)
             safe = {key: html.escape(value, quote=True) for key, value in row.items() if isinstance(value, str)}
             note = {"not_reported": "No validated row in this snapshot. Activation and outcome are unknown.",
                     "not_activated": "Not activated for this evaluation. Excluded from selected-check totals.",
-                    "no_result": "No usable evidence was available. This is not a passing result.",
+                    "no_result": _unverified_note(row),
                     "passed": "",
                     "failed": "The producer reported a failure.",
                     "blocked": "The producer reported a blocker."}[row["status"]]
             if row.get("separate_subject"):
                 note = _SEPARATE_NOTE
+            elif row["status"] == "failed" and row.get("diagnostic"):
+                note = html.escape(row["diagnostic"]["message"])
             evidence = '' if row["status"] in _INACTIVE_STATUSES else f'<a href="{html.escape(run_url, quote=True)}" aria-label="Source report for {safe["name"]}">Source report ↗</a>'
+            if row.get("provider_run_url") and row["status"] not in _INACTIVE_STATUSES:
+                evidence = f'<a href="{safe["provider_run_url"]}">Open producer result ↗</a>' + evidence
             provider_html = safe["provider"]
             if row.get("provider_config_url"):
                 provider_html = f'<a href="{safe["provider_config_url"]}" aria-label="Provider configuration for {safe["name"]}">{provider_html}</a>'
@@ -997,30 +1198,66 @@ def _controls_html(controls: list[dict[str, Any]], run_url: str, scope: dict[str
                 measurements += _scope_html(scope)
             note_html = f'<p class="check-note">{note}</p>' if note else ''
             mode_html = '' if row["mode"] in _INACTIVE_STATUSES else f'<p class="check-mode">{_CONTROL_MODES[row["mode"]]}</p>'
+            if row["id"] in LIFECYCLE_PROVIDERS:
+                mode_html += '<p class="check-note">Manual lifecycle check · evaluated separately from PR checks.</p>'
             card = f'<article class="check-detail {tone}" id="check-{safe["id"]}" tabindex="-1"><div class="check-top"><h3>{safe["name"]} <code class="check-id">{safe["id"]}</code></h3><span class="size-result">{label}</span></div><p>{safe["purpose"]}</p><p class="check-provider">Provider: {provider_html}</p>{mode_html}{note_html}{run_facts}{measurements}<div class="check-links">{evidence}<a href="#checks-title">Back to checks ↑</a></div></article>'
             detail_status = "separate" if row.get("separate_subject") else row["status"]
             (inactive_details if row["status"] in _INACTIVE_STATUSES else active_details).append((detail_status, card))
+        if not rows:
+            continue
         groups.append(f'<tbody><tr class="check-category"><th colspan="4" scope="rowgroup">{html.escape(group)}</th></tr>{"".join(rows)}</tbody>')
-    overview = '<section class="checks" aria-labelledby="checks-title"><p class="eyebrow">Every check, visible</p><h2 id="checks-title" tabindex="-1">Individual checks</h2><p class="checks-intro">All built-in catalog checks. Select a check to see its purpose and evidence below. Provider names link to configuration at the evaluated revision. Latest reported run links open available evidence for this snapshot, not a newer scan. Provider names describe selection, not credential readiness or a passing scan. Not configured means no provider was selected. Not reported means no validated row in this snapshot; it does not imply disabled or passed. A dash means the check has no active mode in this snapshot. Custom controls may contribute to totals without publishing their private names.</p><div class="checks-table-wrap" role="region" aria-label="Individual checks" tabindex="0"><table class="checks-table"><caption>Check results, policy modes, and selected providers for this snapshot</caption><thead><tr><th scope="col">Check</th><th scope="col">Result</th><th scope="col" class="mode-cell">Mode</th><th scope="col">Provider</th></tr></thead>' + ''.join(groups) + '</table></div></section>'
+    overview = '<section class="checks" aria-labelledby="checks-title"><p class="eyebrow">Stage-specific evaluation</p><h2 id="checks-title" tabindex="-1">Selected checks</h2><p class="checks-intro">These are the checks selected for this evaluation, plus any entries whose selection could not be validated. Adoption options and later-stage checks are listed separately below. Select a check to inspect its evidence. Provider names link to trusted base configuration when its identity is recorded. Latest reported run links open available evidence for this snapshot, not a newer scan. Provider names describe selection, not credential readiness or a passing scan. Not configured means required provider configuration is absent; it does not change the selected policy mode. Not reported means no validated row in this snapshot; it does not imply disabled or passed. A dash means the check has no active mode in this snapshot. Custom controls may contribute to totals without publishing their private names.</p><div class="checks-table-wrap" role="region" aria-label="Individual checks" tabindex="0"><table class="checks-table"><caption>Check results, policy modes, and selected providers for this snapshot</caption><thead><tr><th scope="col">Check</th><th scope="col">Result</th><th scope="col" class="mode-cell">Mode</th><th scope="col">Provider</th></tr></thead>' + ''.join(groups) + '</table></div></section>'
     # Stable sort: checks needing attention first, then passes, each in catalog order.
     order = (*_ATTENTION_STATUSES, "passed")
     active = ''.join(card for _, card in sorted(active_details, key=lambda item: order.index(item[0])))
     inactive = ''.join(card for _, card in inactive_details)
     details = '<section class="checks" aria-labelledby="check-details-title"><h2 id="check-details-title">Check details</h2><p class="checks-intro">Checks needing attention come first. Source report links open the evaluation run containing the detailed evidence.</p>' + active
     if inactive:
-        details += f'<h3 class="inactive-title" id="inactive-title">Checked elsewhere, not activated, or not reported <span>({len(inactive_details)})</span></h3><p class="checks-intro">{_inactive_intro(inactive_details)}</p><div class="inactive-grid">{inactive}</div>'
-    return overview + details + '</section>'
+        details += f'<h3 class="inactive-title" id="inactive-title">Other evaluation context or selection unknown <span>({len(inactive_details)})</span></h3><p class="checks-intro">{_inactive_intro(inactive_details)}</p><div class="inactive-grid">{inactive}</div>'
+    overview = overview.replace('<p class="checks-intro">', f'<p class="activation-summary">{html.escape(_activation_summary(controls))}</p><p class="checks-intro">', 1)
+    discovery = []
+    for group, target, heading in (("available-to-adopt", "available-tools-title", "Tools available to adopt"),
+                                   ("relevant-later", "relevant-later-title", "Checks relevant later")):
+        members = opportunities[group]
+        if not members:
+            continue
+        links = ' · '.join(f'<a href="#{_check_target(row["id"])}">{html.escape(row["name"])}</a>' for row in members)
+        cards = ''.join(_opportunity_card(row) for row in members)
+        discovery.append(f'<section class="checks" aria-labelledby="{target}"><h2 id="{target}">{heading}</h2>'
+                         '<p>These tools are excluded from the current score. Adopt them when they fit the project and its evaluation stage; they are not missing requirements.</p>'
+                         f'<p class="checks-intro">{links}</p><div class="inactive-grid">{cards}</div></section>')
+    return overview + details + '</section>' + ''.join(discovery)
 
+
+
+def _breakdown_columns(breakdown: dict[str, Any]) -> list[tuple[str, str]]:
+    columns = [(key, label) for key, label in (("passed", "Passed"), ("failed", "Failed"),
+               ("blocked", "Blocked"), ("unverified", "Unavailable evidence"))
+               if breakdown["overall"][key]]
+
+    return columns
+
+
+def _breakdown_values(breakdown: dict[str, Any], mode: str, columns: list[tuple[str, str]]) -> list[str]:
+    values = []
+    for key, _ in columns:
+        count = breakdown["inactive"] if key == "inactive" and mode == "overall" else breakdown[mode].get(key, 0)
+        values.append(str(count) if count else "—")
+    return values
 
 
 def _breakdown_markdown(breakdown: dict[str, Any]) -> str:
     if breakdown["availability"] != "available":
         return "Result breakdown unavailable: this source does not contain complete, consistent control results."
-    lines = ["| Evidence results | Passed | Failed | Blocked | Unverified | Inactive |", "| --- | ---: | ---: | ---: | ---: | ---: |"]
+    columns = _breakdown_columns(breakdown)
+    if not columns:
+        return "No check results reported."
+    lines = ["| Evidence results | " + " | ".join(label for _, label in columns) + " |",
+             "| --- | " + " | ".join("---:" for _ in columns) + " |"]
     for key, label in (("overall", "All selected checks"), ("enforced", "Enforced"), ("advisory", "Advisory")):
-        counts = breakdown[key]
-        inactive = str(breakdown["inactive"]) if key == "overall" else "—"
-        lines.append(f"| {label} | {counts['passed']} | {counts['failed']} | {counts['blocked']} | {counts['unverified']} | {inactive} |")
+        if key != "overall" and not any(breakdown[key].values()):
+            continue
+        lines.append("| " + label + " | " + " | ".join(_breakdown_values(breakdown, key, columns)) + " |")
     return "\n".join(lines)
 
 
@@ -1028,12 +1265,17 @@ def _breakdown_html(breakdown: dict[str, Any]) -> str:
     heading = '<section class="scope-panel" aria-labelledby="results-title"><h2 id="results-title">Evidence results</h2>'
     if breakdown["availability"] != "available":
         return heading + '<p>Result breakdown unavailable: this source does not contain complete, consistent control results.</p></section>'
+    columns = _breakdown_columns(breakdown)
+    if not columns:
+        return heading + '<p>No check results reported.</p></section>'
     rows = []
     for key, label in (("overall", "All selected checks"), ("enforced", "Enforced"), ("advisory", "Advisory")):
-        counts = breakdown[key]
-        inactive = str(breakdown["inactive"]) if key == "overall" else "—"
-        rows.append(f'<tr><th scope="row">{label}</th><td>{counts["passed"]}</td><td>{counts["failed"]}</td><td>{counts["blocked"]}</td><td>{counts["unverified"]}</td><td>{inactive}</td></tr>')
-    return heading + '<div class="size-table-wrap" role="region" aria-label="Evidence results" tabindex="0"><table class="size-table"><caption>Control outcomes, separated from unavailable evidence</caption><thead><tr><th scope="col">Controls</th><th scope="col">Passed</th><th scope="col">Failed</th><th scope="col">Blocked</th><th scope="col">Unverified</th><th scope="col">Inactive</th></tr></thead><tbody>' + ''.join(rows) + '</tbody></table></div><p>Failed means a reported failure. Blocked means the producer reported a blocker. Unverified means no usable result was available. Inactive counts reported checks not selected for this evaluation, including checks evaluated on another subject; they are excluded from selected totals. Unreported checks are not assumed inactive.</p></section>'
+        if key != "overall" and not any(breakdown[key].values()):
+            continue
+        values = ''.join(f'<td>{value}</td>' for value in _breakdown_values(breakdown, key, columns))
+        rows.append(f'<tr><th scope="row">{label}</th>{values}</tr>')
+    headers = ''.join(f'<th scope="col">{label}</th>' for _, label in columns)
+    return heading + '<div class="size-table-wrap" role="region" aria-label="Evidence results" tabindex="0"><table class="size-table"><caption>Control outcomes, separated from unavailable evidence</caption><thead><tr><th scope="col">Controls</th>' + headers + '</tr></thead><tbody>' + ''.join(rows) + '</tbody></table></div><p>Failed means a reported failure. Blocked means the producer reported a blocker. Unavailable evidence includes not configured, disabled, awaiting manual run, and checks marked Unable to verify; see their separate counts and labels below. Zero-count categories are hidden; a dash means no results in that category. Tools available to adopt and checks relevant later are excluded from this stage’s score. Checks evaluated on another subject are identified separately. Unreported checks have unknown selection and are not assumed excluded.</p></section>'
 
 
 _SIZE_GUIDANCE = "Large PRs can overwhelm human reviewers; smaller, focused PRs make feedback more actionable."
@@ -1205,6 +1447,7 @@ def _validated_scorecard(source_dir: Path, repository: str | None = None) -> dic
         "subject_revision": revision,
         "change_scope": _change_scope(document),
         "result_breakdown": _result_breakdown(document),
+        "evaluation_stage": "lifecycle-verification" if document.get("lifecycle_verification") else "pull-request-development",
         "controls": _control_details(document, repository),
     }
 
@@ -1229,6 +1472,24 @@ def _write_atomic_text(path: Path, text: str) -> None:
         raise
 
 
+def _published_controls(controls: list[dict[str, Any]], repository: str, run_url: str,
+                        context: dict[str, Any] | None) -> list[dict[str, Any]]:
+    projected = []
+    for row in controls:
+        value = dict(row)
+        if context:
+            if row.get("provider_config_url"):
+                revision = context["runtime_revision"] or context["base_revision"]
+                value["provider_config_url"] = f"https://github.com/{repository}/blob/{revision}/.proof/providers.yaml"
+            # The trusted Proof Scorecard workflow evaluates PR metadata inline.
+            # When no separate producer URL was recorded, that run is the producer.
+            if (row["id"] == "pr-metadata" and row["detail"]["availability"] == "available"
+                    and not row.get("provider_run_url")):
+                value["provider_run_url"] = run_url
+        projected.append(value)
+    return projected
+
+
 def _public_metadata(
     inspected: dict[str, Any],
     repository: str,
@@ -1237,6 +1498,7 @@ def _public_metadata(
     run_url: str,
     source_run_created_at: str,
     expected_revision: str,
+    publication_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     published_at = (
         datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
@@ -1257,15 +1519,43 @@ def _public_metadata(
         "source_run_created_at": source_run_created_at,
         "published_at": published_at,
         "subject_digest": f"sha256:{hashlib.sha256(expected_revision.encode()).hexdigest()}",
+        "snapshot_identity": ({**publication_context, "evaluated_revision": expected_revision} if publication_context else None),
         "passed": passed,
         "total": total,
         "enforced": inspected["enforced"],
         "advisory": inspected["advisory"],
+        "evaluation_stage": inspected["evaluation_stage"],
+        "selection_counts": {group: sum(row["selection_group"] == group for row in inspected["controls"])
+                             for group in ("selected", "available-to-adopt", "relevant-later", "unknown", "evaluation-context")},
         "pages_url": pages_base_url(repository),
         "change_scope": inspected["change_scope"],
         "result_breakdown": inspected["result_breakdown"],
-        "controls": inspected["controls"],
+        "controls": _published_controls(inspected["controls"], repository, run_url, publication_context),
     }
+
+
+def _snapshot_identity(metadata: dict[str, Any], *, markdown: bool = False) -> str:
+    identity = metadata.get("snapshot_identity")
+    if not identity:
+        return "Snapshot identity was not recorded by this publisher. Open the source CI run."
+    repository = metadata["repository"]
+    number = identity["pull_request_number"]
+    values = [("Pull request", f"https://github.com/{repository}/pull/{number}", f"#{number}")]
+    for key, label in (("evaluated_revision", "Evaluated commit"), ("base_revision", "PR base"),
+                       ("runtime_revision", "Policy / runtime"), ("publisher_revision", "Page renderer")):
+        revision = identity[key]
+        if revision:
+            values.append((label, f"https://github.com/{repository}/commit/{revision}", revision[:12]))
+        else:
+            values.append((label, None, "Not recorded in this historical source"))
+    if markdown:
+        return "\n".join(f"- {label}: [{text}]({url})" if url else f"- {label}: {text}" for label, url, text in values)
+    facts = ''.join(f'<div><dt>{label}</dt><dd><a href="{url}">{text}</a></dd></div>' if url else
+                    f'<div><dt>{label}</dt><dd>{text}</dd></div>' for label, url, text in values)
+    created = html.escape(metadata["source_run_created_at"])
+    return (f'<dl class="snapshot-identity">{facts}<div><dt>Source evaluation started</dt><dd><time datetime="{created}">{_utc_label(created)}</time></dd></div></dl>'
+            '<p class="snapshot-note">Results reflect the checks and policy used for that PR. '
+            'Updating this page doesn’t rerun checks or verify current main.</p>')
 
 
 def _svg(metadata: dict[str, Any]) -> str:
@@ -1291,10 +1581,13 @@ def _svg(metadata: dict[str, Any]) -> str:
 """
 
 
-_ALLOW_MEANING = "ALLOW means the enforced controls are satisfied for this snapshot. It does not establish mergeability or release readiness."
+_ALLOW_MEANING = "ALLOW means the enforced toolkit controls are satisfied for this snapshot. It does not establish mergeability or release readiness. GitHub required merge checks are separate."
 _UNGATED_MEANING = ("No enforced controls are configured, so the policy decision is not gated by any control "
-                    "and every result is advisory. It does not establish mergeability or release readiness.")
+                    "and every result is advisory. It does not establish mergeability or release readiness. GitHub required merge checks are separate.")
 _BLOCK_MEANING = "BLOCK means at least one enforced control did not pass for this snapshot."
+_MODE_MEANING = ("Advisory results do not block the toolkit policy decision. Enforced checks require a pass: "
+                 "a failed, blocked, or unverifiable enforced check blocks that decision. "
+                 "GitHub blocks merging only through its configured required checks and rulesets.")
 
 
 def _collection_note(controls: list[dict[str, Any]]) -> str:
@@ -1307,8 +1600,9 @@ def _collection_note(controls: list[dict[str, Any]]) -> str:
 
 def _decision_meaning(metadata: dict[str, Any]) -> str:
     if metadata["decision"] == "block":
-        return _BLOCK_MEANING
-    return _UNGATED_MEANING if metadata["enforced"]["total"] == 0 else _ALLOW_MEANING
+        return _BLOCK_MEANING + " " + _MODE_MEANING
+    meaning = _UNGATED_MEANING if metadata["enforced"]["total"] == 0 else _ALLOW_MEANING
+    return meaning + " " + _MODE_MEANING
 
 
 def _markdown(metadata: dict[str, Any]) -> str:
@@ -1318,10 +1612,13 @@ def _markdown(metadata: dict[str, Any]) -> str:
 
 ![{metadata["message"]}](proof-badge.svg)
 
+{_snapshot_identity(metadata, markdown=True)}
+
 | Field | Value |
 | --- | --- |
 | Repository | {metadata["repository"]} |
 | Operation | {metadata["operation"]} |
+| Evaluation stage | {metadata["evaluation_stage"]} |
 | Status | {metadata["status"]} |
 | Selected checks | {metadata["passed"]}/{metadata["total"]} passed |
 | Enforced | {enforced_summary} |
@@ -1333,7 +1630,7 @@ def _markdown(metadata: dict[str, Any]) -> str:
 
 {_breakdown_markdown(metadata["result_breakdown"])}
 
-Failed means a reported failure. Blocked means the producer reported a blocker. Unverified means no usable result was available. Inactive counts reported checks not selected for this evaluation, including checks evaluated on another subject; they are excluded from selected totals. Unreported checks are not assumed inactive.
+Failed means a reported failure. Blocked means the producer reported a blocker. Unavailable evidence includes not configured, disabled, awaiting manual run, and checks marked Unable to verify; see their separate counts and labels below. Tools available to adopt and checks relevant later are excluded from this stage’s score. Checks evaluated on another subject are identified separately. Unreported checks have unknown selection and are not assumed excluded.
 
 {_decision_meaning(metadata)}
 This is a published PR snapshot. The source timestamp does not prove it matches the current PR head or current main.
@@ -1366,6 +1663,17 @@ main{padding-block:48px 36px}
 .eyebrow{margin:0 0 8px;color:var(--accent);font-size:11px;font-weight:750;letter-spacing:1.7px;text-transform:uppercase}
 h1{margin:0;font-size:clamp(30px,4.5vw,42px);font-weight:650;line-height:1.2;letter-spacing:-1.6px}
 .intro{margin:12px 0 28px;color:var(--muted);max-width:680px;font-size:16px}
+.toolkit-overview{padding-bottom:36px;margin-bottom:36px;border-bottom:1px solid var(--line)}
+.overview-promise{max-width:760px;font-size:16px;margin:0 0 22px}
+.overview-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:22px 0}
+.overview-actions .primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.overview-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:24px 0}
+.overview-card{padding:22px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.overview-card h2{margin:0 0 8px;font-size:16px;letter-spacing:-.2px}
+.overview-card p,.adoption-note{margin:0;color:var(--muted);font-size:14px}
+.adoption-note strong{color:var(--ink)}
+.scorecard-section{scroll-margin-top:24px}
+.report-title{margin:0;font-size:clamp(26px,4vw,34px);font-weight:650;line-height:1.2;letter-spacing:-1px}
 .good{--tone:#216341;--wash:#eef8f1;--edge:#c6e1cf}
 .caution{--tone:#815407;--wash:#fff7e8;--edge:#ecd5a7}
 .danger{--tone:#a02d36;--wash:#fff1f2;--edge:#ebc5c9}
@@ -1378,6 +1686,7 @@ h1{margin:0;font-size:clamp(30px,4.5vw,42px);font-weight:650;line-height:1.2;let
 .decision{text-align:right;flex-shrink:0}
 .decision dt{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1px}
 .decision dd{color:var(--tone);margin:4px 0 0;font-size:20px;font-weight:750}
+.stage-nav{display:flex;flex-wrap:wrap;gap:12px;margin:16px 0}.stage-nav a{padding:8px 12px;border:1px solid var(--line);border-radius:8px}
 .metrics-note{margin:12px 2px 0;color:var(--muted);font-size:13px}
 .metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .metric{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:24px}
@@ -1408,6 +1717,9 @@ h1{margin:0;font-size:clamp(30px,4.5vw,42px);font-weight:650;line-height:1.2;let
 .checks{margin-top:36px}.checks h2{font-size:28px;margin:0}.checks-intro{color:var(--muted);max-width:850px;font-size:14px}
 .checks-table-wrap{overflow-x:auto}.checks-table-wrap:focus-visible{outline:3px solid #227b92;outline-offset:3px}
 .attention{margin:0 0 22px;padding:20px 24px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.snapshot-identity{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0;padding:18px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
+.snapshot-identity dt{font-size:12px;color:var(--muted)}.snapshot-identity dd{margin:0;font-size:13px;overflow-wrap:anywhere}.snapshot-note{font-size:13px;color:var(--muted)}
+.attention h3{font-size:13px;margin:12px 0 8px}.manual-attention{margin-top:16px}.manual-attention p{font-size:13px}
 .attention h2{margin:0 0 10px;font-size:15px}.attention ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:14px}
 .attention .size-result{font-size:11px;padding:2px 7px;min-width:78px;text-align:center}.attention-mode{color:var(--muted);font-size:12px}
 .attention-private{color:var(--muted);font-size:13px}
@@ -1457,13 +1769,14 @@ summary{cursor:pointer;width:fit-content;font-weight:600}
 footer{display:flex;align-items:center;justify-content:space-between;gap:20px;border-top:1px solid var(--line);padding:22px 0 12px;color:var(--muted);font-size:11px}
 footer img{display:block;max-width:100%;height:auto}
 .formats{display:flex;gap:20px;flex-wrap:wrap;font-size:12px}
-@media(max-width:800px){:root{--snapshot-anchor-offset:240px}}
+@media(max-width:800px){:root{--snapshot-anchor-offset:24px}.freshness{position:static}.freshness .button{padding:6px 12px}.snapshot-identity{grid-template-columns:1fr}}
 @media(max-width:680px){
   .shell{width:calc(100% - 36px)}
   .topbar .shell{gap:12px}.repo-link{font-size:12px}
   main{padding-top:30px}.intro{font-size:14px}
   .status-panel{align-items:flex-start;padding:20px;gap:16px}
   .status-panel h2{font-size:18px}.decision dd{font-size:17px}
+  .overview-grid{grid-template-columns:1fr;gap:12px}.overview-card{padding:20px}
   .metrics{grid-template-columns:1fr;gap:12px}
   .check-detail{padding:18px}.checks-table th,.checks-table td{padding:7px 9px;white-space:normal}
   .checks-table .check-id{display:block;margin:2px 0 0}.checks-table .mode-cell{display:none}
@@ -1524,7 +1837,7 @@ _FRESHNESS_SCRIPT = r"""
     const attempt = latest.source_run_attempt - baseline.source_run_attempt;
     if (publication === 0 && sameRun && sameCreated && sameDigest && attempt === 0) {
       if (stale) throw new Error("Previously observed newer snapshot");
-      message("current", "Matches the latest published snapshot. This does not verify current main or newer CI results.");
+      message("current", "Latest publication loaded. This historical PR snapshot does not verify current main or newer CI results.");
     } else if (publication > 0 && ((sameRun && sameCreated && sameDigest && attempt >= 0) ||
         (!sameRun && (created > 0 || (created === 0 && latest.source_run_id > baseline.source_run_id))))) {
       stale = true;
@@ -1598,6 +1911,14 @@ def _html(metadata: dict[str, Any]) -> str:
         "ORANGE": ("caution", "Advisory controls need attention"),
         "RED": ("danger", "Enforced controls need attention"),
     }[metadata["status"]]
+    discovery_links = [("checks-title", "Selected checks", metadata["total"])]
+    for group, target, label in (("available-to-adopt", "available-tools-title", "Tools available to adopt"),
+                                  ("relevant-later", "relevant-later-title", "Checks relevant later")):
+        count = metadata["selection_counts"][group]
+        if count:
+            discovery_links.append((target, label, count))
+    discovery_navigation = '<nav class="stage-nav" aria-label="Checks by project stage">' + ''.join(
+        f'<a href="#{target}">{label} ({count})</a>' for target, label, count in discovery_links) + '</nav>'
     cards = []
     for label, counts, card_tone in (
         ("Selected checks", metadata, tone),
@@ -1613,13 +1934,20 @@ def _html(metadata: dict[str, Any]) -> str:
                     "Advisory": "No advisory checks selected"}[label]
         elif breakdown["availability"] == "available":
             results = breakdown[{"Selected checks": "overall", "Enforced": "enforced", "Advisory": "advisory"}[label]]
-            note = f"Failed: {results['failed']} · Blocked: {results['blocked']} · Unverified: {results['unverified']}"
+            selected = [row for row in metadata["controls"]
+                        if label == "Selected checks" or row["mode"] == label.lower()]
+            readiness = {key: sum(_activation_state(row) == key for row in selected)
+                         for key in ("not_configured", "disabled", "awaiting_manual_run")}
+            unverified = max(0, results["unverified"] - sum(readiness.values()))
+            statuses = (("Failed", results["failed"]), ("Blocked", results["blocked"]),
+                        ("Unable to verify", unverified), ("Not configured", readiness["not_configured"]),
+                        ("Disabled", readiness["disabled"]), ("Awaiting manual run", readiness["awaiting_manual_run"]))
+            note = " · ".join(f"{name}: {count}" for name, count in statuses if count) or "All selected checks passed"
             if passed == total:
                 card_tone = "good"
         else:
             note = "Result breakdown unavailable"
-        if label == "Selected checks" and breakdown["availability"] == "available":
-            note += f" · Inactive: {breakdown['inactive']} (excluded)"
+
         count = f'{passed}<span>/{total}</span>' if total else "None"
         caption = "checks passed" if total else ("checks enforced" if label == "Enforced" else "checks selected")
         cards.append(f"""<section class="metric {card_tone}" aria-label="{label}">
@@ -1643,7 +1971,7 @@ def _html(metadata: dict[str, Any]) -> str:
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Latest published pull-request scorecard for {safe['repository']}: {safe['message']}.">
+  <meta name="description" content="AI is the accelerant. Assurance is mandatory. AI Software Toolkit connects standards, agent skills, and optional checks to revision-bound evidence. Published PR scorecard for {safe['repository']}: {safe['message']}.">
   <title>Latest PR Scorecard · {safe['repository']}</title>
   <style>{_REPORT_CSS}</style>
 </head>
@@ -1655,10 +1983,42 @@ def _html(metadata: dict[str, Any]) -> str:
   </div></div>
   <a class="repo-link" href="https://github.com/{safe['repository']}">View repository <span aria-hidden="true">↗</span></a>
 </div></header>
-<main class="shell" id="scorecard">
+<main class="shell">
+  <section class="toolkit-overview" aria-labelledby="toolkit-title">
+    <p class="eyebrow">AI Software Toolkit / standards, skills, and verification</p>
+    <h1 id="toolkit-title">AI is the accelerant.<br>Assurance is mandatory.</h1>
+    <p class="intro">AI turns directives into code faster than ever. Build assurance into
+      the work before changes ship. AI Software Toolkit provides the foundation:
+      clear standards, controlled agent skills, and checks connected to evidence.</p>
+    <p class="overview-promise"><strong>Your directives. Disciplined execution. Evidence before release.</strong></p>
+    <nav class="overview-actions" aria-label="Explore AI Software Toolkit">
+      <a class="button primary" href="https://github.com/ravisingh11/ai-software-toolkit#start-here">Start building assurance <span aria-hidden="true">↗</span></a>
+      <a class="button" href="https://github.com/ravisingh11/ai-software-toolkit/tree/main/skills">Browse skills</a>
+      <a class="button" href="https://github.com/ravisingh11/ai-software-toolkit-reference-app">Explore the reference app</a>
+      <a href="#scorecard">View this repository’s scorecard ↓</a>
+    </nav>
+    <div class="overview-grid">
+      <article class="overview-card"><h2>Define the boundaries</h2>
+        <p>Set expectations before execution. Human-readable standards and reusable
+          agent skills guide planning, implementation, review, security, QA, and release work.</p></article>
+      <article class="overview-card"><h2>Verify the work</h2>
+        <p>Run your build, tests, QA, and scanners against the change. Choose the checks,
+          thresholds, and enforcement that fit your repository’s risks.</p></article>
+      <article class="overview-card"><h2>Demand evidence before release</h2>
+        <p>Proof binds results to the evaluated revision. Inspect passing checks, failures,
+          and missing evidence before making a release decision.</p></article>
+    </div>
+    <p class="adoption-note"><strong>All toolkit checks are optional to adopt.</strong>
+      Installing skills does not run them or make checks required. Your team owns
+      its application, commands, review decisions, and release authority.</p>
+  </section>
+  <section class="scorecard-section" id="scorecard" aria-labelledby="scorecard-title" tabindex="-1">
   <p class="eyebrow">CI evidence / change assessment</p>
-  <h1>Latest PR Scorecard</h1>
-  <p class="intro">A clear view of the latest published pull-request evaluation.</p>
+  <h2 class="report-title" id="scorecard-title">Latest PR Scorecard</h2>
+  <p class="intro">Latest published PR results for <strong>{safe['repository']}</strong>.</p>
+  <p class="stage-context"><strong>Evaluation stage:</strong> {"Lifecycle verification" if metadata["evaluation_stage"] == "lifecycle-verification" else "Pull-request development"}. The catalog offers tools to adopt as your project needs them; it is not a checklist every project must complete.</p>
+  {discovery_navigation}
+  {_snapshot_identity(metadata)}
   <aside class="freshness" id="snapshot-freshness" data-snapshot="{snapshot}" data-freshness="unknown" aria-label="Snapshot freshness">
     <p id="snapshot-freshness-status" role="status" aria-live="polite">Freshness not checked. These are published snapshot results; refresh to request the latest publication.</p>
     <a class="button" id="snapshot-refresh" href="?snapshot-refresh={safe['source_run_id']}-{safe['source_run_attempt']}">Refresh latest</a>
@@ -1667,7 +2027,7 @@ def _html(metadata: dict[str, Any]) -> str:
   <section class="status-panel {tone}" aria-label="Scorecard status">
     <div><div class="status-label"><span class="status-dot" aria-hidden="true"></span>{safe['status']}</div>
       <h2>{headline}</h2><p>{_decision_meaning(metadata)}</p></div>
-    <dl class="decision"><dt>Policy decision</dt><dd>{safe['decision'].upper()}</dd>{ungated}</dl>
+    <dl class="decision"><dt>Toolkit policy decision</dt><dd>{safe['decision'].upper()}</dd>{ungated}</dl>
   </section>
   {_attention_html(metadata["controls"], metadata["result_breakdown"])}
   <div class="metrics">{''.join(cards)}</div>
@@ -1697,6 +2057,7 @@ def _html(metadata: dict[str, Any]) -> str:
   <footer><img src="proof-badge.svg" alt="{safe['message']}" width="216" height="20">
     <nav class="formats" aria-label="Report formats"><a href="scorecard.json">Summary JSON</a><a href="scorecard.md">Summary Markdown</a></nav>
   </footer>
+  </section>
 </main>
 <script type="text/javascript">{_FRESHNESS_SCRIPT}</script>
 </body></html>
@@ -1739,6 +2100,7 @@ def render_badge(
     run_url: str,
     source_run_created_at: str,
     expected_revision: str,
+    publication_context: dict[str, Any] | None = None,
 ) -> dict[str, object]:
     """Render a validated scorecard into a bounded, static public projection."""
     inspected = _validated_scorecard(Path(source_dir), repository)
@@ -1756,6 +2118,17 @@ def render_badge(
     if inspected["subject_revision"] != expected_revision:
         raise ValueError("scorecard revision does not match expected revision")
 
+    if publication_context is not None:
+        keys = {"pull_request_number", "base_revision", "runtime_revision", "publisher_revision"}
+        if not isinstance(publication_context, dict) or set(publication_context) != keys:
+            raise ValueError("publication context fields are invalid")
+        _integer(publication_context["pull_request_number"], "pull_request_number", positive=True)
+        for key in keys - {"pull_request_number"}:
+            value = publication_context[key]
+            if key == "runtime_revision" and value is None:
+                continue
+            if not isinstance(value, str) or not REVISION_PATTERN.fullmatch(value):
+                raise ValueError("publication context revision is invalid")
     output_dir = Path(output_dir)
     output_dir.parent.mkdir(parents=True, exist_ok=True)
     temporary = Path(
@@ -1770,6 +2143,7 @@ def render_badge(
             run_url,
             source_run_created_at,
             expected_revision,
+            publication_context,
         )
         (temporary / "proof-badge.svg").write_text(
             _svg(metadata), encoding="utf-8"
@@ -1801,6 +2175,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--run-url")
     parser.add_argument("--source-run-created-at")
     parser.add_argument("--expected-revision")
+    parser.add_argument("--publication-context", type=Path)
     return parser
 
 
@@ -1825,7 +2200,8 @@ def main() -> int:
         missing = [name for name, value in required.items() if value is None]
         if missing:
             raise ValueError(f"rendering requires: {', '.join(missing)}")
-        metadata = render_badge(args.source_dir, args.output_dir, **required)
+        context = json.loads(args.publication_context.read_text()) if args.publication_context else None
+        metadata = render_badge(args.source_dir, args.output_dir, publication_context=context, **required)
         print(
             f"Published badge input: {metadata['status']} {metadata['passed']}/{metadata['total']}"
         )

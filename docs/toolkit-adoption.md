@@ -1,10 +1,10 @@
 # Toolkit adoption
 
-The runtime and workflows were installed from the [toolkit v2.1.0 baseline](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.1.0) plus post-release updates at immutable upstream commit `c85e9d78f478d258e6b39ede3aeb742e527ace38` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` entrypoint. Previously installed skills are preserved; their installation uses `tooling/install-skills.sh`. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
+The runtime and workflows were installed from the [toolkit v2.1.0 baseline](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.1.0) plus reviewed post-release updates through stage-specific scorecard PR #141 at immutable upstream commit `4706e359dd1478036457613e6c7dd2a23466985d` using the public `tooling/install.py --profile github --refresh-existing --scorecard-badge` entrypoint. Previously installed skills are preserved; their installation uses `tooling/install-skills.sh`. Exact commands and revision are in `toolkit.lock.json`. Application-specific generated QA skills extend the installed bootstrap.
 
 Core and GitHub profile controls begin advisory. Application acceptance is a separate deterministic required check on main, verified with a passing implementation and an intentionally failing follow-up PR. No AI review or functional QA result is an enforced merge gate. Oversized bootstrap scope, unavailable providers, and incomplete evidence remain visible rather than changing policy to hide them.
 
-Producer bindings: build=`npm run build`; unit tests=`npm run test:coverage`; format/lint=`npm run lint`; migrations=`npm run validate:migrations`; setup=`npm ci`. CodeQL default setup analyzes its configured Actions, JavaScript/TypeScript, and Python languages. Changed-code coverage is **not activated**: current coverage measures pure domain validation, while real Worker/D1 and frontend flows are verified by API/browser acceptance without line instrumentation. That test evidence must not be reported as full changed-line coverage. Artifact provenance and hosted agent QA are likewise not activated.
+Producer bindings: build=`npm run build`; unit tests=`npm run test:coverage`; format/lint=`npm run lint`; migrations=`npm run validate:migrations`; setup=`npm ci`. CodeQL default setup analyzes its configured Actions, JavaScript/TypeScript, and Python languages. Changed-code coverage is selected advisory by the Core profile but remains **unverified**: current coverage measures pure domain validation, while real Worker/D1 and frontend flows are verified by API/browser acceptance without line instrumentation. That test evidence must not be reported as full changed-line coverage. Artifact provenance belongs to the app’s optional release/lifecycle example and is excluded from ordinary PR scoring; hosted agent QA is available to adopt.
 
 To upgrade, clone the toolkit at an exact reviewed commit, run its installer with `--refresh-existing` and the selected profile, refresh selected skills using the installer's merge/refresh guidance, review configuration preservation and all runtime diffs, update toolkit.lock.json and the Worker TOOLKIT_REVISION, and submit a PR. Run application acceptance, migration validation, scans, and generated local agent QA before merging. Treat a failing consumer test as an upstream compatibility signal.
 
@@ -23,7 +23,7 @@ revision and preview the selection first:
 
 ```sh
 git clone https://github.com/ravisingh11/ai-software-toolkit.git /path/to/toolkit
-git -C /path/to/toolkit checkout --detach c85e9d78f478d258e6b39ede3aeb742e527ace38
+git -C /path/to/toolkit checkout --detach 4706e359dd1478036457613e6c7dd2a23466985d
 python3 /path/to/toolkit/tooling/ai_toolkit init --target /path/to/ai-software-toolkit-reference-app --components skills --clients claude-code --skills starter --preview
 # After reviewing the preview, apply the same selection:
 python3 /path/to/toolkit/tooling/ai_toolkit init --target /path/to/ai-software-toolkit-reference-app --components skills --clients claude-code --skills starter --yes
@@ -54,7 +54,7 @@ recovery path. Recovery is per skill, and uncatchable termination can require
 manual recovery from staging.
 
 The shell installer is used from a separate trusted toolkit checkout and is
-not vendored into this app. The supported Proof refresh from this exact commit
+not vendored into this app. The earlier safe skill-replacement-only refresh in PR #44
 produced no runtime or workflow differences; existing skills and generated app
 QA were preserved. Use the pinned checkout above when invoking
 `tooling/install-skills.sh` to get the fix. The toolkit lock, optional polyglot
@@ -155,7 +155,7 @@ The optional upstream publisher owns this repository’s dedicated GitHub Pages 
 
 After a Proof Scorecard run completes, the trusted default-branch publisher validates source provenance and publishes the newest acceptable PR scorecard. A six-hour reconciliation schedule recovers missed events. The public page contains aggregate counts/status, source-run metadata, a subject digest, and allowlisted built-in control and provider labels. Custom providers use a generic label. The explicit public configuration path and validated same-repository GitHub evidence links are published; raw findings and private evidence payloads remain in the source Actions reports. Publishing never changes merge enforcement or turns missing evidence into a pass. The README and app navigation link to this live report; the [v0.1.0 snapshot](verification/scorecard.md) remains historical evidence.
 
-This installation pins Proof runtime source commit `bb4130d4a27eb2d127fc832200797c732443119a`.
+The earlier installation pinned Proof runtime source commit `bb4130d4a27eb2d127fc832200797c732443119a`; the current reviewed pin is recorded in toolkit.lock.json and the stage-specific refresh below.
 The supported runtime refresh separates failed checks from unavailable evidence,
 shows snapshot identity and freshness, preserves coverage workflow identity, and
 explains why smaller, actionable PRs are easier for humans to review. Application
@@ -166,7 +166,7 @@ Installed application QA skills remain unchanged.
 ## Optional language examples
 
 The five [polyglot examples](../examples/polyglot/README.md) use quality helpers
-from toolkit commit `bb4130d4a27eb2d127fc832200797c732443119a`, matching the installed Proof runtime.
+from toolkit commit `4706e359dd1478036457613e6c7dd2a23466985d`, matching the installed Proof runtime.
 The helper checkout remains separately recorded in `examples/polyglot/toolkit.json`.
 Explicit setup refreshes its clean cached checkout to that exact revision; modified
 or mismatched caches fail visibly. Setup does not change policy defaults.
@@ -203,19 +203,21 @@ stays visible and all Proof checks remain optional.
 The supported installer installs the manual `lifecycle-verification.yml`
 workflow and provenance-checking collector. The repository-owned
 `.proof/lifecycle.json` and `examples/lifecycle/` fixture are preserved on refresh.
-The lifecycle runtime is pinned to the reviewed, merged upstream revision
-`bb4130d4a27eb2d127fc832200797c732443119a`. All three adoption pins agree.
+The current runtime is pinned to reviewed upstream revision
+`4706e359dd1478036457613e6c7dd2a23466985d`. The toolkit lock, optional helper pin and Worker source metadata agree.
 
 The runtime and manual workflow reached the trusted main branch in PR #36.
-IaC is now selected advisory for change evaluation; container vulnerability,
+That historical bootstrap selected IaC advisory for change evaluation; container vulnerability,
 artifact SBOM, artifact vulnerability/provenance, deployment policy, DAST,
 runtime assurance and runtime soak are selected advisory for release evaluation.
 These optional choices do not add required checks or change branch protection.
 During this adoption bootstrap, fresh accepted lifecycle evidence remains pending;
 selection is not a pass.
 The repository's non-secret
-`PROOF_LIFECYCLE_ENABLED=true` setting explicitly opts PR collection into importing
-verified manual-run receipts after this configuration and trusted runtime merge.
+`PROOF_LIFECYCLE_ENABLED=true` setting enables lifecycle receipt support.
+Import into an explicit lifecycle evaluation additionally requires
+`PROOF_SCORECARD_STAGE=lifecycle`; ordinary PR development no longer imports
+artifact/environment companions. This does not dispatch the manual producer.
 
 Dispatch `Lifecycle Verification` from main against an open same-repository PR
 number and its full current head SHA. A fresh PR scorecard event after completion
@@ -319,3 +321,44 @@ Consult the [live scorecard](https://ravisingh11.github.io/ai-software-toolkit-r
 for the accepted snapshot and source run. This checklist does not claim a new
 successful CodeQL verification. All checks stay optional; the separate five-language
 polyglot workflow stays manual and is unchanged by credential setup.
+
+## Stage-specific selection and adoption refresh
+
+The supported installer was run from the exact merged upstream source revision
+`4706e359dd1478036457613e6c7dd2a23466985d` (upstream PR #141):
+
+```sh
+python3 /path/to/reviewed-toolkit/tooling/install.py --target /path/to/ai-software-toolkit-reference-app --profile github --refresh-existing --scorecard-badge
+```
+
+The renderer, reconciler, GitHub evidence collector and scorecard workflow changed;
+other generated runtime files stayed identical. Application-owned commands,
+provider selections (including managed CodeQL), lifecycle fixtures, and generated
+QA skills were preserved. No local tests, dependency installation, agent QA, or
+Worker deployment were run for this refresh; required CI provides validation.
+
+Ordinary **pull-request development** selects the existing Core/GitHub profile's
+16 checks, all advisory. The old change-stage IaC override was removed because
+its producer belongs to the manual verification fixture; IaC remains available
+to adopt, not a missing PR requirement. The app's explicit advisory release
+example choices are preserved for an intentional lifecycle evaluation. No
+release/environment receipt is imported into an ordinary PR score merely because
+lifecycle support is enabled.
+
+The public report shows **Selected checks**, **Tools available to adopt** (9), and
+**Checks relevant later** (8), with optional setup steps and stage descriptions.
+Only policy-selected checks applicable to the actual evaluation enter the score.
+A selected failure, blocker, or unavailable result is never moved into discovery
+to improve the score. Incomplete selection remains unknown. Historical snapshots
+retain their original counts, policy, and evaluation scope.
+
+Advisory/Enforced remains a separate mode. Enforced checks require a passing
+result; GitHub independently requires Application acceptance. The selected Core
+coverage control still lacks full changed-line instrumentation, and missing
+security-settings proof stays visible. The independent Snyk finding example is
+preserved. Polyglot and lifecycle workflows remain manual (`workflow_dispatch`).
+
+The Pages publisher uses the trusted renderer after merge and fresh evidence
+collection. A changed source pin does not update the deployed Worker; its health
+metadata continues describing the previously deployed revision until an authorized
+deployment. No toolkit release or application deployment is part of this update.

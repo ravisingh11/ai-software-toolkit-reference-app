@@ -1,6 +1,6 @@
 {
   "repository": "https://github.com/ravisingh11/ai-software-toolkit",
-  "revision": "c85e9d78f478d258e6b39ede3aeb742e527ace38",
+  "revision": "4706e359dd1478036457613e6c7dd2a23466985d",
   "installerVersion": "2.1.0",
   "profiles": [
     "core",
@@ -15,5 +15,5 @@
     "scorecard-badge"
   ],
   "release": "v2.1.0",
-  "revisionNote": "Post-v2.1.0 staged skill replacement and failure recovery (upstream PR #129), retaining the scorecard wording fix (#128) and synchronized action pins (#123 and #124)."
+  "revisionNote": "Reviewed source through upstream PR #141: stage-specific selected/adoption/later scorecard groups, separate activation and policy modes, hidden zero counts, exact snapshot identity and evidence diagnostics; retains the earlier safe skill-replacement fix."
 }

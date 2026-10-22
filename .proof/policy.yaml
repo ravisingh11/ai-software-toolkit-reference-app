@@ -7,9 +7,7 @@
     "github"
   ],
   "overrides": {
-    "change": {
-      "iac-misconfiguration": "advisory"
-    },
+    "change": {},
     "release": {
       "container-vulnerability": "advisory",
       "artifact-sbom": "advisory",
