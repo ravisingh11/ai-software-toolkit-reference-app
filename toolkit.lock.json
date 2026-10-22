@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/ravisingh11/ai-software-toolkit",
-  "revision": "3997edd64e32cfc6412526000e6613ff7fa5ab36",
-  "installerVersion": "2.1.1",
+  "revision": "bf05798e4b03610551f9882620767f31de03d1df",
+  "installerVersion": "2.0.0",
   "profiles": [
     "core",
     "github"
@@ -14,6 +14,7 @@
   "optionalFeatures": [
     "scorecard-badge"
   ],
-  "release": "v2.1.1",
-  "revisionNote": "Reviewed post-v2.1.1 source through upstream PR #144: always-visible 33-check overview, preserving stage-specific selection, optional adoption, manual lifecycle, and prior installer safety fixes."
+  "release": "v2.2.1",
+  "revisionNote": "Published v2.2.1 release at its exact immutable tag commit. Supported standalone installer reports 2.0.0; CLI version is recorded separately. Preserves optional advisory checks, manual lifecycle/polyglot, application-specific configuration, and the independent Snyk failure example.",
+  "cliVersion": "2.2.1"
 }
