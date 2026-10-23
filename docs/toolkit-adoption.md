@@ -1,19 +1,28 @@
 # Toolkit adoption
 
-The runtime and workflows are pinned to published [toolkit v2.2.1](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.2.1)
-at immutable upstream commit `bf05798e4b03610551f9882620767f31de03d1df`. The supported
-`tooling/install.py --profile github --refresh-existing --scorecard-badge`
-refresh produced no runtime or workflow changes relative to the previously
-reviewed source. Previously installed skills and generated application QA remain
-preserved. Exact commands and versions are recorded in `toolkit.lock.json`:
-standalone installer 2.0.0, CLI 2.2.1. Historical refresh records below retain
-their original source and evidence identities.
+The runtime and selected skills are pinned to published [toolkit v2.3.0](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.3.0)
+at immutable upstream commit `9108f2fda1cc04087cb1326e0457302fab214f3c`. The supported
+standalone installer refresh adds activation diagnostics and tracked documentation
+validation; the specification skill is tool-independent with Spec Kit optional.
+Previously installed workflows, skills, selections and generated application QA
+are preserved. The app's provenance lock records standalone installer and CLI
+version 2.3.0. Historical refresh/deployment records below retain their original
+source and evidence identities.
+
+This repository's `toolkit.lock.json` is application-owned provenance, not the
+CLI managed-file inventory, and it has no `toolkit.toml`. Refresh in a tracked-source
+staging directory with this provenance record excluded, using
+`tooling/install.py --profile github --refresh-existing --scorecard-badge` and the
+selected standalone skill installer. Review and apply only generated runtime,
+workflow and selected-skill changes; then update provenance, helper and Worker
+source pins together. Do not point CLI `init`/`update` at this custom lock or
+silently migrate it to the CLI schema.
 
 Core and GitHub profile controls begin advisory. Application acceptance is a separate deterministic required check on main, verified with a passing implementation and an intentionally failing follow-up PR. No AI review or functional QA result is an enforced merge gate. Oversized bootstrap scope, unavailable providers, and incomplete evidence remain visible rather than changing policy to hide them.
 
 Producer bindings: build=`npm run build`; unit tests=`npm run test:coverage`; format/lint=`npm run lint`; migrations=`npm run validate:migrations`; setup=`npm ci`. CodeQL default setup analyzes its configured Actions, JavaScript/TypeScript, and Python languages. Changed-code coverage is selected advisory by the Core profile but remains **unverified**: current coverage measures pure domain validation, while real Worker/D1 and frontend flows are verified by API/browser acceptance without line instrumentation. That test evidence must not be reported as full changed-line coverage. Artifact provenance belongs to the app’s optional release/lifecycle example and is excluded from ordinary PR scoring; hosted agent QA is available to adopt.
 
-To upgrade, clone the toolkit at an exact reviewed commit, run its installer with `--refresh-existing` and the selected profile, refresh selected skills using the installer's merge/refresh guidance, review configuration preservation and all runtime diffs, update toolkit.lock.json and the Worker TOOLKIT_REVISION, and submit a PR. Run application acceptance, migration validation, scans, and generated local agent QA before merging. Treat a failing consumer test as an upstream compatibility signal.
+To upgrade, obtain the exact reviewed release, follow the staging procedure above, refresh selected skills with the supported installer, review configuration preservation and generated diffs, align all source pins, and submit a PR. Follow task execution limits: when local testing is excluded, verify required hosted Application acceptance instead of running local tests or agent QA. A failing consumer check is an upstream compatibility signal.
 
 ## Claude Code setup
 
@@ -30,13 +39,17 @@ revision and preview the selection first:
 
 ```sh
 git clone https://github.com/ravisingh11/ai-software-toolkit.git /path/to/toolkit
-git -C /path/to/toolkit checkout --detach bf05798e4b03610551f9882620767f31de03d1df
-python3 /path/to/toolkit/tooling/ai_toolkit init --target /path/to/ai-software-toolkit-reference-app --components skills --clients claude-code --skills starter --preview
-# After reviewing the preview, apply the same selection:
-python3 /path/to/toolkit/tooling/ai_toolkit init --target /path/to/ai-software-toolkit-reference-app --components skills --clients claude-code --skills starter --yes
+git -C /path/to/toolkit checkout --detach 9108f2fda1cc04087cb1326e0457302fab214f3c
+bash /path/to/toolkit/tooling/install-skills.sh --client claude-code \
+  --target /path/to/ai-software-toolkit-reference-app/.claude/skills \
+  --skill toolkit-setup --skill prepare-safe-change --skill code-review \
+  --skill test-gap-finder --skill security-audit-lite \
+  --skill dependency-risk-review --skill qa-bootstrap --dry-run
 ```
 
-This selection installs skills into `.claude/skills/` without installing Proof
+After reviewing the preview, replace `--dry-run` with `--merge-existing` to copy
+missing files while preserving customized skills. This standalone selection
+installs skills into `.claude/skills/` without creating CLI configuration or installing Proof
 workflows or running checks. Use `--clients codex,claude-code` when adopting both
 clients. This upgrade preserves the existing Codex skills and app-specific QA;
 it does not install the optional Claude skill selection automatically. Keep
@@ -45,8 +58,8 @@ write that file.
 
 For example: “Use the code-review skill to review this change. Explain risks
 with file references. Do not run tests or commands unless I ask.” Review the
-[versioned upstream onboarding](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.2.1/docs/quickstart.md#claude-code-setup)
-and [CLI guide](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.2.1/docs/install.md).
+[versioned upstream onboarding](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.0/docs/quickstart.md#claude-code-setup)
+and [CLI guide](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.0/docs/install.md).
 All toolkit checks remain optional. Application acceptance remains the only
 required CI check; the polyglot workflow remains manual and optional.
 
@@ -210,8 +223,8 @@ stays visible and all Proof checks remain optional.
 The supported installer installs the manual `lifecycle-verification.yml`
 workflow and provenance-checking collector. The repository-owned
 `.proof/lifecycle.json` and `examples/lifecycle/` fixture are preserved on refresh.
-The current runtime is pinned to published v2.2.1 upstream revision
-`bf05798e4b03610551f9882620767f31de03d1df`. The toolkit lock, optional helper pin and Worker source metadata agree.
+The current runtime is pinned to published v2.3.0 upstream revision
+`9108f2fda1cc04087cb1326e0457302fab214f3c`. The toolkit lock, optional helper pin and Worker source metadata agree.
 
 The runtime and manual workflow reached the trusted main branch in PR #36.
 That historical bootstrap selected IaC advisory for change evaluation; container vulnerability,
@@ -415,3 +428,33 @@ The v2.2.1 upstream patch renames the composite action to AI Software Toolkit
 Proof Attestation and advances the CLI version. This application continues to
 consume its pinned installed runtime; it does not add a new action invocation,
 activate providers or make toolkit checks mandatory.
+
+
+## Published v2.3.0 refresh
+
+The published release resolves to `9108f2fda1cc04087cb1326e0457302fab214f3c`. Its canonical
+standalone installer and the previously selected six skills were refreshed in
+staging, retaining this application's custom provenance-lock format. Generated
+changes are limited to `.proof/activation.py`, `.proof/doctor.py`,
+`.proof/validators/validate_documentation.py`, and the specification-driven skill.
+Installer/CLI version reporting now agrees at 2.3.0. The lock, optional polyglot
+helper pin, Worker source metadata, README and Claude guidance agree on the source.
+
+The [33-check activation index](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.0/docs/activation.md)
+distinguishes installation, selection, configuration, execution and verified
+evidence. Read-only doctor adds per-check setup/evidence guidance; it does not
+execute producers or activate checks. Documentation validation uses Git-tracked
+files, with dependency/generated exclusions for non-Git source snapshots, and
+missing configuration or comparison baselines remain failures.
+
+The new starter defaults apply to fresh CLI installations. This existing app
+retains its Core/GitHub selections, all existing workflows, app-owned mappings,
+lifecycle fixtures, generated QA, and consumer-owned Snyk failure example. No
+Claude directories or extra skills are adopted. Spec Kit is optional and separate;
+no preset is installed. Lifecycle and polyglot triggers remain manual and optional.
+Application acceptance remains the separate required merge check.
+
+No extra local tests, dependency setup, scans, agent QA, provider activation,
+branch-protection changes or Worker deployment are part of this refresh. The
+latest deployment report remains the historical v2.2.1 deployment; updating the
+source pin does not change the running application's health metadata.
