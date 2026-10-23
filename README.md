@@ -4,8 +4,10 @@ A working issue tracker that consumes [AI Software Toolkit](https://github.com/r
 
 **[Open the live demo](https://ai-software-toolkit-reference-app.navivision-account.workers.dev)** · [Release and verification evidence](https://github.com/ravisingh11/ai-software-toolkit-reference-app/releases/tag/v0.1.0) · [Evidence guide](docs/verification/README.md)
 
-**Deployment report:** [Latest live deployment verification — toolkit v2.2.1](docs/verification/deployment-v2.2.1.md).
-This report tracks live revision and browser/API verification separately from the PR scorecard.
+**Deployment report:** [Latest live deployment verification — toolkit v2.3.0](docs/verification/deployment-v2.3.0.md).
+Verified on October 23, 2026 at 07:25 EDT: app [`cbb10d6`](https://github.com/ravisingh11/ai-software-toolkit-reference-app/commit/cbb10d6d79304efa01635d3b6815cc6809b054bb),
+exact toolkit/Worker identity, live API flows, and desktop/mobile UI. This recorded
+deployment is separate from the PR scorecard and later documentation commits.
 
 ## Toolkit scorecard
 
