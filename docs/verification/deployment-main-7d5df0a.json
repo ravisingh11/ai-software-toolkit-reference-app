@@ -1,0 +1,153 @@
+{
+  "status": "deployed-and-verified",
+  "observed_at": "2026-10-23T12:31:43.644000-04:00",
+  "observed_at_utc": "2026-10-23T16:31:43.644Z",
+  "timezone": "America/New_York",
+  "url": "https://ai-software-toolkit-reference-app.navivision-account.workers.dev",
+  "toolkit_release": "v2.3.0",
+  "health": {
+    "status": "ok",
+    "revision": "7d5df0a4910f99ec6cdc1bc80d33655bf398c66e",
+    "toolkitRevision": "9108f2fda1cc04087cb1326e0457302fab214f3c",
+    "version": "49eec506-0ca7-4bc3-a375-da3475f27fd9"
+  },
+  "worker_deployment_id": "77b6d14e-ab95-4c7b-aaec-79780c2def68",
+  "github_deployment": {
+    "id": 7283407960,
+    "sha": "7d5df0a4910f99ec6cdc1bc80d33655bf398c66e",
+    "url": "https://api.github.com/repos/ravisingh11/ai-software-toolkit-reference-app/deployments/7283407960",
+    "status": "success",
+    "status_url": "https://api.github.com/repos/ravisingh11/ai-software-toolkit-reference-app/deployments/7283407960/statuses/20415807393",
+    "environment": "production",
+    "environment_url": "https://ai-software-toolkit-reference-app.navivision-account.workers.dev/"
+  },
+  "hosted_acceptance": "https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39985294411/job/120523094859",
+  "node_version": "24.19.0",
+  "wrangler_version": "4.151.2",
+  "live_results": [
+    {
+      "check": "Live app/toolkit/Worker identity",
+      "result": "passed",
+      "observation": {
+        "status": "ok",
+        "revision": "7d5df0a4910f99ec6cdc1bc80d33655bf398c66e",
+        "toolkitRevision": "9108f2fda1cc04087cb1326e0457302fab214f3c",
+        "version": "49eec506-0ca7-4bc3-a375-da3475f27fd9"
+      }
+    },
+    {
+      "check": "Anonymous and cross-origin API boundaries",
+      "result": "passed",
+      "observation": {
+        "anonymous": 401,
+        "crossOriginWrite": 403
+      }
+    },
+    {
+      "check": "Desktop editor session and seeded board",
+      "result": "passed",
+      "observation": {
+        "seededIssues": 3,
+        "newIssueEnabled": true
+      }
+    },
+    {
+      "check": "Editor creates, searches and filters issues",
+      "result": "passed",
+      "observation": {
+        "create": 201,
+        "totalIssues": 4,
+        "searchMatches": 1,
+        "lowPriorityMatches": 0,
+        "highPriorityMatches": 1
+      }
+    },
+    {
+      "check": "Status/comment persistence after reload",
+      "result": "passed",
+      "observation": {
+        "status": "in_progress",
+        "commentPersisted": true,
+        "plainTextRendering": true
+      }
+    },
+    {
+      "check": "Input and transition boundaries",
+      "result": "passed",
+      "observation": {
+        "emptyTitle": 400,
+        "triageToDone": 409,
+        "requiredTitleValidation": true
+      }
+    },
+    {
+      "check": "Mobile viewer UI and server-side read-only enforcement",
+      "result": "passed",
+      "observation": {
+        "viewport": "390x844",
+        "controlsDisabled": true,
+        "horizontalOverflow": false,
+        "create": 403,
+        "status": 403,
+        "comment": 403
+      }
+    },
+    {
+      "check": "Cross-board isolation",
+      "result": "passed",
+      "observation": {
+        "editorCommentsFromViewerBoard": 404
+      }
+    },
+    {
+      "check": "Browser runtime errors",
+      "result": "passed",
+      "observation": {
+        "pageErrors": 0
+      }
+    }
+  ],
+  "live_api_smoke": {
+    "status": "passed",
+    "revision": "7d5df0a4910f99ec6cdc1bc80d33655bf398c66e",
+    "toolkitRevision": "9108f2fda1cc04087cb1326e0457302fab214f3c",
+    "workerVersion": "49eec506-0ca7-4bc3-a375-da3475f27fd9",
+    "checks": [
+      "database health",
+      "isolated session",
+      "create issue",
+      "transition",
+      "persist comment"
+    ]
+  },
+  "migration_status": "No migrations to apply; no migration-file differences from prior deployment",
+  "local_tests": "not run; excluded by user",
+  "checks_optional": true,
+  "lifecycle_polyglot": "manual; not dispatched",
+  "synthetic_data_only": true,
+  "synthetic_sessions_created": 3,
+  "browser_contexts": "closed; no cookies saved",
+  "prior_worker_version": "0ecf8e4b-03cd-4ce1-94c4-06f6a5cc0d25",
+  "initial_health_observation": "First post-upload request returned prior identity; fresh health, smoke, browser and final requests subsequently matched new app/toolkit/Worker identities. Cause not established.",
+  "record_type": "Historical live deployment verification; not a certification of later source commits or CI snapshots",
+  "scope": "Live release health/API/browser observations; separate from PR/local test suites and the Proof scorecard",
+  "source_worktree_at_deployment": "clean main; no source files changed",
+  "limitations": "Bounded live release observations, not exhaustive security, load or availability certification. Local production bundling and dependency installation were necessary deployment steps; repository test suites and local PR QA did not run. Prior code version retained; code rollback does not reverse D1 data.",
+  "screenshots": [
+    {
+      "path": "evidence/main-7d5df0a/desktop-editor-board.png",
+      "sha256": "ef32cb5e90a3899a03a1c0ab7707c2209e8b506ad37b66d6c31243a3843fa199",
+      "visually_inspected": true
+    },
+    {
+      "path": "evidence/main-7d5df0a/desktop-editor-detail.png",
+      "sha256": "d3a1eb02afa06512ea9d78cde7bafc856150f1c40dc73659f02595643bdf3414",
+      "visually_inspected": true
+    },
+    {
+      "path": "evidence/main-7d5df0a/mobile-viewer-board.png",
+      "sha256": "928268e42f7555436e4aa1120a80bc565e678aae21ef2659bcbc8e20bb11889f",
+      "visually_inspected": true
+    }
+  ]
+}
