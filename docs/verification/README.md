@@ -2,6 +2,7 @@
 
 The live demo is at https://ai-software-toolkit-reference-app.navivision-account.workers.dev. `/api/health` exposes the serving Git revision, toolkit pin, Worker version, and database readiness.
 
+- [Toolkit v2.3.0 live deployment verification](deployment-v2.3.0.md): observed app/toolkit/Worker identity, API and desktop/mobile flows, sanitized data and screenshot evidence. Later documentation commits do not redeploy the Worker.
 - [Toolkit v2.2.1 live deployment verification](deployment-v2.2.1.md): exact app/toolkit/Worker revisions, successful live browser/API flows, GitHub deployment, and the earlier D1-quota blocker retained as history.
 - [Toolkit refresh and five-language verification](toolkit-refresh.md): exact c46a7c2 toolkit pin, optional manual run, local acceptance and advisory agent QA.
 - [Live PR scorecard](https://ravisingh11.github.io/ai-software-toolkit-reference-app/): automatically published from this repository’s accepted CI artifacts. It is a PR evaluation, not a live production assessment.
