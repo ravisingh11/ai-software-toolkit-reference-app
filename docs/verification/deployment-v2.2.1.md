@@ -1,5 +1,68 @@
 # Toolkit v2.2.1 deployment verification
 
+**Status: DEPLOYED AND VERIFIED after the daily D1 reset.**
+
+Verified on 2026-10-22 (America/New_York; observed UTC timestamp
+`2026-10-23T00:07:24.036Z`). This is live release evidence, separate from
+local PR QA and the revision-bound CI scorecard. The earlier blocked attempt is
+retained below; its unavailable checks were not retroactively marked passed.
+
+## Verified live identity
+
+| Item | Observed value |
+| --- | --- |
+| App commit | `9ca17a30a776cca7c6ff68cb959def0808dd8d94` |
+| Toolkit release | [v2.2.1](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.2.1) |
+| Toolkit commit | `bf05798e4b03610551f9882620767f31de03d1df` |
+| Cloudflare Worker version | `780741bf-a7e5-42cf-809f-7ed97c4bcc1a` |
+| GitHub deployment | [7266781356](https://api.github.com/repos/ravisingh11/ai-software-toolkit-reference-app/deployments/7266781356), success |
+
+[Open Fieldnotes](https://ai-software-toolkit-reference-app.navivision-account.workers.dev/)
+· [Live health](https://ai-software-toolkit-reference-app.navivision-account.workers.dev/api/health)
+· [Sanitized verification data](deployment-v2.2.1.json)
+· [Live PR scorecard](https://ravisingh11.github.io/ai-software-toolkit-reference-app/)
+
+## Release procedure and observed behavior
+
+Deployment used the exact clean merged app commit above and the documented
+`scripts/release.sh` procedure. Dependency installation, build dry-run, eleven
+unit tests with domain-only coverage, migration validation and six browser/API
+acceptance tests passed. Remote D1 reported no migrations to apply. No billing,
+quota, provider activation or enforcement setting was changed.
+
+The deployment succeeded, but the script's immediate smoke request initially
+reported a health/revision mismatch during propagation. A subsequent health
+request identified the intended app/toolkit/Worker version, and one explicit smoke
+retry passed the full API lifecycle. This transient first failure is retained;
+the release script is not described as an uninterrupted success.
+
+Live browser and HTTP observations used isolated, synthetic demo sessions:
+
+| Flow | Result |
+| --- | --- |
+| App/toolkit/Worker metadata | Passed: exact values above |
+| Editor creation, search and priority filter | Passed |
+| Status transition, comment and reload persistence | Passed |
+| Empty title and invalid direct status transition | Rejected as expected; invalid transition HTTP 409 and invalid input HTTP 400 |
+| Anonymous access and cross-origin mutation | HTTP 401 / 403 as expected |
+| Mobile viewer UI | Read-only controls disabled; no horizontal overflow |
+| Direct viewer create/status/comment attempts | HTTP 403 as expected |
+| Cross-board comment access | HTTP 404 as expected |
+
+The successful flows establish observed availability after reset, not a measured
+root cause of the earlier account-wide read exhaustion or a guarantee that the
+free quota cannot recur. The user's read-usage investigation remains separate.
+A health response alone is not full application verification.
+
+All toolkit checks remain optional/advisory; polyglot and advanced lifecycle
+execution remain manual. The intentional independent Snyk failure example and
+its workflow are unchanged. Synthetic workspaces expire after 24 hours; cookies,
+credentials and real customer data are not part of this report.
+
+## Earlier pre-reset blocked attempt — retained history
+
+### Original pre-reset report
+
 **Status: BLOCKED before deployment — Cloudflare D1 daily quota exhausted.**
 
 Recorded 2026-10-22 (America/New_York). This is deployment preflight evidence,
