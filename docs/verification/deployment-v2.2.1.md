@@ -31,8 +31,10 @@ acceptance tests passed. Remote D1 reported no migrations to apply. No billing,
 quota, provider activation or enforcement setting was changed.
 
 The deployment succeeded, but the script's immediate smoke request initially
-reported a health/revision mismatch during propagation. A subsequent health
-request identified the intended app/toolkit/Worker version, and one explicit smoke
+reported a health/revision mismatch immediately after deployment. Its first
+response body was not retained, so the exact transient cause is unconfirmed.
+A subsequent health request identified the intended app/toolkit/Worker version,
+and one explicit smoke
 retry passed the full API lifecycle. This transient first failure is retained;
 the release script is not described as an uninterrupted success.
 

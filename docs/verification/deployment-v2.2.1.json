@@ -48,7 +48,7 @@
   },
   "initial_post_deploy_smoke": {
     "result": "failed",
-    "reason": "Health/revision mismatch during initial propagation; no mutation had been attempted by that smoke run"
+    "reason": "Health/revision mismatch immediately after deployment. First response body was not retained, so the exact transient cause is unconfirmed. No mutation had been attempted by that smoke run."
   },
   "bounded_followup_smoke": {
     "status": "passed",
