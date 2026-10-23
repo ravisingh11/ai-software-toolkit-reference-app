@@ -1,0 +1,146 @@
+{
+  "status": "deployed-and-verified",
+  "observed_at": "2026-10-23T07:25:02.243000-04:00",
+  "timezone": "America/New_York",
+  "url": "https://ai-software-toolkit-reference-app.navivision-account.workers.dev",
+  "toolkit_release": "v2.3.0",
+  "health": {
+    "status": "ok",
+    "revision": "cbb10d6d79304efa01635d3b6815cc6809b054bb",
+    "toolkitRevision": "9108f2fda1cc04087cb1326e0457302fab214f3c",
+    "version": "0ecf8e4b-03cd-4ce1-94c4-06f6a5cc0d25"
+  },
+  "worker_deployment_id": "4daddf96-9106-43d7-9cf3-26b3ddcb26d2",
+  "github_deployment": {
+    "id": 7276941546,
+    "sha": "cbb10d6d79304efa01635d3b6815cc6809b054bb",
+    "url": "https://api.github.com/repos/ravisingh11/ai-software-toolkit-reference-app/deployments/7276941546",
+    "status": "success",
+    "status_url": "https://api.github.com/repos/ravisingh11/ai-software-toolkit-reference-app/deployments/7276941546/statuses/20386902074",
+    "environment": "production",
+    "environment_url": "https://ai-software-toolkit-reference-app.navivision-account.workers.dev/"
+  },
+  "hosted_acceptance": "https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/39894944025",
+  "live_results": [
+    {
+      "check": "Live app/toolkit/Worker identity",
+      "result": "passed",
+      "observation": {
+        "status": "ok",
+        "revision": "cbb10d6d79304efa01635d3b6815cc6809b054bb",
+        "toolkitRevision": "9108f2fda1cc04087cb1326e0457302fab214f3c",
+        "version": "0ecf8e4b-03cd-4ce1-94c4-06f6a5cc0d25"
+      }
+    },
+    {
+      "check": "Anonymous and cross-origin API boundaries",
+      "result": "passed",
+      "observation": {
+        "anonymous": 401,
+        "crossOriginWrite": 403
+      }
+    },
+    {
+      "check": "Desktop editor session and seeded board",
+      "result": "passed",
+      "observation": {
+        "seededIssues": 3,
+        "newIssueEnabled": true
+      }
+    },
+    {
+      "check": "Editor creates, searches and filters issues",
+      "result": "passed",
+      "observation": {
+        "create": 201,
+        "totalIssues": 4,
+        "searchMatches": 1,
+        "lowPriorityMatches": 0,
+        "highPriorityMatches": 1
+      }
+    },
+    {
+      "check": "Status/comment persistence after reload",
+      "result": "passed",
+      "observation": {
+        "status": "in_progress",
+        "commentPersisted": true,
+        "plainTextRendering": true
+      }
+    },
+    {
+      "check": "Input and transition boundaries",
+      "result": "passed",
+      "observation": {
+        "emptyTitle": 400,
+        "triageToDone": 409,
+        "requiredTitleValidation": true
+      }
+    },
+    {
+      "check": "Mobile viewer UI and server-side read-only enforcement",
+      "result": "passed",
+      "observation": {
+        "viewport": "390x844",
+        "controlsDisabled": true,
+        "horizontalOverflow": false,
+        "create": 403,
+        "status": 403,
+        "comment": 403
+      }
+    },
+    {
+      "check": "Cross-board isolation",
+      "result": "passed",
+      "observation": {
+        "editorCommentsFromViewerBoard": 404
+      }
+    },
+    {
+      "check": "Browser runtime errors",
+      "result": "passed",
+      "observation": {
+        "pageErrors": 0
+      }
+    }
+  ],
+  "live_api_smoke": {
+    "status": "passed",
+    "revision": "cbb10d6d79304efa01635d3b6815cc6809b054bb",
+    "toolkitRevision": "9108f2fda1cc04087cb1326e0457302fab214f3c",
+    "workerVersion": "0ecf8e4b-03cd-4ce1-94c4-06f6a5cc0d25",
+    "checks": [
+      "database health",
+      "isolated session",
+      "create issue",
+      "transition",
+      "persist comment"
+    ]
+  },
+  "migration_status": "No migrations to apply; schema unchanged",
+  "local_tests": "not run; live release checks only",
+  "checks_optional": true,
+  "lifecycle_polyglot": "manual; not dispatched",
+  "synthetic_data_only": true,
+  "browser_contexts": "closed; no cookies retained",
+  "prior_worker_version": "780741bf-a7e5-42cf-809f-7ed97c4bcc1a",
+  "initial_transport_observation": "Initial Python urllib preflight health request returned HTTP 403; curl, Node release smoke, Playwright API and actual browser later succeeded. Cause not established.",
+  "record_type": "Historical live deployment verification; not a certification of later source commits or CI snapshots",
+  "scope": "Live release health/API/browser observations; separate from PR/local test suites and the Proof scorecard",
+  "observed_at_utc": "2026-10-23T11:25:02.243Z",
+  "source_worktree_at_deployment": "clean main; no source files changed",
+  "screenshots": [
+    {
+      "path": "evidence/v2.3.0/desktop-editor-board.png",
+      "sha256": "a2c22ace7acd0e0b72d590ff13b7805afc5afcc7207835e09d65db910bc5308a"
+    },
+    {
+      "path": "evidence/v2.3.0/desktop-editor-detail.png",
+      "sha256": "583950dccc7a629af12e901a043384fa7a16796e141ed294c89e9b8e6b41ab32"
+    },
+    {
+      "path": "evidence/v2.3.0/mobile-viewer-board.png",
+      "sha256": "bbb16e44bdb224dc0024eaf776ce788431d7f18f9dbebbaf325f86f995571505"
+    }
+  ]
+}

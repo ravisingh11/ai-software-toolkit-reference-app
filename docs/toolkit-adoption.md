@@ -456,5 +456,8 @@ Application acceptance remains the separate required merge check.
 
 No extra local tests, dependency setup, scans, agent QA, provider activation,
 branch-protection changes or Worker deployment are part of this refresh. The
-latest deployment report remains the historical v2.2.1 deployment; updating the
-source pin does not change the running application's health metadata.
+deployment report at that source-only refresh was the historical v2.2.1
+deployment; updating the source pin alone did not change the running application.
+The subsequent [v2.3.0 live deployment verification](verification/deployment-v2.3.0.md)
+records the actual deployed app/toolkit/Worker identity and API/browser observations.
+Older deployment and CI snapshots retain their original identities.
