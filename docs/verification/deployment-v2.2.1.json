@@ -1,0 +1,68 @@
+{
+  "target": "https://ai-software-toolkit-reference-app.navivision-account.workers.dev",
+  "observed_at_utc": "2026-10-23T00:07:24.036Z",
+  "scope": "Live release verification; not local PR QA",
+  "health": {
+    "status": "ok",
+    "revision": "9ca17a30a776cca7c6ff68cb959def0808dd8d94",
+    "toolkitRevision": "bf05798e4b03610551f9882620767f31de03d1df",
+    "version": "780741bf-a7e5-42cf-809f-7ed97c4bcc1a"
+  },
+  "results": [
+    {
+      "check": "Live app, toolkit and Worker identity",
+      "result": "passed"
+    },
+    {
+      "check": "Anonymous and cross-origin API boundaries",
+      "result": "passed"
+    },
+    {
+      "check": "Editor create, search, priority filter, status, comment and reload persistence",
+      "result": "passed"
+    },
+    {
+      "check": "Empty-title and invalid-transition API/UI validation",
+      "result": "passed"
+    },
+    {
+      "check": "Mobile viewer UI and server-side create/status/comment restrictions",
+      "result": "passed"
+    },
+    {
+      "check": "Cross-board API isolation",
+      "result": "passed"
+    }
+  ],
+  "synthetic_data_only": true,
+  "billing_changed": false,
+  "github_deployment": {
+    "id": 7266781356,
+    "sha": "9ca17a30a776cca7c6ff68cb959def0808dd8d94",
+    "environment": "production",
+    "created_at": "2026-10-23T00:08:02Z",
+    "url": "https://api.github.com/repos/ravisingh11/ai-software-toolkit-reference-app/deployments/7266781356",
+    "status": "success",
+    "status_url": "https://api.github.com/repos/ravisingh11/ai-software-toolkit-reference-app/deployments/7266781356/statuses/20329087118",
+    "environment_url": "https://ai-software-toolkit-reference-app.navivision-account.workers.dev/"
+  },
+  "initial_post_deploy_smoke": {
+    "result": "failed",
+    "reason": "Health/revision mismatch immediately after deployment. First response body was not retained, so the exact transient cause is unconfirmed. No mutation had been attempted by that smoke run."
+  },
+  "bounded_followup_smoke": {
+    "status": "passed",
+    "revision": "9ca17a30a776cca7c6ff68cb959def0808dd8d94",
+    "toolkitRevision": "bf05798e4b03610551f9882620767f31de03d1df",
+    "workerVersion": "780741bf-a7e5-42cf-809f-7ed97c4bcc1a",
+    "checks": [
+      "database health",
+      "isolated session",
+      "create issue",
+      "transition",
+      "persist comment"
+    ]
+  },
+  "quota_recovery": "Remote migration listing and release smoke succeeded after daily reset; no migration was pending and no billing change was made",
+  "free_plan_preserved": true
+}
