@@ -1,13 +1,13 @@
 # Toolkit adoption
 
-The runtime and selected skills are pinned to published [toolkit v2.3.0](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.3.0)
-at immutable upstream commit `9108f2fda1cc04087cb1326e0457302fab214f3c`. The supported
-standalone installer refresh adds activation diagnostics and tracked documentation
-validation; the specification skill is tool-independent with Spec Kit optional.
-Previously installed workflows, skills, selections and generated application QA
-are preserved. The app's provenance lock records standalone installer and CLI
-version 2.3.0. Historical refresh/deployment records below retain their original
-source and evidence identities.
+The runtime and selected skills are pinned to published [toolkit v2.3.1](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.3.1)
+at immutable upstream commit `f53a167be5283c1378740f475f231aa130f3aee9`.
+This patch carries the onboarding, client discovery and skill-routing improvements.
+The canonical staged refresh updates two workflow templates; installed runtime
+and skill bytes remain unchanged. Existing workflows, selections and generated
+application QA are preserved. The app-owned provenance lock records installer
+and CLI version 2.3.1. Historical refresh and deployment records retain their
+original source and evidence identities.
 
 This repository's `toolkit.lock.json` is application-owned provenance, not the
 CLI managed-file inventory, and it has no `toolkit.toml`. Refresh in a tracked-source
@@ -28,13 +28,14 @@ To upgrade, obtain the exact reviewed release, follow the staging procedure abov
 
 The [workspace guide](onboarding.md) adapts the upstream onboarding and routing
 cleanup from [toolkit PR #156](https://github.com/ravisingh11/ai-software-toolkit/pull/156).
-This is a documentation and selected-skill adoption, not a runtime upgrade to
-unreleased `main`. The published v2.3.0 pin and deployment identity stay unchanged.
+The initial documentation/selected-skill adoption used published v2.3.0, with
+no runtime or deployment change. The subsequent v2.3.1 refresh below adopts the
+published patch and retains these skill contents and task routes.
 
 The existing installation now includes all seven starter skills plus `docs-sync`
 and the app's existing maintenance and generated QA skills. Three previously
 absent starter skills (`toolkit-setup`, `code-review`, `dependency-risk-review`)
-and `docs-sync` were added from the same pinned source with the supported
+and `docs-sync` were added from the v2.3.0 source with the supported
 standalone installer, preview first, using `--skip-existing`. Existing skills,
 shared support and generated QA were not refreshed or replaced.
 
@@ -68,7 +69,7 @@ revision and preview the selection first:
 
 ```sh
 git clone https://github.com/ravisingh11/ai-software-toolkit.git /path/to/toolkit
-git -C /path/to/toolkit checkout --detach 9108f2fda1cc04087cb1326e0457302fab214f3c
+git -C /path/to/toolkit checkout --detach f53a167be5283c1378740f475f231aa130f3aee9
 bash /path/to/toolkit/tooling/install-skills.sh --client claude-code \
   --target /path/to/ai-software-toolkit-reference-app/.claude/skills \
   --skill toolkit-setup --skill prepare-safe-change --skill code-review \
@@ -88,8 +89,8 @@ write that file.
 
 For example: “Use the code-review skill to review this change. Explain risks
 with file references. Do not run tests or commands unless I ask.” Review the
-[versioned upstream onboarding](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.0/docs/quickstart.md#claude-code-setup)
-and [CLI guide](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.0/docs/install.md).
+[versioned upstream onboarding](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.1/docs/quickstart.md#claude-code-setup)
+and [CLI guide](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.1/docs/install.md).
 All toolkit checks remain optional. Application acceptance remains the only
 required CI check; lifecycle and polyglot workflows remain manual and optional.
 
@@ -253,8 +254,8 @@ stays visible and all Proof checks remain optional.
 The supported installer installs the manual `lifecycle-verification.yml`
 workflow and provenance-checking collector. The repository-owned
 `.proof/lifecycle.json` and `examples/lifecycle/` fixture are preserved on refresh.
-The current runtime is pinned to published v2.3.0 upstream revision
-`9108f2fda1cc04087cb1326e0457302fab214f3c`. The toolkit lock, optional helper pin and Worker source metadata agree.
+The current runtime is pinned to published v2.3.1 upstream revision
+`f53a167be5283c1378740f475f231aa130f3aee9`. The toolkit lock, optional helper pin and Worker source metadata agree.
 
 The runtime and manual workflow reached the trusted main branch in PR #36.
 That historical bootstrap selected IaC advisory for change evaluation; container vulnerability,
@@ -491,3 +492,29 @@ deployment; updating the source pin alone did not change the running application
 The subsequent [v2.3.0 live deployment verification](verification/deployment-v2.3.0.md)
 records the actual deployed app/toolkit/Worker identity and API/browser observations.
 Older deployment and CI snapshots retain their original identities.
+
+
+## Published v2.3.1 refresh
+
+The published patch resolves to `f53a167be5283c1378740f475f231aa130f3aee9`.
+Its supported standalone runtime installer and ten selected canonical skills
+were refreshed in tracked-source staging without the app-owned provenance lock.
+Only generated differences were applied. The runtime and installed skill bytes
+are unchanged; the repository-validation and unit-test workflow templates now
+include the canonical conditional source-history checkout. This app has no
+`tooling/validate-skills.py`, so that extra checkout is skipped here.
+
+The lock, optional polyglot helper pin, Worker source variable/type, README,
+Claude guidance and onboarding guide identify the same published source. The
+historical `skillAdditions` record retains its original v2.3.0 identity; the new
+`skillRefresh` record identifies this refresh. Generated app-specific QA is not
+replaced, and no Claude installation is added. Upstream Codex fixture evidence
+does not establish a fresh agent QA run against this application.
+
+All toolkit checks remain optional; Core and functional QA remain advisory.
+Application acceptance is the separately required merge check. Lifecycle and
+polyglot workflows retain manual-only triggers. No extra local tests, scanners,
+agent QA, credential changes, provider activation or deployment are included.
+The [latest recorded live deployment](verification/deployment-main-7d5df0a.md)
+still identifies app `7d5df0a` with toolkit v2.3.0. Updating source metadata does
+not update that deployed Worker or refresh its historical verification.
