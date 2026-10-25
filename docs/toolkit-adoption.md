@@ -24,6 +24,35 @@ Producer bindings: build=`npm run build`; unit tests=`npm run test:coverage`; fo
 
 To upgrade, obtain the exact reviewed release, follow the staging procedure above, refresh selected skills with the supported installer, review configuration preservation and generated diffs, align all source pins, and submit a PR. Follow task execution limits: when local testing is excluded, verify required hosted Application acceptance instead of running local tests or agent QA. A failing consumer check is an upstream compatibility signal.
 
+## Selected Codex skills
+
+The [workspace guide](onboarding.md) adapts the upstream onboarding and routing
+cleanup from [toolkit PR #156](https://github.com/ravisingh11/ai-software-toolkit/pull/156).
+This is a documentation and selected-skill adoption, not a runtime upgrade to
+unreleased `main`. The published v2.3.0 pin and deployment identity stay unchanged.
+
+The existing installation now includes all seven starter skills plus `docs-sync`
+and the app's existing maintenance and generated QA skills. Three previously
+absent starter skills (`toolkit-setup`, `code-review`, `dependency-risk-review`)
+and `docs-sync` were added from the same pinned source with the supported
+standalone installer, preview first, using `--skip-existing`. Existing skills,
+shared support and generated QA were not refreshed or replaced.
+
+From a separate trusted toolkit checkout at the exact revision above:
+
+```sh
+bash /path/to/toolkit/tooling/install-skills.sh --client codex \
+  --target /path/to/ai-software-toolkit-reference-app/.agents/skills \
+  --skill toolkit-setup --skill code-review --skill dependency-risk-review \
+  --skill docs-sync --skip-existing --dry-run
+```
+
+Review the preview, then remove `--dry-run` to install missing selections. This
+command does not run tests, invoke a skill, install workflows or change policy.
+The [AGENTS task map](../AGENTS.md#choose-a-skill-for-the-task) routes actual work.
+Upstream fixture demonstrations and this app's historical QA are distinct; see
+[the evidence limits](onboarding.md#what-the-evidence-establishes).
+
 ## Claude Code setup
 
 The initial v2.1.0 upgrade refreshed onboarding and Claude guidance without
@@ -50,8 +79,9 @@ bash /path/to/toolkit/tooling/install-skills.sh --client claude-code \
 After reviewing the preview, replace `--dry-run` with `--merge-existing` to copy
 missing files while preserving customized skills. This standalone selection
 installs skills into `.claude/skills/` without creating CLI configuration or installing Proof
-workflows or running checks. Use `--clients codex,claude-code` when adopting both
-clients. This upgrade preserves the existing Codex skills and app-specific QA;
+workflows or running checks. For both clients, run separate standalone commands using `--client codex`
+and `--client claude-code`, each with its own destination. The shell installer
+accepts one client per invocation; `--clients` is a CLI `init` option. This upgrade preserves the existing Codex skills and app-specific QA;
 it does not install the optional Claude skill selection automatically. Keep
 application instructions in this repository's CLAUDE.md; the installer does not
 write that file.
@@ -61,7 +91,7 @@ with file references. Do not run tests or commands unless I ask.” Review the
 [versioned upstream onboarding](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.0/docs/quickstart.md#claude-code-setup)
 and [CLI guide](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.0/docs/install.md).
 All toolkit checks remain optional. Application acceptance remains the only
-required CI check; the polyglot workflow remains manual and optional.
+required CI check; lifecycle and polyglot workflows remain manual and optional.
 
 ## Safe skill-replacement refresh
 
