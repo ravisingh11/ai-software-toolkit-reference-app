@@ -7,6 +7,38 @@ Before PR: npm ci, npm run build, npm run lint, npm run test:coverage, npm run v
 
 Deploy only a clean committed revision; use scripts/release.sh once available. Verify live health revision and real API/browser operation. Code rollback never reverses D1 schema; migrations must be backward compatible. See docs/design.md and docs/deployment.md.
 
+## Choose a skill for the task
+
+Read the selected `.agents/skills/<name>/SKILL.md` before following its procedure.
+Use the installed project copy, not an unrelated user-wide copy with the same name.
+
+| Task | Installed skill |
+| --- | --- |
+| Understand toolkit adoption and setup | `toolkit-setup` |
+| Establish change boundaries and revision-bound evidence | `prepare-safe-change` |
+| Review a change | `code-review` |
+| Review dependency risk | `dependency-risk-review` |
+| Find test gaps | `test-gap-finder` |
+| Review security boundaries | `security-audit-lite` |
+| Repair documentation or onboarding | `docs-sync` |
+| Plan a substantial feature | `spec-driven-development` |
+| Review repository setup | `repo-bootstrap` |
+| Configure app-specific QA procedures | `qa-bootstrap` |
+| Perform authorized app functional QA | `qa` (routes to `qa-web` and `qa-api`) |
+| Review release readiness | `release-readiness` |
+
+User execution limits override generic skill commands and the local verification
+commands above. When local tests or QA are excluded, use required hosted CI and
+report local verification as not run. Do not bootstrap QA merely to run it;
+preserve the generated app-specific skills and their configuration.
+
+Installation, discovery, invocation, and passing evidence are separate states.
+Toolkit checks remain optional to adopt and enforce, Core stays advisory, and
+lifecycle/polyglot workflows remain manual. Skill routing grants no authority
+to merge, deploy, publish, change credentials, or change branch protection.
+See [workspace and skill onboarding](docs/onboarding.md) for client selection,
+the exact starter skills, and the limits of historical verification.
+
 <!-- BEGIN WORKSPACE HYGIENE:20261018 -->
 ## Workspace Hygiene
 

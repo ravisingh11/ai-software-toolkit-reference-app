@@ -9,6 +9,16 @@ Verified on October 23, 2026 at 12:31 EDT: app [`7d5df0a`](https://github.com/ra
 exact toolkit/Worker identity, live API flows, and desktop/mobile UI. This recorded
 deployment is separate from the PR scorecard and later documentation commits.
 
+## Start contributing
+
+Open this application's Git checkout in your agent client, read [AGENTS.md](AGENTS.md),
+and follow [workspace and skill onboarding](docs/onboarding.md). The existing
+Codex installation includes all seven toolkit starter skills plus selected
+maintenance and app-specific QA skills. Choose one relevant skill from the
+[task map](AGENTS.md#choose-a-skill-for-the-task); installation alone does not
+prove it was discovered, invoked, or verified. Codex is sufficient; Claude Code
+is an optional, separate client setup.
+
 ## Toolkit scorecard
 
 [![Latest PR Scorecard](https://ravisingh11.github.io/ai-software-toolkit-reference-app/proof-badge.svg)](https://ravisingh11.github.io/ai-software-toolkit-reference-app/)
@@ -104,6 +114,8 @@ Evaluated PR commit: [`8bc67cb`](https://github.com/ravisingh11/ai-software-tool
 ## Try it locally
 
 ```sh
+git clone https://github.com/ravisingh11/ai-software-toolkit-reference-app.git
+cd ai-software-toolkit-reference-app
 npm ci                         # Node 24
 npm run db:local
 npm run dev                    # http://localhost:8791
@@ -126,7 +138,8 @@ execution limits. Toolkit v2.3.0 provides [Claude Code onboarding](https://githu
 [installation and updates](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.0/docs/install.md),
 and the [release notes](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.0/docs/releases/v2.3.0.md).
 See [the app's Claude setup](docs/toolkit-adoption.md#claude-code-setup) for a
-preview-first skills install from the pinned release.
+preview-first skills install from the pinned release and
+[client discovery](docs/onboarding.md#client-discovery) for its separate destination.
 
 Skills guide work; installing them does not run checks or provide passing
 evidence. All toolkit checks remain optional to adopt and enforce. GitHub

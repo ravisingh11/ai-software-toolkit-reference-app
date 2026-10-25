@@ -12,6 +12,16 @@ and [installation guide](https://github.com/ravisingh11/ai-software-toolkit/blob
 See [toolkit adoption](docs/toolkit-adoption.md#claude-code-setup) for optional
 Claude skills and [README.md](README.md) for setup and evidence links.
 
+## Workspace and skills
+
+Follow [workspace and skill onboarding](docs/onboarding.md) and the
+[task-to-skill map](AGENTS.md#choose-a-skill-for-the-task). The committed
+`.agents/skills/` copies are installed for Codex. Claude Code uses its own
+`.claude/skills/` discovery directory; follow the preview-first optional install
+in the adoption guide. Reading a named file explicitly does not establish that
+Claude automatically discovered it. Codex alone is sufficient for this app.
+Neither installation nor upstream Codex demonstrations verify Claude execution.
+
 ## Execution and review
 
 Follow the user's execution limits. Do not run tests, install dependencies,
@@ -20,8 +30,8 @@ the task. When local execution is excluded, report it and use required CI as
 requested; do not claim checks or QA ran locally.
 
 Use PRs for changes to main. GitHub separately requires Application acceptance.
-Toolkit controls and agent QA remain optional/advisory; the polyglot examples
-workflow stays manual (`workflow_dispatch`). Installing skills is not evidence
+Toolkit controls and agent QA remain optional/advisory; lifecycle and polyglot
+workflows stay manual (`workflow_dispatch`). Installing skills is not evidence
 that checks passed. Preserve missing and failed evidence.
 
 Keep credentials and real customer data out of this public demo. Preserve

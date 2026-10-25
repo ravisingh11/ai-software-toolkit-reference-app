@@ -8,7 +8,8 @@
   ],
   "commands": [
     "python3 tooling/install.py --target <staged-application> --profile github --refresh-existing --scorecard-badge",
-    "tooling/install-skills.sh --target <application>/.agents/skills --skill repo-bootstrap --skill qa-bootstrap --skill release-readiness --skill test-gap-finder --skill security-audit-lite --skill spec-driven-development --replace-existing"
+    "tooling/install-skills.sh --target <application>/.agents/skills --skill repo-bootstrap --skill qa-bootstrap --skill release-readiness --skill test-gap-finder --skill security-audit-lite --skill spec-driven-development --replace-existing",
+    "tooling/install-skills.sh --client codex --target <application>/.agents/skills --skill toolkit-setup --skill code-review --skill dependency-risk-review --skill docs-sync --skip-existing"
   ],
   "upgradePolicy": "Review exact upstream commit in a PR, run installers with documented refresh options, review generated diffs, run application acceptance and agent QA before merge. Never follow an unpinned branch in CI.",
   "optionalFeatures": [
@@ -17,5 +18,16 @@
   "release": "v2.3.0",
   "revisionNote": "Published immutable v2.3.0 release. Refreshes read-only activation diagnostics, tracked documentation validation, and tool-independent specification guidance. Preserves existing explicit installation, advisory selections, manual lifecycle/polyglot, consumer-owned configuration and QA, and the independent Snyk failure example.",
   "cliVersion": "2.3.0",
-  "refreshMethod": "Stage tracked application files without this application-owned provenance record (not a CLI managed-file lock); run canonical standalone installers; apply generated runtime/workflow/skill differences only; retain this lock format and update its source/version fields."
+  "refreshMethod": "Stage tracked application files without this application-owned provenance record (not a CLI managed-file lock); run canonical standalone installers; apply generated runtime/workflow/skill differences only; retain this lock format and update its source/version fields.",
+  "skillAdditions": {
+    "revision": "9108f2fda1cc04087cb1326e0457302fab214f3c",
+    "skills": [
+      "toolkit-setup",
+      "code-review",
+      "dependency-risk-review",
+      "docs-sync"
+    ],
+    "method": "Pinned standalone installer; dry-run followed by --skip-existing; existing skills and generated QA preserved.",
+    "verification": "File/source identity only; installation does not establish invocation or app-specific outcome verification."
+  }
 }
