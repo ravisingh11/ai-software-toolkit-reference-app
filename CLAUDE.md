@@ -6,9 +6,9 @@ TypeScript issue tracker using Cloudflare Workers and D1. Keep application
 contracts here and upstream toolkit policy in the pinned `.proof/` runtime.
 Never edit vendored runtime merely to make a check pass.
 
-Toolkit [v2.3.0](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.3.0) is pinned at immutable commit `9108f2fda1cc04087cb1326e0457302fab214f3c` in [toolkit.lock.json](toolkit.lock.json).
-Use its versioned [Claude onboarding](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.0/docs/quickstart.md#claude-code-setup)
-and [installation guide](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.0/docs/install.md).
+Toolkit [v2.3.1](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.3.1) is pinned at immutable commit `f53a167be5283c1378740f475f231aa130f3aee9` in [toolkit.lock.json](toolkit.lock.json).
+Use its versioned [Claude onboarding](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.1/docs/quickstart.md#claude-code-setup)
+and [installation guide](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.1/docs/install.md).
 See [toolkit adoption](docs/toolkit-adoption.md#claude-code-setup) for optional
 Claude skills and [README.md](README.md) for setup and evidence links.
 
