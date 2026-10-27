@@ -111,7 +111,7 @@ checks remain optional to adopt and enforce.
 
 Evaluated PR commit: [`8bc67cb`](https://github.com/ravisingh11/ai-software-toolkit-reference-app/commit/8bc67cbcca74580b564ab2c9beb7a40285ba86d0). This release snapshot does not refresh automatically. Missing evidence: changed-code coverage, platform secret protection, and dependency remediation. No Guardrails controls are enforced in this snapshot; GitHub separately requires **Application acceptance** for merging.
 
-The live demo header links to this repository through the GitHub icon, beside
+The app header links to this repository through the GitHub icon, beside
 the separate Scorecard link.
 
 ## Try it locally
