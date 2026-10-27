@@ -39,6 +39,7 @@ jobs:
           rows = [
               ("Hook / invocation", cause),
               ("Checkpoint", checkpoint),
+              ("Git ref", os.environ["GITHUB_REF"]),
               ("Evidence scope", scope),
               ("Tested revision", revision),
               ("Event revision", os.environ["GITHUB_SHA"]),
