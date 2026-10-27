@@ -39,6 +39,16 @@ to merge, deploy, publish, change credentials, or change branch protection.
 See [workspace and skill onboarding](docs/onboarding.md) for client selection,
 the exact starter skills, and the limits of historical verification.
 
+## Scope the SDLC decision
+
+Follow [SDLC checkpoints](docs/sdlc-checkpoints.md) for coding through merge.
+Name the actual working/index, head/base, integration or merged subject and
+retain result identities across edits and squash/merge. Existing operations
+remain `change`/`release`; recommended placement installs no hooks or triggers.
+Use installed skills and existing hosted evidence within user execution limits.
+Missing/failed/stale/not-run results never become passes. Main CI is separate
+from live deployment evidence and grants no deployment authority.
+
 <!-- BEGIN WORKSPACE HYGIENE:20261018 -->
 ## Workspace Hygiene
 

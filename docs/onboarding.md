@@ -56,6 +56,16 @@ Fresh toolkit installations default to Proof plus seven skills and 11 workflows
 covering 12 advisory Core checks; that default does not replace this app's
 existing workflow or skill selection.
 
+## Choose the checkpoint before invoking a skill
+
+Use the [SDLC checkpoint guide](sdlc-checkpoints.md) and
+[README diagrams and examples](../README.md#use-the-toolkit-across-the-sdlc)
+to name the decision, evidence subject, invocation and next authorization boundary.
+Working-tree review, staged contents, a PR head, an integration checkout and the
+merged revision establish different things. Checkpoint names are guidance, not
+new operations or flags. Start with read-only doctor/hosted evidence when local
+tests are excluded; adopt hooks only through a separate deliberate choice.
+
 ## What the evidence establishes
 
 | State | Required evidence |
