@@ -93,11 +93,18 @@ block-beta
   P8 --> H8
   H8 --> T8
 
-  classDef stage fill:#edf3ec,stroke:#55715a,color:#243529
-  classDef hook fill:#f4f4f0,stroke:#858879,color:#34372f
-  classDef capability fill:#eef3fa,stroke:#58718e,color:#243549
-  classDef limitation fill:#fff5df,stroke:#aa8238,color:#624b20,stroke-dasharray:5 4
+  classDef stage fill:#d1fae5,stroke:#047857,color:#064e3b
+  classDef hook fill:#f3e8ff,stroke:#7e22ce,color:#581c87
+  classDef capability fill:#dbeafe,stroke:#1d4ed8,color:#172554
+  classDef limitation fill:#fef3c7,stroke:#b45309,color:#78350f,stroke-dasharray:5 4
 
+  classDef stageHeader fill:#065f46,stroke:#065f46,color:#ffffff
+  classDef hookHeader fill:#6b21a8,stroke:#6b21a8,color:#ffffff
+  classDef capabilityHeader fill:#1e40af,stroke:#1e40af,color:#ffffff
+
+  class PH stageHeader
+  class HH hookHeader
+  class TH capabilityHeader
   class P1,P2,P3,P4,P5,P6,P7,P8 stage
   class H1,H2,H3,H4,H5,H6,H7,H8 hook
   class T1,T4,T5,T6,T7,T8 capability
@@ -115,6 +122,67 @@ advisory results. Main validation does not deploy the Worker. All checks remain
 optional to adopt, Core advisory, and lifecycle/polyglot execution manual.
 The [app checkpoint guide](docs/sdlc-checkpoints.md) explains all eight decisions,
 evidence invalidation, current support, and later release/deployment handoffs.
+
+## Two invocation hooks, visible in the output
+
+The diagram uses **teal for decisions**, **purple for invocation**, **blue for
+capabilities**, and **dashed amber for limitations**. Labels and line styles
+carry the meaning as well as color.
+
+Here, “hook” means an invocation point. These two examples are **GitHub events**,
+not installed local Git hooks. Both invoke the existing **Application acceptance**
+workflow and its Fieldnotes build, lint, coverage, migrations and API/browser acceptance.
+No trigger, selection, scoring, or enforcement is added by these examples.
+
+| Hook / invocation | How to invoke it | What the run describes |
+| --- | --- | --- |
+| `pull_request:opened`, `synchronize`, or `reopened` | Open/reopen a PR or push a new commit to its branch. | PR integration checkout; the output records the actual checkout plus the PR head/base. |
+| `workflow_dispatch` | Explicitly choose **Run workflow** and a ref, or use the command below. | The explicitly selected ref; a manual run is not automatically PR or merge evidence. |
+
+For an authorized **hosted** manual run from this checkout:
+
+```sh
+gh workflow run acceptance.yml --ref "$(git branch --show-current)"
+gh run list --workflow acceptance.yml --limit 5
+```
+
+This executes CI, not a read-only inspection. Choose a committed branch containing
+the workflow change. It does not run local tests, dispatch lifecycle/polyglot,
+or deploy anything. Open the run's **Record hook / invocation** log step or its
+job summary to distinguish the cause from the result.
+
+Illustrative output from the two invocations (revision values are placeholders):
+
+```text
+Hook / invocation: GitHub pull_request:opened
+Checkpoint: PR review readiness
+Evidence scope: PR integration checkout
+Tested revision: <actual checkout SHA>
+PR head: <head SHA>
+PR base: <base SHA>
+Result: reported separately by the check; invocation is not a pass
+```
+
+```text
+Hook / invocation: GitHub workflow_dispatch
+Checkpoint: Explicit manual verification
+Evidence scope: Explicitly selected ref
+Tested revision: <actual checkout SHA>
+PR head: not supplied
+PR base: not supplied
+Result: reported separately by the check; invocation is not a pass
+```
+
+The event revision and actual tested revision are recorded separately. A workflow
+can test a PR head or an integration checkout; the event alone does not establish
+which. The summary also links its run and attempt. Invocation labels are display
+context, not signed provenance or a replacement for accepted Proof evidence.
+See the [workflow](https://github.com/ravisingh11/ai-software-toolkit-reference-app/blob/main/.github/workflows/acceptance.yml)
+and [hosted runs](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/workflows/acceptance.yml).
+
+Fieldnotes also retains its existing `push` to `main` trigger. That invocation
+is labeled **Post-merge/main validation**, with the actual main checkout recorded;
+a push alone does not prove a PR merge or production deployment occurred.
 
 ## Invoke a skill or inspect evidence
 
@@ -160,7 +228,7 @@ block-beta
   B --> C
   C --> D
   D --> E
-  classDef toolkit fill:#eef3fa,stroke:#58718e,color:#243549
+  classDef toolkit fill:#dbeafe,stroke:#1d4ed8,color:#172554
   class B,E toolkit
 ```
 
