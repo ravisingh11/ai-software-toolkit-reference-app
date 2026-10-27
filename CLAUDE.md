@@ -22,6 +22,12 @@ in the adoption guide. Reading a named file explicitly does not establish that
 Claude automatically discovered it. Codex alone is sufficient for this app.
 Neither installation nor upstream Codex demonstrations verify Claude execution.
 
+Use [SDLC checkpoints](docs/sdlc-checkpoints.md) and the
+[README invocation examples](README.md#invoke-a-skill-or-inspect-evidence) to
+identify the decision and actual evidence subject. Checkpoint names add no
+runtime flags, automatic hooks, or action authority. Preserve original result
+identities across PR edits, integration checks, and merge.
+
 ## Execution and review
 
 Follow the user's execution limits. Do not run tests, install dependencies,

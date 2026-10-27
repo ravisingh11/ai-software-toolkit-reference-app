@@ -19,6 +19,166 @@ maintenance and app-specific QA skills. Choose one relevant skill from the
 prove it was discovered, invoked, or verified. Codex is sufficient; Claude Code
 is an optional, separate client setup.
 
+## Use the toolkit across the SDLC
+
+Choose checks for the decision and evidence scope, from working changes to the
+actual merged revision. Read down the first column for the process and across
+for the invocation and relevant AI Software Toolkit capabilities.
+
+```mermaid
+block-beta
+  columns 3
+
+  block:process
+    columns 1
+    PH["SDLC<br/>checkpoint"]
+    P1["Coding<br/>finished"]
+    P2["Before<br/>commit"]
+    P3["Commit<br/>creation"]
+    P4["Post-commit<br/>feedback"]
+    P5["Before<br/>push"]
+    P6["PR created<br/>or updated"]
+    P7["Before<br/>merge"]
+    P8["After<br/>merge"]
+  end
+
+  block:hooks
+    columns 1
+    HH["Hook or<br/>invocation"]
+    H1["Explicit human<br/>or agent request"]
+    H2["Optional local<br/>pre-commit hook"]
+    H3["Repository-owned<br/>commit-msg hook"]
+    H4["Explicit command<br/>or adopted hook"]
+    H5["Repository-owned<br/>pre-push hook"]
+    H6["Configured GitHub<br/>PR workflows"]
+    H7["Platform checks<br/>and evaluation"]
+    H8["Repository-adopted<br/>main-branch CI"]
+  end
+
+  block:toolkit
+    columns 1
+    TH["AI Software Toolkit<br/>capabilities"]
+    T1["Review skills<br/>Test-gap analysis"]
+    T2["Local static and secret checks<br/>Exact staged scope: future"]
+    T3["Message conventions<br/>No built-in producer"]
+    T4["Commit-bound checks<br/>Evidence recording"]
+    T5["Outgoing-range checks<br/>Secrets and change scope"]
+    T6["Build, tests and PR metadata<br/>Security and review evidence"]
+    T7["Policy evaluation<br/>Inspect accepted evidence"]
+    T8["Merged-revision checks<br/>Release handoff"]
+  end
+
+  P1 --> P2
+  P2 --> P3
+  P3 --> P4
+  P4 --> P5
+  P5 --> P6
+  P6 --> P7
+  P7 --> P8
+
+  P1 --> H1
+  H1 --> T1
+  P2 --> H2
+  H2 --> T2
+  P3 --> H3
+  H3 --> T3
+  P4 --> H4
+  H4 --> T4
+  P5 --> H5
+  H5 --> T5
+  P6 --> H6
+  H6 --> T6
+  P7 --> H7
+  H7 --> T7
+  P8 --> H8
+  H8 --> T8
+
+  classDef stage fill:#edf3ec,stroke:#55715a,color:#243529
+  classDef hook fill:#f4f4f0,stroke:#858879,color:#34372f
+  classDef capability fill:#eef3fa,stroke:#58718e,color:#243549
+  classDef limitation fill:#fff5df,stroke:#aa8238,color:#624b20,stroke-dasharray:5 4
+
+  class P1,P2,P3,P4,P5,P6,P7,P8 stage
+  class H1,H2,H3,H4,H5,H6,H7,H8 hook
+  class T1,T4,T5,T6,T7,T8 capability
+  class T2,T3 limitation
+```
+
+This is a placement map, not an installed automatic pipeline. Dashed boxes show
+current limitations: working-tree feedback does not establish exact staged
+contents passed, and there is no built-in commit-message producer. Local hooks
+are repository-owned, optional, and bypassable. No hooks are installed here.
+
+Fieldnotes already runs **Application acceptance** on PRs and pushes to `main`;
+GitHub separately requires it for merging. Toolkit PR workflows provide selected
+advisory results. Main validation does not deploy the Worker. All checks remain
+optional to adopt, Core advisory, and lifecycle/polyglot execution manual.
+The [app checkpoint guide](docs/sdlc-checkpoints.md) explains all eight decisions,
+evidence invalidation, current support, and later release/deployment handoffs.
+
+## Invoke a skill or inspect evidence
+
+From the application checkout, ask Codex to use the installed project skill:
+
+> Use `$code-review` to review my working changes. Read AGENTS.md first.
+> Report correctness risks and test gaps. Do not run tests, commit, or push.
+
+Before merging:
+
+> Use `$prepare-safe-change` to assess before-merge using the existing change
+> policy and hosted evidence. Identify the tested revision, comparison base,
+> missing results, and unresolved findings. Do not run local tests or merge.
+
+Read-only diagnostics and required-check inspection:
+
+```sh
+python3 .proof/doctor.py --target . --operation change
+# From a checkout with an open PR:
+gh pr checks --required
+```
+
+Doctor does not execute producers or enable checks; it can exit nonzero when
+setup needs attention. Hosted-check inspection does not run checks or grant
+merge authority. Checkpoint names are guidance, not new operations or CLI flags.
+For optional local execution and the difference between GitHub variables and
+local configuration, see [invocation examples](docs/sdlc-checkpoints.md#invocation-examples).
+When local tests are excluded, use hosted CI instead.
+
+### Example: Fieldnotes unit tests
+
+The adopted Unit Tests workflow runs on PR open, reopen, and new commits:
+
+```mermaid
+block-beta
+  columns 1
+  A["Hook<br/>PR opened, reopened, or new commits pushed"]
+  B["AI Software Toolkit<br/>Unit Tests workflow and command runner"]
+  C["Repository-owned test command<br/>Fieldnotes: npm run test:coverage"]
+  D["GitHub check result<br/>Bound to the exact tested commit"]
+  E["Trusted evidence collection and Proof<br/>Evaluate selected policy and publish the scorecard"]
+  A --> B
+  B --> C
+  C --> D
+  D --> E
+  classDef toolkit fill:#eef3fa,stroke:#58718e,color:#243549
+  class B,E toolkit
+```
+
+Its existing GitHub variables select `PROOF_SETUP_COMMAND=npm ci` and
+`PROOF_UNIT_TEST_COMMAND=npm run test:coverage`. The installed runner executes
+setup and tests in separate phases; missing commands fail rather than pass.
+The Unit Tests workflow checks out the PR head, while the required
+**Application acceptance** job uses GitHub's PR integration checkout and also
+runs on merged `main`. Keep those tested revisions distinct.
+
+The [complete unit-test example](docs/sdlc-checkpoints.md#unit-tests-and-optional-hooks)
+shows runner commands and an optional custom pre-push hook. A local runner call
+alone does not create authoritative CI evidence or satisfy Application acceptance.
+The configured trusted collector must accept the correct provider, workflow,
+and revision before Proof evaluates the result. Existing deployment and skill
+verification records retain their original subjects; this documentation adds
+no new execution or production claims.
+
 ## Toolkit scorecard
 
 [![Latest PR Scorecard](https://ravisingh11.github.io/ai-software-toolkit-reference-app/proof-badge.svg)](https://ravisingh11.github.io/ai-software-toolkit-reference-app/)
