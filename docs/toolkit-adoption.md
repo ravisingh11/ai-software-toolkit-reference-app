@@ -1,13 +1,13 @@
 # Toolkit adoption
 
-The runtime and selected skills are pinned to published [toolkit v2.3.1](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.3.1)
-at immutable upstream commit `f53a167be5283c1378740f475f231aa130f3aee9`.
-This patch carries the onboarding, client discovery and skill-routing improvements.
-The canonical staged refresh updates two workflow templates; installed runtime
-and skill bytes remain unchanged. Existing workflows, selections and generated
-application QA are preserved. The app-owned provenance lock records installer
-and CLI version 2.3.1. Historical refresh and deployment records retain their
-original source and evidence identities.
+The runtime and selected skills are pinned to published [toolkit v2.3.2](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.3.2)
+at immutable upstream commit `8a36b246f6bd0c3808276de0f7794b26f574ce5e`.
+This patch packages SDLC guidance, diagrams, invocation reporting and synchronized
+optional CodeQL pins. Canonical staged refresh changes only the CodeQL workflow;
+installed runtime and skill bytes remain unchanged. Existing workflows, selections,
+generated app QA and app-owned acceptance invocation reporting are preserved.
+Installer and CLI version 2.3.2 are recorded in the custom provenance lock.
+Historical refresh/deployment records retain their original source identities.
 
 This repository's `toolkit.lock.json` is application-owned provenance, not the
 CLI managed-file inventory, and it has no `toolkit.toml`. Refresh in a tracked-source
@@ -29,7 +29,7 @@ To upgrade, obtain the exact reviewed release, follow the staging procedure abov
 The [workspace guide](onboarding.md) adapts the upstream onboarding and routing
 cleanup from [toolkit PR #156](https://github.com/ravisingh11/ai-software-toolkit/pull/156).
 The initial documentation/selected-skill adoption used published v2.3.0, with
-no runtime or deployment change. The subsequent v2.3.1 refresh below adopts the
+no runtime or deployment change. The subsequent recorded v2.3.1 refresh below adopts the
 published patch and retains these skill contents and task routes.
 
 The existing installation now includes all seven starter skills plus `docs-sync`
@@ -69,7 +69,7 @@ revision and preview the selection first:
 
 ```sh
 git clone https://github.com/ravisingh11/ai-software-toolkit.git /path/to/toolkit
-git -C /path/to/toolkit checkout --detach f53a167be5283c1378740f475f231aa130f3aee9
+git -C /path/to/toolkit checkout --detach 8a36b246f6bd0c3808276de0f7794b26f574ce5e
 bash /path/to/toolkit/tooling/install-skills.sh --client claude-code \
   --target /path/to/ai-software-toolkit-reference-app/.claude/skills \
   --skill toolkit-setup --skill prepare-safe-change --skill code-review \
@@ -89,8 +89,8 @@ write that file.
 
 For example: “Use the code-review skill to review this change. Explain risks
 with file references. Do not run tests or commands unless I ask.” Review the
-[versioned upstream onboarding](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.1/docs/quickstart.md#claude-code-setup)
-and [CLI guide](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.1/docs/install.md).
+[versioned upstream onboarding](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.2/docs/quickstart.md#claude-code-setup)
+and [CLI guide](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.2/docs/install.md).
 All toolkit checks remain optional. Application acceptance remains the only
 required CI check; lifecycle and polyglot workflows remain manual and optional.
 
@@ -254,8 +254,8 @@ stays visible and all Proof checks remain optional.
 The supported installer installs the manual `lifecycle-verification.yml`
 workflow and provenance-checking collector. The repository-owned
 `.proof/lifecycle.json` and `examples/lifecycle/` fixture are preserved on refresh.
-The current runtime is pinned to published v2.3.1 upstream revision
-`f53a167be5283c1378740f475f231aa130f3aee9`. The toolkit lock, optional helper pin and Worker source metadata agree.
+The current runtime is pinned to published v2.3.2 upstream revision
+`8a36b246f6bd0c3808276de0f7794b26f574ce5e`. The toolkit lock, optional helper pin and Worker source metadata agree.
 
 The runtime and manual workflow reached the trusted main branch in PR #36.
 That historical bootstrap selected IaC advisory for change evaluation; container vulnerability,
@@ -518,3 +518,27 @@ agent QA, credential changes, provider activation or deployment are included.
 The [latest recorded live deployment](verification/deployment-main-7d5df0a.md)
 still identifies app `7d5df0a` with toolkit v2.3.0. Updating source metadata does
 not update that deployed Worker or refresh its historical verification.
+
+
+## Published v2.3.2 refresh
+
+The published patch resolves to `8a36b246f6bd0c3808276de0f7794b26f574ce5e`. The source archive was downloaded
+from the published release and checked against its verified manifest/checksums.
+The supported standalone installers ran in tracked-source staging with this
+application's custom provenance lock excluded. Only generated differences were
+applied: optional CodeQL init/analyze pins advance together to v4.39.1 in the
+existing workflow. This does not activate advanced CodeQL; GitHub Default Setup
+remains the selected provider.
+
+Runtime, selected skill and generated app QA bytes are unchanged. The app-owned
+Application acceptance workflow, its invocation output, existing optional policy
+selections, and manual-only lifecycle/polyglot triggers are preserved. The lock,
+optional helper pin, Worker source variable/type, onboarding, Claude guidance and
+README agree on v2.3.2. Historical v2.3.1 refresh and skill-addition identities
+remain recorded separately.
+
+Verification uses required hosted Application acceptance; no extra local tests,
+scanners, agent QA, credential changes or provider activation are included.
+The independent Snyk vulnerability/quota failure remains visible. Updating source
+metadata does not deploy the Worker or relabel earlier deployment, skill or hook
+invocation evidence. Existing deployment records retain their original subjects.
