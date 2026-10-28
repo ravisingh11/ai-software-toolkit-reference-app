@@ -26,6 +26,7 @@ actual merged revision. Read down the first column for the process and across
 for the invocation and relevant AI Software Toolkit capabilities.
 
 ```mermaid
+%%{init: {"block": {"padding": 32}}}%%
 block-beta
   columns 3
 
