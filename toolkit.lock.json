@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/ravisingh11/ai-software-toolkit",
-  "revision": "f53a167be5283c1378740f475f231aa130f3aee9",
-  "installerVersion": "2.3.1",
+  "revision": "8a36b246f6bd0c3808276de0f7794b26f574ce5e",
+  "installerVersion": "2.3.2",
   "profiles": [
     "core",
     "github"
@@ -16,9 +16,9 @@
   "optionalFeatures": [
     "scorecard-badge"
   ],
-  "release": "v2.3.1",
-  "revisionNote": "Published immutable v2.3.1 onboarding and skill-routing patch. Canonical staged refresh updates two maintainer-history workflow templates; installed runtime/skill bytes, optional selections, manual lifecycle/polyglot, generated app QA, historical deployment evidence and the independent Snyk failure remain intact.",
-  "cliVersion": "2.3.1",
+  "release": "v2.3.2",
+  "revisionNote": "Published v2.3.2 SDLC guidance/invocation patch and synchronized optional CodeQL pins. Only the canonical CodeQL workflow changes on staged refresh; runtime/skills, optional policies, manual lifecycle/polyglot, app-owned acceptance, generated QA and historical evidence are preserved. No deployment.",
+  "cliVersion": "2.3.2",
   "refreshMethod": "Stage tracked application files without this application-owned provenance record (not a CLI managed-file lock); run canonical standalone installers; apply generated runtime/workflow/skill differences only; retain this lock format and update its source/version fields.",
   "skillAdditions": {
     "revision": "9108f2fda1cc04087cb1326e0457302fab214f3c",
@@ -32,7 +32,7 @@
     "verification": "File/source identity only; installation does not establish invocation or app-specific outcome verification."
   },
   "skillRefresh": {
-    "revision": "f53a167be5283c1378740f475f231aa130f3aee9",
+    "revision": "8a36b246f6bd0c3808276de0f7794b26f574ce5e",
     "skills": [
       "repo-bootstrap",
       "qa-bootstrap",
@@ -46,6 +46,31 @@
       "docs-sync"
     ],
     "method": "Canonical standalone installer in tracked-source staging; generated app QA preserved; apply only generated differences.",
-    "verification": "Refreshed source identity; no new local skill execution or app QA claimed."
+    "verification": "Published source identity; unchanged installed skill bytes; no new local skill execution or app QA claimed."
+  },
+  "skillRefreshHistory": [
+    {
+      "revision": "f53a167be5283c1378740f475f231aa130f3aee9",
+      "skills": [
+        "repo-bootstrap",
+        "qa-bootstrap",
+        "release-readiness",
+        "test-gap-finder",
+        "security-audit-lite",
+        "spec-driven-development",
+        "toolkit-setup",
+        "code-review",
+        "dependency-risk-review",
+        "docs-sync"
+      ],
+      "method": "Canonical standalone installer in tracked-source staging; generated app QA preserved; apply only generated differences.",
+      "verification": "Refreshed source identity; no new local skill execution or app QA claimed."
+    }
+  ],
+  "releaseAssets": {
+    "manifestSha256": "b1438de8d0b69d118041d747cdbe59c439db8ddbe0a554a9f7b35ed712ee92b9",
+    "sourceArchiveSha256": "c5e078dadd2d44a7d06430226f166462a9d343d766a8d8c5d5b2c80a9d60e547",
+    "cliSha256": "f07905e0c0f0f33386b81f00b8419eded8e8c3d8bc60f9301ce991255a06e4d2",
+    "verification": "Published downloads compared with verified draft bytes before consumer adoption; asset integrity, not native build provenance."
   }
 }

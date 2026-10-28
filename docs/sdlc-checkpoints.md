@@ -8,13 +8,13 @@ The [README diagram](../README.md#use-the-toolkit-across-the-sdlc) connects the
 process, invocation, and relevant capabilities. This guide adapts the
 [upstream checkpoint guidance at `2fe38d1`](https://github.com/ravisingh11/ai-software-toolkit/blob/2fe38d1aca97b1745d81a4d41e14cef3918b0843/docs/sdlc-checkpoints.md)
 and [README examples](https://github.com/ravisingh11/ai-software-toolkit/blob/2fe38d1aca97b1745d81a4d41e14cef3918b0843/README.md)
-to this application's actual commands and workflows. Those documentation changes
-are newer than the installed toolkit v2.3.1; they do not upgrade the runtime.
+to this application's actual commands and workflows. Toolkit v2.3.2 now includes
+that guidance; the original adaptation links above retain their source identities.
 [toolkit.lock.json](../toolkit.lock.json) remains pinned to
-`f53a167be5283c1378740f475f231aa130f3aee9`.
+`8a36b246f6bd0c3808276de0f7794b26f574ce5e`.
 
 All 33 checks remain discoverable through the
-[versioned activation index](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.1/docs/activation.md)
+[versioned activation index](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.2/docs/activation.md)
 and the upstream guide's full checkpoint mapping. Reuse those guides for
 prerequisites and provider adoption rather than treating this placement map as
 configuration. Only selected, applicable checks affect scoring. All toolkit
