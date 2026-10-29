@@ -185,3 +185,58 @@ Preserve [deployment and verification records](verification/README.md),
 [historical app agent QA](verification/local-qa.md), and their original revision
 bindings. A new README or guide is guidance, not a new live health/API/UI result,
 skill demonstration, or change to installed policy/scoring.
+
+## Actionable checkpoint reports
+
+Application acceptance now attempts a final report and retained JSON/Markdown
+artifact after its existing steps, including failures. Context captures the
+actual PR integration checkout separately from event/head/base identities.
+A main-push run records its own resulting revision; no PR or comparison base is
+invented when absent. Earlier PR results retain their original subjects.
+
+The report describes only this workflow's named steps. Failed, skipped,
+interrupted or unobserved work is not a pass. Raw `outcome` remains visible even
+if `continue-on-error` changes a conclusion. Original check and job conclusions
+are preserved; best-effort reporting/upload cannot repair a failed check.
+Detailed failure reasons remain in the linked step logs. Inspect the separate
+Proof Scorecard, current required checks, approvals and conversations before
+considering merge. Main CI is not release approval or deployment health.
+
+The shared renderer is explicitly adopted application-owned tooling copied
+from the toolkit reporting PR, outside the pinned `.proof` runtime. This is not
+a toolkit release upgrade and does not change `toolkit.lock.json`. Its focused
+regressions run in existing hosted acceptance, including actual evaluator cards,
+stale subjects, supplemental-only success, failure retention and cancellation.
+Lifecycle and polyglot producers remain manual.
+
+For read-only presentation of an already collected evaluator card:
+
+```sh
+python3 scripts/checkpoint_report.py render \
+  --context /path/to/downloaded/context.json \
+  --config scripts/checkpoint-report.json \
+  --scorecard /path/to/existing/scorecard.json \
+  --output-dir /path/to/review-output
+```
+
+The command displays the supplied card without rerunning or authenticating it.
+Keep its original provenance. `CHECKPOINT_STEPS` defaults to no observed results;
+the output directory is explicit. `report.json` is a presentation record, not
+Proof producer evidence. It retains the supplied card unchanged, with separate
+passed, failed, blocked, unverified/not-run, stale and inactive display groups.
+Skills are suggested only from files installed at context-capture time, never
+claimed discovered or executed by the agent.
+
+Cancellation, runner loss or checkout failure may prevent summaries/artifacts;
+inspect the original GitHub run when missing. Artifact retention/access is
+controlled by GitHub. All 33 checks remain discoverable in the
+[activation index](https://github.com/ravisingh11/ai-software-toolkit/blob/main/docs/activation.md).
+Checks stay optional, Core advisory, and lifecycle/polyglot manual. Deployment,
+real skill verification and previous hook evidence remain unchanged.
+
+Job status **at reporting time** is retained separately from individual step
+outcomes. Cancellation after successful tests is not a successful workflow;
+inspect GitHub's final run conclusion even when a report/artifact exists.
+The shared reporting source is toolkit PR #164, revision `dc325a3ecaf40e593cca6a6dcccf0c9bf6e07364`; compare
+`scripts/checkpoint_report.py` and its tests byte for byte with that revision.
+This source adoption does not relabel historical deployment or skill evidence.

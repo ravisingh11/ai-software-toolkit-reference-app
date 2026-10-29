@@ -1,0 +1,59 @@
+{
+  "steps": [
+    {
+      "id": "dependencies",
+      "name": "Dependency installation",
+      "next_action": "Inspect npm installation errors before rerunning application acceptance."
+    },
+    {
+      "id": "build",
+      "name": "Application build",
+      "control": "build",
+      "next_action": "Inspect the build log and fix the compilation or packaging failure."
+    },
+    {
+      "id": "lint",
+      "name": "Format and lint",
+      "control": "format-and-lint",
+      "next_action": "Inspect lint findings and fix the reported source."
+    },
+    {
+      "id": "unit_tests",
+      "name": "Unit tests and coverage",
+      "control": "unit-tests",
+      "next_action": "Inspect failing tests or coverage thresholds; preserve failure evidence."
+    },
+    {
+      "id": "migrations",
+      "name": "Migration validation",
+      "control": "migration-validation",
+      "next_action": "Review the migration contract; do not apply production migrations from this report."
+    },
+    {
+      "id": "repository",
+      "name": "Repository validation",
+      "control": "repository-validation",
+      "next_action": "Inspect repository configuration and contract validation errors."
+    },
+    {
+      "id": "checkpoint_tests",
+      "name": "Checkpoint report regressions",
+      "next_action": "Inspect reporting assertions; preserve original evaluator semantics."
+    },
+    {
+      "id": "browser_setup",
+      "name": "Browser prerequisite installation",
+      "next_action": "Inspect browser installation errors; later browser tests supply no result if skipped."
+    },
+    {
+      "id": "e2e",
+      "name": "Browser acceptance tests",
+      "next_action": "Inspect browser test logs and retained screenshots; deterministic acceptance is separate from agent functional QA."
+    },
+    {
+      "id": "application_artifacts",
+      "name": "Retain application evidence",
+      "next_action": "Inspect the artifact upload; missing artifacts are not evidence of a pass."
+    }
+  ]
+}

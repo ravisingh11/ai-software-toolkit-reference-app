@@ -133,6 +133,45 @@ optional to adopt, Core advisory, and lifecycle/polyglot execution manual.
 The [app checkpoint guide](docs/sdlc-checkpoints.md) explains all eight decisions,
 evidence invalidation, current support, and later release/deployment handoffs.
 
+## Act on the checkpoint report
+
+The existing **Application acceptance** run finishes with an **SDLC checkpoint
+report** in its job summary and a retained `checkpoint-<run>-<attempt>` artifact.
+It identifies the invocation, actual tested revision, comparison base when
+supplied, step outcomes, logs and next actions.
+
+```text
+Checkpoint: PR review
+Hook / invocation: pull_request:synchronize
+Evidence scope: PR integration checkout
+Tested revision: <actual checkout>
+
+Application build   Passed
+Unit tests          Failed      Inspect tests and coverage thresholds
+Browser acceptance  Unverified  No result; inspect the preceding failure
+
+Next: Resolve findings; inspect current merge requirements separately.
+```
+
+This example is illustrative. Acceptance reports describe **their own workflow
+steps**, not all selected checks or authoritative Proof provider results.
+[Separate Proof Scorecard runs](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/workflows/proof-scorecard.yml)
+retain that evaluation boundary. A recommended installed skill has not thereby
+been invoked. No new agent functional QA or live deployment evidence is claimed.
+
+[PR runs](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/workflows/acceptance.yml?query=event%3Apull_request)
+and [main-push runs](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/workflows/acceptance.yml?query=event%3Apush)
+keep distinct subjects. Reports from the new code on main require a maintainer
+merge; passing main CI does not establish live health. See
+[report usage and limits](docs/sdlc-checkpoints.md#actionable-checkpoint-reports).
+
+Observed hosted examples: [successful PR-update report](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/40874074266)
+(tested PR source `1fe596bfc95f`), [current PR checks](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/63/checks),
+and a [retained report from a cancelled run](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/40873681103)
+(tested PR source `13ce2503f5ac`). Cancellation after listed steps passed still
+does not establish a successful workflow. Inspect new main-push results
+separately after merge; earlier PR results do not establish main health.
+
 ## Two invocation hooks, visible in the output
 
 The diagram uses **teal for decisions**, **purple for invocation**, **blue for

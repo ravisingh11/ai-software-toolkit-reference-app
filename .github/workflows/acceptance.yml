@@ -19,52 +19,40 @@ jobs:
         with:
           persist-credentials: false
       - name: Record hook / invocation
+        id: checkpoint_context
         env:
           INVOCATION_ACTION: ${{ github.event.action }}
           INVOCATION_PR_HEAD: ${{ github.event.pull_request.head.sha }}
           INVOCATION_PR_BASE: ${{ github.event.pull_request.base.sha }}
         run: |
-          python3 - <<'PYTHON'
-          import os
-          from pathlib import Path
-          import subprocess
-
-          event = os.environ["GITHUB_EVENT_NAME"]
-          action = os.environ.get("INVOCATION_ACTION", "")
-          cause = f"GitHub {event}" + (f":{action}" if action else "")
-          checkpoint = {"pull_request": "PR review readiness", "push": "Post-merge/main validation"}.get(event, "Explicit manual verification" if event == "workflow_dispatch" else "Other invocation")
-          scope = 'PR integration checkout' if event == "pull_request" else ("Main revision" if event == "push" else "Explicitly selected ref")
-          revision = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
-          run_url = f"{os.environ['GITHUB_SERVER_URL']}/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}/attempts/{os.environ['GITHUB_RUN_ATTEMPT']}"
-          rows = [
-              ("Hook / invocation", cause),
-              ("Checkpoint", checkpoint),
-              ("Git ref", os.environ["GITHUB_REF"]),
-              ("Evidence scope", scope),
-              ("Tested revision", revision),
-              ("Event revision", os.environ["GITHUB_SHA"]),
-              ("PR head", os.environ.get("INVOCATION_PR_HEAD") or "not supplied"),
-              ("PR base", os.environ.get("INVOCATION_PR_BASE") or "not supplied"),
-              ("Run", run_url),
-              ("Result", "reported separately by the check; invocation is not a pass"),
-          ]
-          print("\n".join(f"{key}: {value}" for key, value in rows))
-          with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a") as summary:
-              summary.write("## Hook / invocation\n\n" + "\n".join(f"- **{key}:** {value}" for key, value in rows) + "\n")
-          PYTHON
+          python3 scripts/checkpoint_report.py capture --scope "PR integration checkout" \
+            --output .artifacts/checkpoint/context.json
+          cat .artifacts/checkpoint/context.json
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '24'
           cache: npm
       - run: npm ci
+        id: dependencies
       - run: npm run build
+        id: build
       - run: npm run lint
+        id: lint
       - run: npm run test:coverage
+        id: unit_tests
       - run: npm run validate:migrations
+        id: migrations
       - run: python3 .proof/validators/validate_repository.py
+        id: repository
+      - name: Checkpoint report regressions
+        id: checkpoint_tests
+        run: python3 -m unittest discover -s scripts/tests -p test_checkpoint_report.py
       - run: npx playwright install --with-deps chromium
+        id: browser_setup
       - run: npm run test:e2e
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        id: e2e
+      - id: application_artifacts
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: acceptance-evidence
@@ -72,4 +60,23 @@ jobs:
             playwright-report/
             test-results/
             coverage/
+          retention-days: 14
+      - name: Summarize SDLC checkpoint
+        if: ${{ always() && steps.checkpoint_context.outcome == 'success' }}
+        continue-on-error: true
+        env:
+          CHECKPOINT_STEPS: ${{ toJSON(steps) }}
+          CHECKPOINT_JOB_STATUS: ${{ job.status }}
+        run: |
+          python3 scripts/checkpoint_report.py render \
+            --context .artifacts/checkpoint/context.json --config scripts/checkpoint-report.json \
+            --output-dir .artifacts/checkpoint
+      - name: Retain SDLC checkpoint report
+        if: ${{ always() && steps.checkpoint_context.outcome == 'success' }}
+        continue-on-error: true
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: checkpoint-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .artifacts/checkpoint/
+          if-no-files-found: warn
           retention-days: 14
