@@ -1,6 +1,6 @@
 {
   "repository": "https://github.com/ravisingh11/ai-software-toolkit.git",
-  "revision": "8a36b246f6bd0c3808276de0f7794b26f574ce5e",
+  "revision": "248d8f02e774e4f75af6ea2de49b466688dfae54",
   "source": "Optional quality helpers at the same immutable revision as the installed Proof runtime",
   "mode": "advisory; no branch protection or shared policy changes"
 }
