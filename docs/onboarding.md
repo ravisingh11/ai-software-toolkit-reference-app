@@ -1,9 +1,9 @@
 # Workspace and skill onboarding
 
-This is Fieldnotes, an existing consumer of toolkit v2.3.2, not a fresh toolkit
+This is Fieldnotes, an existing consumer of toolkit v2.3.3, not a fresh toolkit
 installation. Start with [local app setup](../README.md#try-it-locally),
 [AGENTS.md](../AGENTS.md) and [application contracts](design.md). Its runtime pin
-is `8a36b246f6bd0c3808276de0f7794b26f574ce5e` in
+is `248d8f02e774e4f75af6ea2de49b466688dfae54` in
 [toolkit.lock.json](../toolkit.lock.json).
 
 ## Open the application checkout

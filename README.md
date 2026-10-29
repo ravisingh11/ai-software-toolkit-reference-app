@@ -2,12 +2,21 @@
 
 A working issue tracker that consumes [AI Software Toolkit](https://github.com/ravisingh11/ai-software-toolkit) through its supported installers. This separate repository makes adoption, QA, Proof checks, and release evidence inspectable.
 
-**[Open the live demo](https://ai-software-toolkit-reference-app.navivision-account.workers.dev)** · [Release and verification evidence](https://github.com/ravisingh11/ai-software-toolkit-reference-app/releases/tag/v0.1.0) · [Evidence guide](docs/verification/README.md)
+**[Open the live demo](https://ai-software-toolkit-reference-app.navivision-account.workers.dev)** · **[Open the SDLC / Proof report](https://ravisingh11.github.io/ai-software-toolkit-reference-app/)** · [Release and verification evidence](https://github.com/ravisingh11/ai-software-toolkit-reference-app/releases/tag/v0.1.0) · [Evidence guide](docs/verification/README.md)
 
 **Deployment report:** [Latest live deployment verification — updated main, toolkit v2.3.0](docs/verification/deployment-main-7d5df0a.md).
 Verified on October 23, 2026 at 12:31 EDT: app [`7d5df0a`](https://github.com/ravisingh11/ai-software-toolkit-reference-app/commit/7d5df0a4910f99ec6cdc1bc80d33655bf398c66e),
 exact toolkit/Worker identity, live API flows, and desktop/mobile UI. This recorded
 deployment is separate from the PR scorecard and later documentation commits.
+
+## Example: evidence at two checkpoints
+
+[![Reference app report showing separate PR and post-merge checks, including failed PR size and unverified coverage.](docs/assets/sdlc-checkpoint-example.png)](https://ravisingh11.github.io/ai-software-toolkit-reference-app/)
+
+The reference app shows separate checks, outcomes and next decisions for PR
+review and verification after merge. These recorded examples come from different
+changes; each keeps its own revision and evidence.
+[Explore the live reference app report](https://ravisingh11.github.io/ai-software-toolkit-reference-app/).
 
 ## Start contributing
 
@@ -190,7 +199,7 @@ flowchart LR
 | `push` on `refs/heads/main` | A reviewed PR merges into main, or another permitted push updates main. | The actual main revision after the update; earlier PR results keep their original identities. |
 
 Fieldnotes retains its existing PR and `push` to `main` triggers in Application
-acceptance. Its required merge check is retained; the installed toolkit v2.3.2
+acceptance. Its required merge check is retained; the installed toolkit v2.3.3
 pin is recorded in the provenance lock.
 All toolkit checks remain optional to adopt, Core advisory, and lifecycle/polyglot
 execution manual. These invocations do not deploy or publish anything.
@@ -310,6 +319,21 @@ and revision before Proof evaluates the result. Existing deployment and skill
 verification records retain their original subjects; this documentation adds
 no new execution or production claims.
 
+## Separate checkpoint examples in the report
+
+[Open this application's SDLC / Proof report](https://ravisingh11.github.io/ai-software-toolkit-reference-app/).
+Its **PR created or updated** and **After merge** examples have separate check
+lists, tested revisions, invocation details, source runs and next decisions.
+The PR example retains the recorded size failure and unverified changed-coverage
+result. The main example shows application build, unit/coverage, browser and
+migration verification from a different change.
+
+These are historical teaching examples from this application, not current
+application health. Their results are separate from each other and never enter
+the latest PR scorecard's totals. Main CI does not establish live deployment
+health. See [source identities and limits](docs/toolkit-adoption.md#checkpoint-page-renderer-adoption).
+Checks remain optional, Core advisory, and lifecycle/polyglot manual.
+
 ## Toolkit scorecard
 
 [![Latest PR Scorecard](https://ravisingh11.github.io/ai-software-toolkit-reference-app/proof-badge.svg)](https://ravisingh11.github.io/ai-software-toolkit-reference-app/)
@@ -367,10 +391,10 @@ hidden. Missing changed-line coverage or security-settings evidence for a select
 check remains unverifiable. This does not change the separately reported Snyk
 finding example or the app's dependencies.
 
-This source uses [toolkit v2.3.2](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.3.2)
-at immutable revision [`8a36b24`](https://github.com/ravisingh11/ai-software-toolkit/commit/8a36b246f6bd0c3808276de0f7794b26f574ce5e)
+This source uses [toolkit v2.3.3](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.3.3)
+at immutable revision [`248d8f0`](https://github.com/ravisingh11/ai-software-toolkit/commit/248d8f02e774e4f75af6ea2de49b466688dfae54)
 through the supported installer, including the stage-specific groups and full catalog.
-The [activation index](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.2/docs/activation.md)
+The [activation index](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.3/docs/activation.md)
 and read-only doctor explain setup and evidence gaps for all 33 checks. Existing
 workflows and selections are retained; fresh starter defaults do not prune this app.
 All toolkit checks remain optional;
@@ -420,7 +444,7 @@ Choose **Editor** to create issues, move them through triage/in progress/done, a
 ## What this proves
 
 - Real browser UI and JSON API with persistent D1 storage, server-side permissions, session isolation, input validation, and status transitions.
-- Toolkit **[v2.3.2](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.3.2)**, installed at immutable revision [`8a36b24`](https://github.com/ravisingh11/ai-software-toolkit/commit/8a36b246f6bd0c3808276de0f7794b26f574ce5e); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
+- Toolkit **[v2.3.3](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.3.3)**, installed at immutable revision [`248d8f0`](https://github.com/ravisingh11/ai-software-toolkit/commit/248d8f02e774e4f75af6ea2de49b466688dfae54); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
 - Deterministic domain, migration, API, and Chromium acceptance tests, including negative permissions and race/error regressions.
 - Generated app-specific local agent QA skills, executed through the actual Codex browser and HTTP tools. Agent QA remains advisory and separate from deterministic tests.
 - Clean-commit Cloudflare release script, live revision verification, and a documented code rollback procedure.
@@ -428,9 +452,9 @@ Choose **Editor** to create issues, move them through triage/in progress/done, a
 ## Use with Claude Code
 
 Start with this application's [CLAUDE.md](CLAUDE.md) for repository context and
-execution limits. Toolkit v2.3.2 provides [Claude Code onboarding](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.2/docs/quickstart.md#claude-code-setup),
-[installation and updates](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.2/docs/install.md),
-and the [release notes](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.2/docs/releases/v2.3.2.md).
+execution limits. Toolkit v2.3.3 provides [Claude Code onboarding](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.3/docs/quickstart.md#claude-code-setup),
+[installation and updates](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.3/docs/install.md),
+and the [release notes](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.3/docs/releases/v2.3.3.md).
 See [the app's Claude setup](docs/toolkit-adoption.md#claude-code-setup) for a
 preview-first skills install from the pinned release and
 [client discovery](docs/onboarding.md#client-discovery) for its separate destination.

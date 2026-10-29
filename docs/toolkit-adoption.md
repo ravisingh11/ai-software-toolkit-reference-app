@@ -1,13 +1,14 @@
 # Toolkit adoption
 
-The runtime and selected skills are pinned to published [toolkit v2.3.2](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.3.2)
-at immutable upstream commit `8a36b246f6bd0c3808276de0f7794b26f574ce5e`.
-This patch packages SDLC guidance, diagrams, invocation reporting and synchronized
-optional CodeQL pins. Canonical staged refresh changes only the CodeQL workflow;
-installed runtime and skill bytes remain unchanged. Existing workflows, selections,
-generated app QA and app-owned acceptance invocation reporting are preserved.
-Installer and CLI version 2.3.2 are recorded in the custom provenance lock.
-Historical refresh/deployment records retain their original source identities.
+The runtime and selected skills are pinned to published [toolkit v2.3.3](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.3.3)
+at immutable upstream commit `248d8f02e774e4f75af6ea2de49b466688dfae54`.
+This patch packages the separate PR/main checkpoint report examples and authentic
+README screenshot. The app already adopted the same canonical page renderer;
+staged refresh produces no runtime, skill or workflow differences. Its existing
+policies, optional selections, manual lifecycle/polyglot triggers, generated app
+QA and required Application acceptance workflow are preserved. Installer and CLI
+version 2.3.3 are recorded in the custom provenance lock. Historical refresh,
+renderer, deployment, skill and hook records keep their original identities.
 
 This repository's `toolkit.lock.json` is application-owned provenance, not the
 CLI managed-file inventory, and it has no `toolkit.toml`. Refresh in a tracked-source
@@ -69,7 +70,7 @@ revision and preview the selection first:
 
 ```sh
 git clone https://github.com/ravisingh11/ai-software-toolkit.git /path/to/toolkit
-git -C /path/to/toolkit checkout --detach 8a36b246f6bd0c3808276de0f7794b26f574ce5e
+git -C /path/to/toolkit checkout --detach 248d8f02e774e4f75af6ea2de49b466688dfae54
 bash /path/to/toolkit/tooling/install-skills.sh --client claude-code \
   --target /path/to/ai-software-toolkit-reference-app/.claude/skills \
   --skill toolkit-setup --skill prepare-safe-change --skill code-review \
@@ -89,8 +90,8 @@ write that file.
 
 For example: “Use the code-review skill to review this change. Explain risks
 with file references. Do not run tests or commands unless I ask.” Review the
-[versioned upstream onboarding](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.2/docs/quickstart.md#claude-code-setup)
-and [CLI guide](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.2/docs/install.md).
+[versioned upstream onboarding](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.3/docs/quickstart.md#claude-code-setup)
+and [CLI guide](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.3/docs/install.md).
 All toolkit checks remain optional. Application acceptance remains the only
 required CI check; lifecycle and polyglot workflows remain manual and optional.
 
@@ -254,8 +255,8 @@ stays visible and all Proof checks remain optional.
 The supported installer installs the manual `lifecycle-verification.yml`
 workflow and provenance-checking collector. The repository-owned
 `.proof/lifecycle.json` and `examples/lifecycle/` fixture are preserved on refresh.
-The current runtime is pinned to published v2.3.2 upstream revision
-`8a36b246f6bd0c3808276de0f7794b26f574ce5e`. The toolkit lock, optional helper pin and Worker source metadata agree.
+The current runtime is pinned to published v2.3.3 upstream revision
+`248d8f02e774e4f75af6ea2de49b466688dfae54`. The toolkit lock, optional helper pin and Worker source metadata agree.
 
 The runtime and manual workflow reached the trusted main branch in PR #36.
 That historical bootstrap selected IaC advisory for change evaluation; container vulnerability,
@@ -542,3 +543,67 @@ scanners, agent QA, credential changes or provider activation are included.
 The independent Snyk vulnerability/quota failure remains visible. Updating source
 metadata does not deploy the Worker or relabel earlier deployment, skill or hook
 invocation evidence. Existing deployment records retain their original subjects.
+
+## Checkpoint page renderer adoption
+
+The [application report](https://ravisingh11.github.io/ai-software-toolkit-reference-app/)
+includes separate PR and main checkpoint examples. The initial pinned page
+renderer adoption came from toolkit source `e7e1626a0bc7e3013710c8a48ad234d126c058ca`, recorded independently in
+`toolkit.lock.json` under `pageRendererHistory`. At that adoption, the base toolkit
+remained v2.3.2; the subsequent published refresh below aligns both pins.
+
+The supported standalone installer ran with `--profile github
+--refresh-existing --scorecard-badge` against tracked-source staging, excluding
+this application's custom provenance lock. Only `.proof/render_scorecard_badge.py`
+changed; only that generated difference was applied. Evaluator, policy,
+provider configuration, skills and workflows retain their existing bytes.
+The renderer is byte-identical to the pinned upstream source.
+
+Historical PR #63 (`510e25a6c8f4816a35ef9f2d4d1d00f2db74cab8`) comes from
+[Proof Scorecard 40879661416](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/40879661416/attempts/1).
+Its metadata, size, changed-coverage and dependency-review results stay as
+recorded, including failure and missing evidence. Main
+`c3df3f459f14dd4a9945f4988722ebaafc804edd` comes from
+[Application acceptance 40632274819](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/40632274819/attempts/1).
+Its build, unit/coverage, browser and migration results are workflow observations,
+not a full Proof policy score or production verification. These are different
+changes, not a claim that PR #63 produced that earlier main commit.
+
+The examples do not contribute to the live scorecard totals. The latest PR
+snapshot retains its original subject, policy/runtime identity and freshness
+checks. New regression coverage runs through existing hosted acceptance; no
+extra local test suites, scans, agent QA, producer activation, branch-protection
+changes or Worker deployment are included. Existing deployment, skill and hook
+evidence remain unchanged. Checks optional, Core advisory, lifecycle/polyglot
+manual. CI logs and artifacts are subject to GitHub retention.
+
+
+## Published v2.3.3 refresh
+
+The immutable release resolves to `248d8f02e774e4f75af6ea2de49b466688dfae54`. All ten published assets were
+downloaded and checked against GitHub's recorded hashes; all nine SHA256SUMS
+entries verify. The source and CLI hashes agree with the release manifest and
+hosted distribution-verification report. These are asset-integrity checks, not
+native build provenance or new application test results.
+
+The supported standalone runtime and selected-skill installers ran in
+tracked-source staging with the app-owned provenance lock excluded. Preview and
+refresh produced no added, removed or changed files. In particular, the already
+adopted checkpoint renderer is byte-identical to this published source. Its
+current `pageRenderer` pin now agrees with the release revision; the original
+pre-release adoption is retained in `pageRendererHistory`. Prior release asset
+hashes and skill-refresh identities are retained separately in the lock.
+
+The lock, optional polyglot helper, Worker source variable/type, onboarding,
+Claude guidance and README identify v2.3.3. The renderer identity assertion is
+updated for the published pin and runs through existing hosted acceptance.
+Existing historical examples, the README screenshot, deployment verification,
+real skill evidence and hook invocation records are preserved. PR #63's separate
+actionable workflow reporting is not included in this update.
+
+Verification uses required hosted Application acceptance. No extra local tests,
+scanners, agent QA, credential changes, provider activation, branch-protection
+changes or deployments are included. All toolkit checks remain optional, Core
+stays advisory, lifecycle/polyglot execution remains manual, and missing or failed
+evidence stays visible. Updating source metadata does not update the deployed
+Worker or relabel an older evaluation as a result for this revision.
