@@ -9,6 +9,15 @@ Verified on October 23, 2026 at 12:31 EDT: app [`7d5df0a`](https://github.com/ra
 exact toolkit/Worker identity, live API flows, and desktop/mobile UI. This recorded
 deployment is separate from the PR scorecard and later documentation commits.
 
+## Example: evidence at two checkpoints
+
+[![Reference app report showing separate PR and post-merge checks, including failed PR size and unverified coverage.](docs/assets/sdlc-checkpoint-example.png)](https://ravisingh11.github.io/ai-software-toolkit-reference-app/)
+
+The reference app shows separate checks, outcomes and next decisions for PR
+review and verification after merge. These recorded examples come from different
+changes; each keeps its own revision and evidence.
+[Explore the live reference app report](https://ravisingh11.github.io/ai-software-toolkit-reference-app/).
+
 ## Start contributing
 
 Open this application's Git checkout in your agent client, read [AGENTS.md](AGENTS.md),
