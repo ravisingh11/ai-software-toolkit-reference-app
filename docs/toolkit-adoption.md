@@ -1,14 +1,15 @@
 # Toolkit adoption
 
-The runtime and selected skills are pinned to published [toolkit v2.3.3](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.3.3)
-at immutable upstream commit `248d8f02e774e4f75af6ea2de49b466688dfae54`.
-This patch packages the separate PR/main checkpoint report examples and authentic
-README screenshot. The app already adopted the same canonical page renderer;
-staged refresh produces no runtime, skill or workflow differences. Its existing
+The runtime and selected skills are pinned to published [toolkit v2.3.4](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.3.4)
+at immutable upstream commit `2da5654836210fc484399cbc82c85fd821bc666d`.
+This release packages actionable checkpoint reporting: invocation, actual tested
+revision, outcomes, evidence gaps and next steps. This app already adopted the
+same reporter through PR #63 and the same canonical page renderer. The supported
+staged refresh produces no runtime, skill or workflow differences. Existing
 policies, optional selections, manual lifecycle/polyglot triggers, generated app
-QA and required Application acceptance workflow are preserved. Installer and CLI
-version 2.3.3 are recorded in the custom provenance lock. Historical refresh,
-renderer, deployment, skill and hook records keep their original identities.
+QA and required Application acceptance are preserved. Installer and CLI version
+2.3.4 are recorded in the application-owned provenance lock. Historical release,
+deployment, skill and hook records retain their original identities.
 
 This repository's `toolkit.lock.json` is application-owned provenance, not the
 CLI managed-file inventory, and it has no `toolkit.toml`. Refresh in a tracked-source
@@ -70,7 +71,7 @@ revision and preview the selection first:
 
 ```sh
 git clone https://github.com/ravisingh11/ai-software-toolkit.git /path/to/toolkit
-git -C /path/to/toolkit checkout --detach 248d8f02e774e4f75af6ea2de49b466688dfae54
+git -C /path/to/toolkit checkout --detach 2da5654836210fc484399cbc82c85fd821bc666d
 bash /path/to/toolkit/tooling/install-skills.sh --client claude-code \
   --target /path/to/ai-software-toolkit-reference-app/.claude/skills \
   --skill toolkit-setup --skill prepare-safe-change --skill code-review \
@@ -90,8 +91,8 @@ write that file.
 
 For example: “Use the code-review skill to review this change. Explain risks
 with file references. Do not run tests or commands unless I ask.” Review the
-[versioned upstream onboarding](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.3/docs/quickstart.md#claude-code-setup)
-and [CLI guide](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.3/docs/install.md).
+[versioned upstream onboarding](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.4/docs/quickstart.md#claude-code-setup)
+and [CLI guide](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.4/docs/install.md).
 All toolkit checks remain optional. Application acceptance remains the only
 required CI check; lifecycle and polyglot workflows remain manual and optional.
 
@@ -255,8 +256,8 @@ stays visible and all Proof checks remain optional.
 The supported installer installs the manual `lifecycle-verification.yml`
 workflow and provenance-checking collector. The repository-owned
 `.proof/lifecycle.json` and `examples/lifecycle/` fixture are preserved on refresh.
-The current runtime is pinned to published v2.3.3 upstream revision
-`248d8f02e774e4f75af6ea2de49b466688dfae54`. The toolkit lock, optional helper pin and Worker source metadata agree.
+The current runtime is pinned to published v2.3.4 upstream revision
+`2da5654836210fc484399cbc82c85fd821bc666d`. The toolkit lock, optional helper pin and Worker source metadata agree.
 
 The runtime and manual workflow reached the trusted main branch in PR #36.
 That historical bootstrap selected IaC advisory for change evaluation; container vulnerability,
@@ -607,3 +608,37 @@ changes or deployments are included. All toolkit checks remain optional, Core
 stays advisory, lifecycle/polyglot execution remains manual, and missing or failed
 evidence stays visible. Updating source metadata does not update the deployed
 Worker or relabel an older evaluation as a result for this revision.
+
+
+## Published v2.3.4 refresh
+
+The immutable release resolves to `2da5654836210fc484399cbc82c85fd821bc666d`. All ten published assets were
+downloaded and compared with GitHub's recorded hashes; all nine SHA256SUMS
+entries verify. The source revision and CLI digest agree with the manifest and
+hosted distribution-verification receipt. These establish asset integrity,
+not native build provenance or new application verification. The published
+manifest and attached candidate notes retain their historical draft-verification
+fields; the public release records the subsequent publication authorization.
+
+The standalone runtime and ten selected-skill installers ran in tracked-source
+staging with the application-owned provenance lock excluded. Preview and refresh
+produced no added, changed or removed files. The existing renderer and the
+application-owned `scripts/checkpoint_report.py` match this release byte for byte.
+Its reporting configuration, required acceptance workflow and regression suite
+remain application-owned and unchanged. The `checkpointReporter` record captures
+source identity; it does not claim new execution. Previous release hashes,
+renderer and skill-refresh records remain in the lock's history arrays.
+
+The lock, optional polyglot helper, Worker source variable/type, onboarding,
+Claude guidance and README identify v2.3.4. The existing renderer pin assertion
+is updated for this release and runs through required hosted Application
+acceptance. Historical examples, screenshots, deployment verification, real skill
+results and hook invocation evidence are preserved without relabeling revisions.
+The recorded deployed Worker still uses v2.3.3; this source update does not deploy
+or verify a new live revision.
+
+No extra local tests, scanners, agent QA, credential changes, provider activation,
+branch-protection changes or deployments are included. All toolkit checks remain
+optional, Core advisory, and lifecycle/polyglot manual. Missing, failed or stale
+evidence retains its status. Only required hosted CI determines merge readiness;
+main CI and historical reports remain separate from live deployment evidence.

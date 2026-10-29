@@ -10,6 +10,9 @@ exact toolkit/Worker identity, live API flows, desktop/mobile UI and repository
 navigation. These are recorded observations; later reporting/documentation
 commits have not been deployed. Earlier records remain in the [evidence index](docs/verification/README.md).
 
+Source now targets toolkit v2.3.4; that recorded live deployment remains v2.3.3.
+Updating the source pin does not deploy the Worker.
+
 ## Example: evidence at two checkpoints
 
 [![Reference app report showing separate PR and post-merge checks, including failed PR size and unverified coverage.](docs/assets/sdlc-checkpoint-example.png)](https://ravisingh11.github.io/ai-software-toolkit-reference-app/)
@@ -200,7 +203,7 @@ flowchart LR
 | `push` on `refs/heads/main` | A reviewed PR merges into main, or another permitted push updates main. | The actual main revision after the update; earlier PR results keep their original identities. |
 
 Fieldnotes retains its existing PR and `push` to `main` triggers in Application
-acceptance. Its required merge check is retained; the installed toolkit v2.3.3
+acceptance. Its required merge check is retained; the installed toolkit v2.3.4
 pin is recorded in the provenance lock.
 All toolkit checks remain optional to adopt, Core advisory, and lifecycle/polyglot
 execution manual. These invocations do not deploy or publish anything.
@@ -392,10 +395,10 @@ hidden. Missing changed-line coverage or security-settings evidence for a select
 check remains unverifiable. This does not change the separately reported Snyk
 finding example or the app's dependencies.
 
-This source uses [toolkit v2.3.3](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.3.3)
-at immutable revision [`248d8f0`](https://github.com/ravisingh11/ai-software-toolkit/commit/248d8f02e774e4f75af6ea2de49b466688dfae54)
+This source uses [toolkit v2.3.4](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.3.4)
+at immutable revision [`2da5654`](https://github.com/ravisingh11/ai-software-toolkit/commit/2da5654836210fc484399cbc82c85fd821bc666d)
 through the supported installer, including the stage-specific groups and full catalog.
-The [activation index](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.3/docs/activation.md)
+The [activation index](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.4/docs/activation.md)
 and read-only doctor explain setup and evidence gaps for all 33 checks. Existing
 workflows and selections are retained; fresh starter defaults do not prune this app.
 All toolkit checks remain optional;
@@ -445,7 +448,7 @@ Choose **Editor** to create issues, move them through triage/in progress/done, a
 ## What this proves
 
 - Real browser UI and JSON API with persistent D1 storage, server-side permissions, session isolation, input validation, and status transitions.
-- Toolkit **[v2.3.3](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.3.3)**, installed at immutable revision [`248d8f0`](https://github.com/ravisingh11/ai-software-toolkit/commit/248d8f02e774e4f75af6ea2de49b466688dfae54); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
+- Toolkit **[v2.3.4](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.3.4)**, installed at immutable revision [`2da5654`](https://github.com/ravisingh11/ai-software-toolkit/commit/2da5654836210fc484399cbc82c85fd821bc666d); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
 - Deterministic domain, migration, API, and Chromium acceptance tests, including negative permissions and race/error regressions.
 - Generated app-specific local agent QA skills, executed through the actual Codex browser and HTTP tools. Agent QA remains advisory and separate from deterministic tests.
 - Clean-commit Cloudflare release script, live revision verification, and a documented code rollback procedure.
@@ -453,9 +456,9 @@ Choose **Editor** to create issues, move them through triage/in progress/done, a
 ## Use with Claude Code
 
 Start with this application's [CLAUDE.md](CLAUDE.md) for repository context and
-execution limits. Toolkit v2.3.3 provides [Claude Code onboarding](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.3/docs/quickstart.md#claude-code-setup),
-[installation and updates](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.3/docs/install.md),
-and the [release notes](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.3/docs/releases/v2.3.3.md).
+execution limits. Toolkit v2.3.4 provides [Claude Code onboarding](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.4/docs/quickstart.md#claude-code-setup),
+[installation and updates](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.4/docs/install.md),
+and the [release notes](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.4/docs/releases/v2.3.4.md).
 See [the app's Claude setup](docs/toolkit-adoption.md#claude-code-setup) for a
 preview-first skills install from the pinned release and
 [client discovery](docs/onboarding.md#client-discovery) for its separate destination.

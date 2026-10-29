@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/ravisingh11/ai-software-toolkit",
-  "revision": "248d8f02e774e4f75af6ea2de49b466688dfae54",
-  "installerVersion": "2.3.3",
+  "revision": "2da5654836210fc484399cbc82c85fd821bc666d",
+  "installerVersion": "2.3.4",
   "profiles": [
     "core",
     "github"
@@ -16,9 +16,9 @@
   "optionalFeatures": [
     "scorecard-badge"
   ],
-  "release": "v2.3.3",
-  "revisionNote": "Published v2.3.3 checkpoint examples and authentic README screenshot. Canonical staged runtime/skill refresh produced no differences; the existing renderer matches the release. Optional checks, advisory Core, manual lifecycle/polyglot, app-owned acceptance, generated QA and historical evidence are preserved. No deployment.",
-  "cliVersion": "2.3.3",
+  "release": "v2.3.4",
+  "revisionNote": "Published v2.3.4 actionable checkpoint reporting. Canonical staged runtime/skill refresh produced no differences; the existing app-owned reporter and renderer match the release. Optional checks, advisory Core, manual lifecycle/polyglot, required acceptance, generated QA and historical evidence are preserved. No deployment.",
+  "cliVersion": "2.3.4",
   "refreshMethod": "Stage tracked application files without this application-owned provenance record (not a CLI managed-file lock); run canonical standalone installers; apply generated runtime/workflow/skill differences only; retain this lock format and update its source/version fields.",
   "skillAdditions": {
     "revision": "9108f2fda1cc04087cb1326e0457302fab214f3c",
@@ -32,7 +32,7 @@
     "verification": "File/source identity only; installation does not establish invocation or app-specific outcome verification."
   },
   "skillRefresh": {
-    "revision": "248d8f02e774e4f75af6ea2de49b466688dfae54",
+    "revision": "2da5654836210fc484399cbc82c85fd821bc666d",
     "skills": [
       "repo-bootstrap",
       "qa-bootstrap",
@@ -46,7 +46,7 @@
       "docs-sync"
     ],
     "method": "Canonical standalone installer in tracked-source staging; generated app QA preserved; apply only generated differences.",
-    "verification": "Verified published source identity; unchanged installed skill bytes after staged refresh; no new local skill execution or app QA claimed."
+    "verification": "Verified published source identity; installed skill bytes unchanged after staged refresh; no new local skill execution or app QA claimed."
   },
   "skillRefreshHistory": [
     {
@@ -82,21 +82,38 @@
       ],
       "method": "Canonical standalone installer in tracked-source staging; generated app QA preserved; apply only generated differences.",
       "verification": "Published source identity; unchanged installed skill bytes; no new local skill execution or app QA claimed."
+    },
+    {
+      "revision": "248d8f02e774e4f75af6ea2de49b466688dfae54",
+      "skills": [
+        "repo-bootstrap",
+        "qa-bootstrap",
+        "release-readiness",
+        "test-gap-finder",
+        "security-audit-lite",
+        "spec-driven-development",
+        "toolkit-setup",
+        "code-review",
+        "dependency-risk-review",
+        "docs-sync"
+      ],
+      "method": "Canonical standalone installer in tracked-source staging; generated app QA preserved; apply only generated differences.",
+      "verification": "Verified published source identity; unchanged installed skill bytes after staged refresh; no new local skill execution or app QA claimed."
     }
   ],
   "releaseAssets": {
-    "manifestSha256": "712e8f8336b4aefc4639d6c257812be7c0aa5d7b4ea49025549d8de6250bb070",
-    "sourceArchiveSha256": "a28c05bd9c60d21d0413ffbe89dc078bdc1464eaa149e63fff207200d723fe47",
-    "cliSha256": "e930b1389256188f178034aa22f49d1f52231157d5cbdc5652ba3c313cce81c4",
-    "verification": "All ten published downloads verified against GitHub digests and all nine SHA256SUMS entries; manifest and hosted distribution report agree on source and CLI bytes. Asset integrity, not native build provenance."
+    "manifestSha256": "e774b600f21e0eeaf2fdf0ca4e7d455dca6f46a06be7d42c615b49559c25b49c",
+    "sourceArchiveSha256": "bf127e0430546b55b580310835f93b9a155649bf3f5deb5072702ff719c66246",
+    "cliSha256": "f917ddd0bd591153a84f01f408f89148cd33eae6617bb073d98f3c9a0bce5971",
+    "verification": "All ten published downloads verified against GitHub digests and all nine SHA256SUMS entries; manifest and hosted distribution receipt agree on source and CLI bytes. Asset integrity, not native build provenance. Candidate manifest retains historical draft-verification fields; published release records subsequent authorization."
   },
   "pageRenderer": {
     "repository": "https://github.com/ravisingh11/ai-software-toolkit",
-    "revision": "248d8f02e774e4f75af6ea2de49b466688dfae54",
+    "revision": "2da5654836210fc484399cbc82c85fd821bc666d",
     "sourcePath": "tooling/render_scorecard_badge.py",
     "sha256": "d9aaad5579197fc49e340c783fbd74538c2881c5fbfd40324b40b9721abd0ba4",
-    "method": "Published v2.3.3 source; canonical standalone installer with badge option in tracked-source staging produced no differences. Renderer and base toolkit now share the published source pin.",
-    "verification": "Byte-identical canonical page renderer from the verified published source. Historical example/evaluation identities preserved; no deployment or new local check execution claimed."
+    "method": "Published v2.3.4 source; canonical standalone installer with badge option in tracked-source staging produced no differences. Renderer and toolkit share this release pin.",
+    "verification": "Byte-identical canonical page renderer from verified published source. Historical example/evaluation identities preserved; no deployment or new local check execution claimed."
   },
   "releaseHistory": [
     {
@@ -111,6 +128,19 @@
         "cliSha256": "f07905e0c0f0f33386b81f00b8419eded8e8c3d8bc60f9301ce991255a06e4d2",
         "verification": "Published downloads compared with verified draft bytes before consumer adoption; asset integrity, not native build provenance."
       }
+    },
+    {
+      "release": "v2.3.3",
+      "revision": "248d8f02e774e4f75af6ea2de49b466688dfae54",
+      "installerVersion": "2.3.3",
+      "cliVersion": "2.3.3",
+      "revisionNote": "Published v2.3.3 checkpoint examples and authentic README screenshot. Canonical staged runtime/skill refresh produced no differences; the existing renderer matches the release. Optional checks, advisory Core, manual lifecycle/polyglot, app-owned acceptance, generated QA and historical evidence are preserved. No deployment.",
+      "releaseAssets": {
+        "manifestSha256": "712e8f8336b4aefc4639d6c257812be7c0aa5d7b4ea49025549d8de6250bb070",
+        "sourceArchiveSha256": "a28c05bd9c60d21d0413ffbe89dc078bdc1464eaa149e63fff207200d723fe47",
+        "cliSha256": "e930b1389256188f178034aa22f49d1f52231157d5cbdc5652ba3c313cce81c4",
+        "verification": "All ten published downloads verified against GitHub digests and all nine SHA256SUMS entries; manifest and hosted distribution report agree on source and CLI bytes. Asset integrity, not native build provenance."
+      }
     }
   ],
   "pageRendererHistory": [
@@ -121,6 +151,25 @@
       "sha256": "d9aaad5579197fc49e340c783fbd74538c2881c5fbfd40324b40b9721abd0ba4",
       "method": "Pinned canonical standalone installer in tracked-source staging, badge option selected; only its generated page-renderer difference applied. Base toolkit remains published v2.3.2.",
       "verification": "Page presentation only. Original evaluator/policy and historical evidence retain their identities; no new release, deployment or check execution claimed."
+    },
+    {
+      "repository": "https://github.com/ravisingh11/ai-software-toolkit",
+      "revision": "248d8f02e774e4f75af6ea2de49b466688dfae54",
+      "sourcePath": "tooling/render_scorecard_badge.py",
+      "sha256": "d9aaad5579197fc49e340c783fbd74538c2881c5fbfd40324b40b9721abd0ba4",
+      "method": "Published v2.3.3 source; canonical standalone installer with badge option in tracked-source staging produced no differences. Renderer and base toolkit now share the published source pin.",
+      "verification": "Byte-identical canonical page renderer from the verified published source. Historical example/evaluation identities preserved; no deployment or new local check execution claimed."
     }
-  ]
+  ],
+  "checkpointReporter": {
+    "repository": "https://github.com/ravisingh11/ai-software-toolkit",
+    "revision": "2da5654836210fc484399cbc82c85fd821bc666d",
+    "sourcePath": "tooling/checkpoint_report.py",
+    "installedPath": "scripts/checkpoint_report.py",
+    "sha256": "ba52806b8ffa56e646bcececb3f86b03417b66f72fd3b3be170d70c2f6d9d070",
+    "configurationPath": "scripts/checkpoint-report.json",
+    "configurationOwner": "application",
+    "method": "Reporter previously adopted by PR #63; byte-identical to published v2.3.4 source. Application-specific configuration and acceptance workflow preserved.",
+    "verification": "Source identity only; existing hosted acceptance exercises reporting. No new local execution, producer result or deployment claimed."
+  }
 }
