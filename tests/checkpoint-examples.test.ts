@@ -14,7 +14,7 @@ const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/checkpoint-ex
 
 test('page renderer retains its explicitly pinned upstream source identity', () => {
   const lock = JSON.parse(readFileSync(join(root, 'toolkit.lock.json'), 'utf8'));
-  assert.equal(lock.release, 'v2.3.3');
+  assert.equal(lock.release, 'v2.3.4');
   assert.equal(lock.pageRenderer.revision, lock.revision);
   assert.match(lock.pageRenderer.revision, /^[0-9a-f]{40}$/);
   assert.equal(createHash('sha256').update(readFileSync(renderer)).digest('hex'), lock.pageRenderer.sha256);
