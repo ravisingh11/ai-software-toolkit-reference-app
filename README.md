@@ -4,10 +4,11 @@ A working issue tracker that consumes [AI Software Toolkit](https://github.com/r
 
 **[Open the live demo](https://ai-software-toolkit-reference-app.navivision-account.workers.dev)** · **[Open the SDLC / Proof report](https://ravisingh11.github.io/ai-software-toolkit-reference-app/)** · [Release and verification evidence](https://github.com/ravisingh11/ai-software-toolkit-reference-app/releases/tag/v0.1.0) · [Evidence guide](docs/verification/README.md)
 
-**Deployment report:** [Latest live deployment verification — updated main, toolkit v2.3.0](docs/verification/deployment-main-7d5df0a.md).
-Verified on October 23, 2026 at 12:31 EDT: app [`7d5df0a`](https://github.com/ravisingh11/ai-software-toolkit-reference-app/commit/7d5df0a4910f99ec6cdc1bc80d33655bf398c66e),
-exact toolkit/Worker identity, live API flows, and desktop/mobile UI. This recorded
-deployment is separate from the PR scorecard and later documentation commits.
+**Deployment report:** [Toolkit v2.3.3 live deployment verification](docs/verification/deployment-v2.3.3.md).
+Verified on October 29, 2026 at 12:24 EDT: app [`4df96f9`](https://github.com/ravisingh11/ai-software-toolkit-reference-app/commit/4df96f9f9e7da4951e122ce88456ca6eb624a9b4),
+exact toolkit/Worker identity, live API flows, desktop/mobile UI and repository
+navigation. These are recorded observations; later reporting/documentation
+commits have not been deployed. Earlier records remain in the [evidence index](docs/verification/README.md).
 
 ## Example: evidence at two checkpoints
 
