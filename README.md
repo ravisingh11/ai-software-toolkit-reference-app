@@ -2,7 +2,7 @@
 
 A working issue tracker that consumes [AI Software Toolkit](https://github.com/ravisingh11/ai-software-toolkit) through its supported installers. This separate repository makes adoption, QA, Proof checks, and release evidence inspectable.
 
-**[Open the live demo](https://ai-software-toolkit-reference-app.navivision-account.workers.dev)** · [Release and verification evidence](https://github.com/ravisingh11/ai-software-toolkit-reference-app/releases/tag/v0.1.0) · [Evidence guide](docs/verification/README.md)
+**[Open the live demo](https://ai-software-toolkit-reference-app.navivision-account.workers.dev)** · **[Open the SDLC / Proof report](https://ravisingh11.github.io/ai-software-toolkit-reference-app/)** · [Release and verification evidence](https://github.com/ravisingh11/ai-software-toolkit-reference-app/releases/tag/v0.1.0) · [Evidence guide](docs/verification/README.md)
 
 **Deployment report:** [Latest live deployment verification — updated main, toolkit v2.3.0](docs/verification/deployment-main-7d5df0a.md).
 Verified on October 23, 2026 at 12:31 EDT: app [`7d5df0a`](https://github.com/ravisingh11/ai-software-toolkit-reference-app/commit/7d5df0a4910f99ec6cdc1bc80d33655bf398c66e),
@@ -270,6 +270,21 @@ The configured trusted collector must accept the correct provider, workflow,
 and revision before Proof evaluates the result. Existing deployment and skill
 verification records retain their original subjects; this documentation adds
 no new execution or production claims.
+
+## Separate checkpoint examples in the report
+
+[Open this application's SDLC / Proof report](https://ravisingh11.github.io/ai-software-toolkit-reference-app/).
+Its **PR created or updated** and **After merge** examples have separate check
+lists, tested revisions, invocation details, source runs and next decisions.
+The PR example retains the recorded size failure and unverified changed-coverage
+result. The main example shows application build, unit/coverage, browser and
+migration verification from a different change.
+
+These are historical teaching examples from this application, not current
+application health. Their results are separate from each other and never enter
+the latest PR scorecard's totals. Main CI does not establish live deployment
+health. See [source identities and limits](docs/toolkit-adoption.md#checkpoint-page-renderer-adoption).
+Checks remain optional, Core advisory, and lifecycle/polyglot manual.
 
 ## Toolkit scorecard
 

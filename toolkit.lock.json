@@ -72,5 +72,13 @@
     "sourceArchiveSha256": "c5e078dadd2d44a7d06430226f166462a9d343d766a8d8c5d5b2c80a9d60e547",
     "cliSha256": "f07905e0c0f0f33386b81f00b8419eded8e8c3d8bc60f9301ce991255a06e4d2",
     "verification": "Published downloads compared with verified draft bytes before consumer adoption; asset integrity, not native build provenance."
+  },
+  "pageRenderer": {
+    "repository": "https://github.com/ravisingh11/ai-software-toolkit",
+    "revision": "e7e1626a0bc7e3013710c8a48ad234d126c058ca",
+    "sourcePath": "tooling/render_scorecard_badge.py",
+    "sha256": "d9aaad5579197fc49e340c783fbd74538c2881c5fbfd40324b40b9721abd0ba4",
+    "method": "Pinned canonical standalone installer in tracked-source staging, badge option selected; only its generated page-renderer difference applied. Base toolkit remains published v2.3.2.",
+    "verification": "Page presentation only. Original evaluator/policy and historical evidence retain their identities; no new release, deployment or check execution claimed."
   }
 }

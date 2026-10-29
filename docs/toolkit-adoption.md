@@ -542,3 +542,35 @@ scanners, agent QA, credential changes or provider activation are included.
 The independent Snyk vulnerability/quota failure remains visible. Updating source
 metadata does not deploy the Worker or relabel earlier deployment, skill or hook
 invocation evidence. Existing deployment records retain their original subjects.
+
+## Checkpoint page renderer adoption
+
+The [application report](https://ravisingh11.github.io/ai-software-toolkit-reference-app/)
+now includes separate PR and main checkpoint examples. This is a pinned page
+renderer update from toolkit source `e7e1626a0bc7e3013710c8a48ad234d126c058ca`, recorded independently in
+`toolkit.lock.json` under `pageRenderer`. The base toolkit remains v2.3.2.
+
+The supported standalone installer ran with `--profile github
+--refresh-existing --scorecard-badge` against tracked-source staging, excluding
+this application's custom provenance lock. Only `.proof/render_scorecard_badge.py`
+changed; only that generated difference was applied. Evaluator, policy,
+provider configuration, skills and workflows retain their existing bytes.
+The renderer is byte-identical to the pinned upstream source.
+
+Historical PR #63 (`510e25a6c8f4816a35ef9f2d4d1d00f2db74cab8`) comes from
+[Proof Scorecard 40879661416](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/40879661416/attempts/1).
+Its metadata, size, changed-coverage and dependency-review results stay as
+recorded, including failure and missing evidence. Main
+`c3df3f459f14dd4a9945f4988722ebaafc804edd` comes from
+[Application acceptance 40632274819](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/40632274819/attempts/1).
+Its build, unit/coverage, browser and migration results are workflow observations,
+not a full Proof policy score or production verification. These are different
+changes, not a claim that PR #63 produced that earlier main commit.
+
+The examples do not contribute to the live scorecard totals. The latest PR
+snapshot retains its original subject, policy/runtime identity and freshness
+checks. New regression coverage runs through existing hosted acceptance; no
+extra local test suites, scans, agent QA, producer activation, branch-protection
+changes or Worker deployment are included. Existing deployment, skill and hook
+evidence remain unchanged. Checks optional, Core advisory, lifecycle/polyglot
+manual. CI logs and artifacts are subject to GitHub retention.
