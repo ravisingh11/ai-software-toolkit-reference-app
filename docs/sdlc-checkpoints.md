@@ -237,6 +237,6 @@ real skill verification and previous hook evidence remain unchanged.
 Job status **at reporting time** is retained separately from individual step
 outcomes. Cancellation after successful tests is not a successful workflow;
 inspect GitHub's final run conclusion even when a report/artifact exists.
-The shared reporting source is toolkit PR #164, revision `4e3245dea27d8e4bbccc8857b35fbd3ef3d0e052`; compare
+The shared reporting source is toolkit PR #164, revision `dc325a3ecaf40e593cca6a6dcccf0c9bf6e07364`; compare
 `scripts/checkpoint_report.py` and its tests byte for byte with that revision.
 This source adoption does not relabel historical deployment or skill evidence.
