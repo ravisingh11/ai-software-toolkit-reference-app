@@ -1,0 +1,256 @@
+{
+  "status": "deployed-and-verified",
+  "observed_at": "2026-10-29T12:24:29.191468-04:00",
+  "observed_at_utc": "2026-10-29T16:24:29.190458+00:00",
+  "timezone": "America/New_York",
+  "url": "https://ai-software-toolkit-reference-app.navivision-account.workers.dev",
+  "toolkit_release": "v2.3.3",
+  "health": {
+    "status": "ok",
+    "revision": "4df96f9f9e7da4951e122ce88456ca6eb624a9b4",
+    "toolkitRevision": "248d8f02e774e4f75af6ea2de49b466688dfae54",
+    "version": "9014d612-2da6-4836-aa2d-d3ddac0ef0ff"
+  },
+  "traffic_percentage": 100,
+  "worker_deployment_id": "6a8524bd-1e32-4d0a-9706-f56b786c1189",
+  "github_deployment": {
+    "id": 7417873746,
+    "sha": "4df96f9f9e7da4951e122ce88456ca6eb624a9b4",
+    "url": "https://api.github.com/repos/ravisingh11/ai-software-toolkit-reference-app/deployments/7417873746",
+    "status": "success",
+    "status_url": "https://api.github.com/repos/ravisingh11/ai-software-toolkit-reference-app/deployments/7417873746/statuses/20926849332",
+    "environment": "production",
+    "environment_url": "https://ai-software-toolkit-reference-app.navivision-account.workers.dev"
+  },
+  "hosted_acceptance": {
+    "run_url": "https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/40909619781",
+    "job_url": "https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/40909619781/job/123573710376",
+    "source_revision": "4df96f9f9e7da4951e122ce88456ca6eb624a9b4",
+    "event": "push",
+    "conclusion": "success"
+  },
+  "node_version": "24.19.0",
+  "wrangler_version": "4.151.2",
+  "live_results": [
+    {
+      "check": "Live app/toolkit/Worker identity",
+      "result": "passed",
+      "observation": {
+        "status": "ok",
+        "revision": "4df96f9f9e7da4951e122ce88456ca6eb624a9b4",
+        "toolkitRevision": "248d8f02e774e4f75af6ea2de49b466688dfae54",
+        "version": "9014d612-2da6-4836-aa2d-d3ddac0ef0ff"
+      }
+    },
+    {
+      "check": "Live static assets match committed source",
+      "result": "passed",
+      "observation": {
+        "files": [
+          "index.html",
+          "app.js",
+          "styles.css"
+        ],
+        "byteIdentical": true
+      }
+    },
+    {
+      "check": "Anonymous and cross-origin API boundaries",
+      "result": "passed",
+      "observation": {
+        "anonymous": 401,
+        "crossOriginWrite": 403
+      }
+    },
+    {
+      "check": "Desktop editor session and seeded board",
+      "result": "passed",
+      "observation": {
+        "seededIssues": 3,
+        "newIssueEnabled": true
+      }
+    },
+    {
+      "check": "Editor creates, searches and filters issues",
+      "result": "passed",
+      "observation": {
+        "create": 201,
+        "totalIssues": 4,
+        "searchMatches": 1,
+        "lowPriorityMatches": 0,
+        "highPriorityMatches": 1
+      }
+    },
+    {
+      "check": "Editor completes issue",
+      "result": "passed",
+      "observation": {
+        "status": "done"
+      }
+    },
+    {
+      "check": "Status/comment persistence after reload",
+      "result": "passed",
+      "observation": {
+        "status": "in_progress",
+        "commentPersisted": true,
+        "plainTextRendering": true
+      }
+    },
+    {
+      "check": "Input and transition boundaries",
+      "result": "passed",
+      "observation": {
+        "emptyTitle": 400,
+        "triageToDone": 409,
+        "requiredTitleValidation": true
+      }
+    },
+    {
+      "check": "Mobile viewer UI and server-side read-only enforcement",
+      "result": "passed",
+      "observation": {
+        "viewport": "390x844",
+        "controlsDisabled": true,
+        "horizontalOverflow": false,
+        "create": 403,
+        "status": 403,
+        "comment": 403
+      }
+    },
+    {
+      "check": "Cross-board isolation",
+      "result": "passed",
+      "observation": {
+        "editorCommentsFromViewerBoard": 404
+      }
+    },
+    {
+      "check": "Browser runtime errors",
+      "result": "passed",
+      "observation": {
+        "pageErrors": 0
+      }
+    }
+  ],
+  "api_smoke": {
+    "status": "passed",
+    "revision": "4df96f9f9e7da4951e122ce88456ca6eb624a9b4",
+    "toolkitRevision": "248d8f02e774e4f75af6ea2de49b466688dfae54",
+    "workerVersion": "9014d612-2da6-4836-aa2d-d3ddac0ef0ff",
+    "checks": [
+      "database health",
+      "isolated session",
+      "create issue",
+      "transition",
+      "persist comment"
+    ]
+  },
+  "repository_icon_observations": [
+    {
+      "viewport": "desktop",
+      "width": 1440,
+      "height": 1000,
+      "result": "passed",
+      "repoHref": "https://github.com/ravisingh11/ai-software-toolkit-reference-app",
+      "iconVisible": true,
+      "clickTarget": "44x44",
+      "scorecardPreserved": true,
+      "headerNoOverlap": true,
+      "horizontalOverflow": false,
+      "keyboardFocus": true,
+      "popupDestination": "https://github.com/ravisingh11/ai-software-toolkit-reference-app",
+      "screenshot": "desktop-repo-icon.png"
+    },
+    {
+      "viewport": "mobile",
+      "width": 390,
+      "height": 844,
+      "result": "passed",
+      "repoHref": "https://github.com/ravisingh11/ai-software-toolkit-reference-app",
+      "iconVisible": true,
+      "clickTarget": "44x44",
+      "scorecardPreserved": true,
+      "headerNoOverlap": true,
+      "horizontalOverflow": false,
+      "keyboardFocus": "not separately exercised",
+      "popupDestination": "https://github.com/ravisingh11/ai-software-toolkit-reference-app",
+      "screenshot": "mobile-repo-icon.png"
+    },
+    {
+      "viewport": "compact-mobile",
+      "width": 320,
+      "height": 844,
+      "result": "passed",
+      "repoHref": "https://github.com/ravisingh11/ai-software-toolkit-reference-app",
+      "iconVisible": true,
+      "clickTarget": "44x44",
+      "scorecardPreserved": true,
+      "headerNoOverlap": true,
+      "horizontalOverflow": false,
+      "keyboardFocus": "not separately exercised",
+      "popupDestination": null,
+      "screenshot": "compact-mobile-repo-icon.png"
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "evidence/v2.3.3/desktop-editor-board.png",
+      "width": 1440,
+      "height": 1249,
+      "sha256": "4892fee72270360716c04505f4f431d67eecd6bcab657edb722eed0cbefe0bde",
+      "visually_inspected": true
+    },
+    {
+      "file": "evidence/v2.3.3/desktop-editor-detail.png",
+      "width": 1440,
+      "height": 1249,
+      "sha256": "164fa7b7ccd0cec3fb1949b751a0a82a0ff2eb3240d61ce2eb02b09a048165da",
+      "visually_inspected": true
+    },
+    {
+      "file": "evidence/v2.3.3/mobile-viewer-board.png",
+      "width": 390,
+      "height": 1327,
+      "sha256": "ccd735e2379fd80b9d0c9051b93484a98ad4ca9978bb73d4226e16afc25bfa9a",
+      "visually_inspected": true
+    },
+    {
+      "file": "evidence/v2.3.3/desktop-repo-icon.png",
+      "width": 1440,
+      "height": 1191,
+      "sha256": "afeb2b0f020ce62d4ba75b87cd65d144538978a86df064d85e4da4ca82f3a75e",
+      "visually_inspected": true
+    },
+    {
+      "file": "evidence/v2.3.3/mobile-repo-icon.png",
+      "width": 390,
+      "height": 1188,
+      "sha256": "f2869ba103660b3889c665240e4b8cbfc1aa7a54f8ef0dcd532b7f80212db20f",
+      "visually_inspected": true
+    },
+    {
+      "file": "evidence/v2.3.3/compact-mobile-repo-icon.png",
+      "width": 320,
+      "height": 1268,
+      "sha256": "e04825a6d916bb7bb4a01f50f282ae66ebb7c9dd123717f1fa6d7af4fd797040",
+      "visually_inspected": true
+    }
+  ],
+  "database_migrations": "none pending; none applied",
+  "rollback_worker_version": "d21b5b88-b7f8-4427-af3d-01495caa1330",
+  "synthetic_sessions": {
+    "count": 3,
+    "expires_after_hours": 24,
+    "cookies_retained": false
+  },
+  "local_tests": "not run; exact-source hosted acceptance used before deployment",
+  "lifecycle_polyglot": "manual; not dispatched",
+  "checks": "optional; Core advisory",
+  "limits": [
+    "Timestamped live release observations, separate from PR QA, deterministic test suites and Proof policy evidence.",
+    "Later reporting/documentation commits were not deployed and do not inherit these observations.",
+    "Existing advisory Snyk finding remains visible; this is not exhaustive security, load or availability certification.",
+    "Recording these files does not perform a deployment or new live verification."
+  ]
+}
