@@ -160,8 +160,8 @@ Observed hosted examples: [successful PR-update report](https://github.com/ravis
 (tested PR source `1fe596bfc95f`), [current PR checks](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/63/checks),
 and a [retained report from a cancelled run](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/40873681103)
 (tested PR source `13ce2503f5ac`). Cancellation after listed steps passed still
-does not establish a successful workflow. A report from the new code on main
-remains pending maintainer merge.
+does not establish a successful workflow. Inspect new main-push results
+separately after merge; earlier PR results do not establish main health.
 
 ## Two invocation hooks, visible in the output
 
