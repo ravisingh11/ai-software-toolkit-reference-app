@@ -156,6 +156,12 @@ keep distinct subjects. Reports from the new code on main require a maintainer
 merge; passing main CI does not establish live health. See
 [report usage and limits](docs/sdlc-checkpoints.md#actionable-checkpoint-reports).
 
+Observed hosted examples: [current PR checks and reports](https://github.com/ravisingh11/ai-software-toolkit-reference-app/pull/63/checks)
+and a [retained report from a cancelled run](https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/40873681103)
+(tested PR source `13ce2503f5ac`). Cancellation after listed steps passed still
+does not establish a successful workflow. A report from the new code on main
+remains pending maintainer merge.
+
 ## Two invocation hooks, visible in the output
 
 The diagram uses **teal for decisions**, **purple for invocation**, **blue for

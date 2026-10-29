@@ -66,6 +66,7 @@ jobs:
         continue-on-error: true
         env:
           CHECKPOINT_STEPS: ${{ toJSON(steps) }}
+          CHECKPOINT_JOB_STATUS: ${{ job.status }}
         run: |
           python3 scripts/checkpoint_report.py render \
             --context .artifacts/checkpoint/context.json --config scripts/checkpoint-report.json \

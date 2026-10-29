@@ -233,3 +233,10 @@ controlled by GitHub. All 33 checks remain discoverable in the
 [activation index](https://github.com/ravisingh11/ai-software-toolkit/blob/main/docs/activation.md).
 Checks stay optional, Core advisory, and lifecycle/polyglot manual. Deployment,
 real skill verification and previous hook evidence remain unchanged.
+
+Job status **at reporting time** is retained separately from individual step
+outcomes. Cancellation after successful tests is not a successful workflow;
+inspect GitHub's final run conclusion even when a report/artifact exists.
+The shared reporting source is toolkit PR #164, revision `4e3245d`; compare
+`scripts/checkpoint_report.py` and its tests byte for byte with that revision.
+This source adoption does not relabel historical deployment or skill evidence.
