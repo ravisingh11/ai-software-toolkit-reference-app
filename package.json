@@ -35,9 +35,9 @@
     "dependency-cruiser": "18.7.0",
     "eslint": "10.13.0",
     "prettier": "3.9.10",
-    "typescript": "5.9.3",
-    "typescript-eslint": "8.72.0",
-    "wrangler": "4.151.2"
+    "typescript": "7.0.2",
+    "typescript-eslint": "8.72.1",
+    "wrangler": "4.153.0"
   },
   "overrides": {
     "miniflare@5.20261019.0-beta": {
