@@ -4,14 +4,13 @@ A working issue tracker that consumes [AI Software Toolkit](https://github.com/r
 
 **[Open the live demo](https://ai-software-toolkit-reference-app.navivision-account.workers.dev)** · **[Open the SDLC / Proof report](https://ravisingh11.github.io/ai-software-toolkit-reference-app/)** · [Release and verification evidence](https://github.com/ravisingh11/ai-software-toolkit-reference-app/releases/tag/v0.1.0) · [Evidence guide](docs/verification/README.md)
 
-**Deployment report:** [Toolkit v2.3.3 live deployment verification](docs/verification/deployment-v2.3.3.md).
-Verified on October 29, 2026 at 12:24 EDT: app [`4df96f9`](https://github.com/ravisingh11/ai-software-toolkit-reference-app/commit/4df96f9f9e7da4951e122ce88456ca6eb624a9b4),
-exact toolkit/Worker identity, live API flows, desktop/mobile UI and repository
-navigation. These are recorded observations; later reporting/documentation
-commits have not been deployed. Earlier records remain in the [evidence index](docs/verification/README.md).
-
-Source now targets toolkit v2.3.4; that recorded live deployment remains v2.3.3.
-Updating the source pin does not deploy the Worker.
+**Deployment report:** [Toolkit v2.3.4 live deployment verification](docs/verification/deployment-v2.3.4.md).
+Verified on October 29, 2026 at **19:30 EDT**: app [`9d24e43`](https://github.com/ravisingh11/ai-software-toolkit-reference-app/commit/9d24e434d211eea1d00927d578893001a9d5116c),
+exact toolkit/Worker identity, live API persistence and permissions, and
+desktop/mobile UI. [Sanitized data and four original screenshots](docs/verification/deployment-v2.3.4.json)
+retain the recorded observations. Later documentation commits have not been
+deployed and do not inherit these results. The [v2.3.3 deployment record](docs/verification/deployment-v2.3.3.md)
+and [earlier evidence](docs/verification/README.md) remain unchanged.
 
 ## Example: evidence at two checkpoints
 

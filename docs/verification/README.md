@@ -2,6 +2,7 @@
 
 The live demo is at https://ai-software-toolkit-reference-app.navivision-account.workers.dev. `/api/health` exposes the serving Git revision, toolkit pin, Worker version, and database readiness.
 
+- [Toolkit v2.3.4 live deployment verification](deployment-v2.3.4.md): observed October 29 at 19:30 EDT, app `9d24e43`, exact toolkit/Worker identity, live health/API persistence and permissions, desktop/mobile UI, sanitized data and four original screenshots. This is retained deployment evidence; later documentation CI does not redeploy or reverify it.
 - [Toolkit v2.3.3 live deployment verification](deployment-v2.3.3.md): observed October 29 at 12:24 EDT, app `4df96f9`, exact toolkit/Worker identity, live health/API, desktop/mobile UI, repository navigation, sanitized data and six original screenshots. Later reporting/documentation commits are separate from this deployed revision.
 - [Earlier updated main deployment verification](deployment-main-7d5df0a.md): app `7d5df0a` after the reviewed Dependabot updates, toolkit v2.3.0, exact Worker identity, live health/API and desktop/mobile observations, sanitized data and screenshot evidence. Later documentation commits do not redeploy the Worker.
 - [Initial toolkit v2.3.0 live deployment verification](deployment-v2.3.0.md): earlier app `cbb10d6` deployment and its original evidence.
