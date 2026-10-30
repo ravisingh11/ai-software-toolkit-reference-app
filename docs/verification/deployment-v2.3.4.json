@@ -1,0 +1,211 @@
+{
+  "status": "DEPLOYED_AND_VERIFIED",
+  "observed_at_utc": "2026-10-29T23:30:32.675426+00:00",
+  "observed_at_local": "2026-10-29T19:30:32.675426-04:00",
+  "environment_url": "https://ai-software-toolkit-reference-app.navivision-account.workers.dev",
+  "app_revision": "9d24e434d211eea1d00927d578893001a9d5116c",
+  "toolkit_release": "v2.3.4",
+  "toolkit_revision": "2da5654836210fc484399cbc82c85fd821bc666d",
+  "worker_version": "1870a3a2-51cc-4554-bfd0-9b1a1a338a39",
+  "cloudflare_deployment_id": "ed1e44f5-e462-49e7-8355-ec531b6d8486",
+  "traffic_percentage": 100,
+  "github_deployment_id": 7426690570,
+  "github_success_status_id": 20955444608,
+  "github_success_status_url": "https://api.github.com/repos/ravisingh11/ai-software-toolkit-reference-app/deployments/7426690570/statuses/20955444608",
+  "hosted_acceptance_url": "https://github.com/ravisingh11/ai-software-toolkit-reference-app/actions/runs/40972856771",
+  "health": {
+    "status": "ok",
+    "revision": "9d24e434d211eea1d00927d578893001a9d5116c",
+    "toolkitRevision": "2da5654836210fc484399cbc82c85fd821bc666d",
+    "version": "1870a3a2-51cc-4554-bfd0-9b1a1a338a39"
+  },
+  "release_smoke": {
+    "status": "passed",
+    "revision": "9d24e434d211eea1d00927d578893001a9d5116c",
+    "toolkitRevision": "2da5654836210fc484399cbc82c85fd821bc666d",
+    "workerVersion": "1870a3a2-51cc-4554-bfd0-9b1a1a338a39",
+    "checks": [
+      "database health",
+      "isolated session",
+      "create issue",
+      "transition",
+      "persist comment"
+    ]
+  },
+  "live_checks": [
+    {
+      "name": "Live health and exact revision",
+      "result": "passed",
+      "http_status": 200,
+      "health": {
+        "status": "ok",
+        "revision": "9d24e434d211eea1d00927d578893001a9d5116c",
+        "toolkitRevision": "2da5654836210fc484399cbc82c85fd821bc666d",
+        "version": "1870a3a2-51cc-4554-bfd0-9b1a1a338a39"
+      }
+    },
+    {
+      "name": "Served static asset matches committed source",
+      "result": "passed",
+      "url": "/",
+      "sha256": "be78ffb8f174907bdf05a48d5fa4eaa6f80102d9726a03ce639ed519ed324337"
+    },
+    {
+      "name": "Served static asset matches committed source",
+      "result": "passed",
+      "url": "/app.js",
+      "sha256": "4e40f98817ccb4d2b6d3a8b59041a5470dd545b0c6993d64d012299940c824d6"
+    },
+    {
+      "name": "Served static asset matches committed source",
+      "result": "passed",
+      "url": "/styles.css",
+      "sha256": "f6acab79a0d25b3e3869fd1f39511ba69c82c6194ec0d41f5b5733deb4b86fbe"
+    },
+    {
+      "name": "Anonymous and cross-origin boundaries",
+      "result": "passed",
+      "anonymous_read": 401,
+      "cross_origin_session_write": 403
+    },
+    {
+      "name": "Desktop editor startup",
+      "result": "passed",
+      "seeded_issues": 3
+    },
+    {
+      "name": "Editor creates issue; input and transition boundaries",
+      "result": "passed",
+      "created_status": 201,
+      "empty_title_api": 400,
+      "invalid_transition": 409,
+      "browser_empty_title_rejected": true
+    },
+    {
+      "name": "Search and priority filters",
+      "result": "passed",
+      "matching_count": 1,
+      "excluded_count": 0
+    },
+    {
+      "name": "Status, comments and reload persistence",
+      "result": "passed",
+      "status_after_reload": "in_progress",
+      "comment_copies": 1,
+      "final_status": "done",
+      "description_displayed_as_literal_text": true
+    },
+    {
+      "name": "Desktop repository link",
+      "result": "passed",
+      "url": "https://github.com/ravisingh11/ai-software-toolkit-reference-app",
+      "keyboard_focus": true,
+      "target_size": {
+        "width": 44,
+        "height": 44
+      }
+    },
+    {
+      "name": "Viewer API authorization and board isolation",
+      "result": "passed",
+      "read": 200,
+      "create": 403,
+      "status_write": 403,
+      "comment_write": 403,
+      "cross_board_read": 404,
+      "cache_control": "no-store"
+    },
+    {
+      "name": "Mobile viewer UI",
+      "result": "passed",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "seeded_issues": 3,
+      "mutations_disabled": true,
+      "filters_work": true,
+      "horizontal_overflow": false,
+      "repository_target": {
+        "width": 44,
+        "height": 44
+      }
+    },
+    {
+      "name": "Compact mobile layout",
+      "result": "passed",
+      "viewport": {
+        "width": 320,
+        "height": 844
+      },
+      "horizontal_overflow": false,
+      "repository_link_visible": true
+    }
+  ],
+  "browser_page_errors": [],
+  "console_observations": {
+    "http_401_messages": 1,
+    "explanation": "Expected initial unauthenticated /api/session fetch on desktop startup; a new isolated editor session then succeeds."
+  },
+  "remote_migrations": {
+    "pending": false,
+    "applied": false
+  },
+  "rollback": {
+    "previous_app_revision": "4df96f9f9e7da4951e122ce88456ca6eb624a9b4",
+    "previous_toolkit_revision": "248d8f02e774e4f75af6ea2de49b466688dfae54",
+    "worker_version": "9014d612-2da6-4836-aa2d-d3ddac0ef0ff",
+    "deployment_id": "6a8524bd-1e32-4d0a-9706-f56b786c1189",
+    "traffic": [
+      {
+        "version_id": "9014d612-2da6-4836-aa2d-d3ddac0ef0ff",
+        "percentage": 100
+      }
+    ],
+    "migration_status": "none pending; none applied",
+    "limits": "Rollback changes code/configuration, not D1 contents."
+  },
+  "sessions": {
+    "count": 3,
+    "data": "isolated synthetic demo only; expires after 24 hours",
+    "cookies_saved": false
+  },
+  "limits": [
+    "Bounded live release observations, not local PR QA, exhaustive security/load testing or future availability.",
+    "Hosted acceptance reused; full release script omitted because it repeats local suites. Wrangler performed only deployment bundling.",
+    "A pre-deployment Python urllib health probe returned 403; curl and native Node/browser requests returned 200 with matching prior revisions. Probe-client difference retained; no application workaround or credential change.",
+    "Existing advisory Snyk picomatch finding is unchanged.",
+    "Checks optional, Core advisory, lifecycle/polyglot manual; no optional producer dispatched."
+  ],
+  "screenshots": [
+    {
+      "file": "evidence/v2.3.4/desktop-editor-board.png",
+      "sha256": "429702980e75c9f4d27c7c3db656deb090ec3ab4fc3dc7bffcc3569c467ad275",
+      "width": 1440,
+      "height": 1249,
+      "visually_inspected": true
+    },
+    {
+      "file": "evidence/v2.3.4/desktop-editor-detail.png",
+      "sha256": "3bc323753daf76e4a9e50d181f964e2d9d194433b6c1cc0d22a8a09fdf72f1dd",
+      "width": 1440,
+      "height": 1249,
+      "visually_inspected": true
+    },
+    {
+      "file": "evidence/v2.3.4/mobile-viewer-board.png",
+      "sha256": "52a885d9d77662f930d86ac6e30e163b542b0af52b12234b3a7410ce04b715bf",
+      "width": 390,
+      "height": 1376,
+      "visually_inspected": true
+    },
+    {
+      "file": "evidence/v2.3.4/compact-mobile-board.png",
+      "sha256": "9cff0f882e2b6e08d26ad510ffacf1cb30e83c74c4e3c0493906c23c4d171bff",
+      "width": 320,
+      "height": 1485,
+      "visually_inspected": true
+    }
+  ],
+  "recording_note": "Recorded from retained live deployment evidence without a new deployment, live probe or local test run. Documentation CI has a separate source revision."
+}
