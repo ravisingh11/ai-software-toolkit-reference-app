@@ -52,7 +52,7 @@ jobs:
         run: python3 -m unittest discover -s scripts/tests -p test_checkpoint_report.py
       - name: Release package regressions
         id: package_tests
-        run: python3 -m unittest discover -s scripts/tests -p 'test_release_package.py'
+        run: python3 -m unittest discover -s scripts/tests -p 'test_release*.py'
       - run: npx playwright install --with-deps chromium
         id: browser_setup
       - run: npm run test:e2e

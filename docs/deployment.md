@@ -2,7 +2,7 @@
 
 Fieldnotes uses a dedicated Cloudflare Worker and D1 database in the NaviVision account. The public URL is https://ai-software-toolkit-reference-app.navivision-account.workers.dev. Deployment status is documented in README; this URL alone is not deployment evidence.
 
-Use Node 24, `npm ci`, and `npx wrangler whoami` to verify the selected account. `scripts/release.sh` requires a clean commit merged into main, repeats acceptance checks, applies remote migrations, deploys with the full commit in `APP_REVISION` and the deployment message, and checks live API behavior. Record a GitHub deployment against the same commit and attach sanitized health/smoke/version evidence. Inspect the live browser as a separate release check.
+Use the [manual verified-package procedure](package-promotion.md#manual-promotion-and-evidence). `scripts/release.sh prepare` retrieves and verifies one successful main-run package without Cloudflare access. After separate approval, `deploy` uploads that exact compiled package with `--no-bundle`, then `observe` verifies live health/API and desktop/mobile UI. `render` formats retained evidence without refreshing its timestamp. The tool requires reviewed Node 24/Wrangler prerequisites; it never rebuilds source, installs dependencies, applies migrations or deploys by default. Pending D1 migrations block upload until a separately reviewed migration procedure is completed.
 
 Local development: `npm run db:local`, then `npm run dev`. E2E uses an isolated temporary local D1 directory, discarded after the run. Never point PR functional QA at the live Worker.
 
