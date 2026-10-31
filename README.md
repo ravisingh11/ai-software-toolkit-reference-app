@@ -21,6 +21,14 @@ review and verification after merge. These recorded examples come from different
 changes; each keeps its own revision and evidence.
 [Explore the live reference app report](https://ravisingh11.github.io/ai-software-toolkit-reference-app/).
 
+## Candidate package assurance
+
+Hosted acceptance now tests and retains one [compiled Worker package](docs/package-promotion.md),
+with exact source, inventory and configuration hashes. This is CI evidence,
+not a new deployment. Production package promotion remains manual and the live
+pilot is unverified until separately authorized. The published toolkit pin and
+historical deployment records remain unchanged.
+
 ## Start contributing
 
 Open this application's Git checkout in your agent client, read [AGENTS.md](AGENTS.md),

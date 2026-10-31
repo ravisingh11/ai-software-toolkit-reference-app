@@ -36,6 +36,9 @@ jobs:
         id: dependencies
       - run: npm run build
         id: build
+      - name: Stage immutable Worker package
+        id: package
+        run: python3 scripts/release_package.py stage --package .artifacts/v2.4.0-worker-package
       - run: npm run lint
         id: lint
       - run: npm run test:coverage
@@ -47,10 +50,32 @@ jobs:
       - name: Checkpoint report regressions
         id: checkpoint_tests
         run: python3 -m unittest discover -s scripts/tests -p test_checkpoint_report.py
+      - name: Release package regressions
+        id: package_tests
+        run: python3 -m unittest discover -s scripts/tests -p 'test_release_package.py'
       - run: npx playwright install --with-deps chromium
         id: browser_setup
       - run: npm run test:e2e
         id: e2e
+        env:
+          APP_PACKAGE_DIR: .artifacts/v2.4.0-worker-package
+          APP_PACKAGE_MANIFEST_SHA: ${{ steps.package.outputs.manifest-sha }}
+      - name: Check frozen package after acceptance
+        id: package_verified
+        env:
+          PACKAGE_STEP_RESULTS: ${{ toJSON(steps) }}
+        run: |
+          python3 scripts/release_package.py seal --package .artifacts/v2.4.0-worker-package \
+            --expected-manifest "${{ steps.package.outputs.manifest-sha }}"
+      - name: Retain verified Worker package
+        id: package_artifact
+        if: ${{ success() && steps.package_verified.outcome == 'success' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: worker-release-${{ github.sha }}
+          path: .artifacts/v2.4.0-worker-package/
+          if-no-files-found: error
+          retention-days: 30
       - id: application_artifacts
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
