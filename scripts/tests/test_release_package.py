@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import copy
+from datetime import datetime, timezone
 import json
 from pathlib import Path
 import shutil
@@ -11,6 +12,7 @@ import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import assurance
 import release_package as package
 
 
@@ -62,6 +64,34 @@ class PackageTests(unittest.TestCase):
         self.assertEqual(provenance["repository"], "https://github.com/ravisingh11/ai-software-toolkit")
         self.assertRegex(provenance["revision"], r"^[0-9a-f]{40}$")
         self.assertEqual(package.sha(root / provenance["installed_path"]), provenance["sha256"])
+
+    def test_commit_receipt_ignores_unrelated_pr_context_but_preserves_declared_dependencies(self):
+        revision = "a" * 40
+        evidence = self.write("result.json", {"status": "passed", "source_revision": revision})
+        receipt = {"version": 1, "kind": "checkpoint-receipt", "checkpoint": "post-commit",
+                   "subject": {"type": "git-commit", "revision": revision},
+                   "observed_at": "2026-10-31T13:00:00Z", "context": {"invocation": "fixture:commit-test"},
+                   "dependencies": {"source_revision": revision},
+                   "results": [{"check": "unit-tests", "provider": "fixture", "status": "passed", "evidence": ["result.json"]}],
+                   "evidence_refs": [{"path": "result.json", "sha256": package.sha(evidence), "size": evidence.stat().st_size}]}
+        path = self.write("receipt.json", receipt)
+        expected = {"source_revision": revision, "comparison_base": "b" * 40, "pr_metadata_revision": "c" * 64}
+        clock = datetime(2026, 11, 1, tzinfo=timezone.utc)
+        for metadata in ("c" * 64, "d" * 64):
+            expected["pr_metadata_revision"] = metadata
+            result = assurance.verify_receipt(path, expected=expected, now=clock)
+            self.assertTrue(result["applicable"])
+            self.assertTrue(result["all_reported_checks_passed"])
+            self.assertEqual(result["invalidation_reasons"], [])
+            self.assertFalse(result["authenticated_producer"])
+            self.assertFalse(result["authorization_granted"])
+        changed = assurance.verify_receipt(path, expected=dict(expected, source_revision="e" * 40), now=clock)
+        self.assertIn("source_revision-mismatch", changed["invalidation_reasons"])
+        self.assertFalse(changed["all_reported_checks_passed"])
+        missing = assurance.verify_receipt(path, expected={"comparison_base": "b" * 40}, now=clock)
+        self.assertIn("unverified-dependency:source_revision", missing["invalidation_reasons"])
+        for context in ({"unknown": "c" * 64}, {"pr_metadata_revision": "malformed"}):
+            with self.assertRaises(ValueError): assurance.verify_receipt(path, expected=dict(expected, **context), now=clock)
 
     def test_modified_bytes_missing_and_added_members_are_rejected(self):
         frozen = self.stage()
