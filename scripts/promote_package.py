@@ -11,6 +11,7 @@ import argparse
 import base64
 from datetime import datetime, timedelta, timezone
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
@@ -43,6 +44,21 @@ def safe_output(path: Path) -> None:
     absolute = path.absolute()
     require(not any(parent.is_symlink() for parent in (absolute, *absolute.parents)), "Output path may not traverse a symlink")
     require(not path.exists(), "Preserve existing output; choose a new directory")
+
+
+def private_output(path: Path) -> None:
+    safe_output(path)
+    absolute = path.absolute()
+    if absolute.is_relative_to(ROOT):
+        require(absolute.relative_to(ROOT).parts[:1] == (".artifacts",), "Private promotion records inside this checkout belong under .artifacts")
+
+
+def checked_archive_bytes(path: Path, digest: str) -> bytes:
+    require(not path.is_symlink() and path.is_file(), "Archive must be a regular file")
+    with path.open("rb") as stream:
+        content = stream.read(MAX_ARCHIVE + 1)
+    require(len(content) <= MAX_ARCHIVE and "sha256:" + hashlib.sha256(content).hexdigest() == digest, "Prepared/downloaded archive bytes changed or digest differs")
+    return content
 
 
 def instant(value: str) -> datetime:
@@ -91,9 +107,9 @@ def validate_jobs(jobs: list, run: dict) -> None:
         require(len(steps) == 1 and steps[0].get("status") == "completed" and steps[0].get("conclusion") == "success", "Required package step did not pass: " + name)
 
 
-def safe_extract(archive: Path, destination: Path) -> None:
+def safe_extract(archive: Path | bytes, destination: Path) -> None:
     safe_output(destination)
-    with zipfile.ZipFile(archive) as zipped:
+    with zipfile.ZipFile(io.BytesIO(archive) if isinstance(archive, bytes) else archive) as zipped:
         entries = zipped.infolist()
         require(0 < len(entries) <= 20100 and sum(e.file_size for e in entries) <= MAX_UNCOMPRESSED, "Archive membership/size exceeds policy")
         names = set()
@@ -148,6 +164,9 @@ def inspect_platform(run_id: int) -> tuple[dict, dict]:
     require(type(run_id) is int and run_id > 0, "Positive run ID required")
     run = api(f"actions/runs/{run_id}")
     validate_run(run, api("actions/workflows/acceptance.yml"))
+    require(type(run.get("check_suite_id")) is int and run["check_suite_id"] > 0, "Run check-suite identity missing")
+    suite = api(f"check-suites/{run['check_suite_id']}")
+    require(suite.get("app", {}).get("id") == 15368 and suite.get("head_sha") == run["head_sha"] and suite.get("repository", {}).get("id") == run["repository"]["id"] and suite.get("status") == "completed" and suite.get("conclusion") == "success", "GitHub Actions application/source identity differs")
     compare = api("compare/" + run["head_sha"] + "...main")
     require(compare.get("status") in {"ahead", "identical"} and compare.get("merge_base_commit", {}).get("sha") == run["head_sha"], "Run source is not retained on main")
     listing = api(f"actions/runs/{run_id}/artifacts?per_page=100")
@@ -171,14 +190,14 @@ def verify_source(package: Path, run: dict) -> dict:
 
 
 def prepare(run_id: int, output: Path) -> dict:
-    safe_output(output)
+    private_output(output)
     run, artifact = inspect_platform(run_id)
     output.mkdir(parents=True)
     archive = output / "artifact.zip"
     with archive.open("xb") as stream:
         subprocess.run(["gh", "api", API + f"/actions/artifacts/{artifact['id']}/zip"], stdout=stream, check=True)
-    require(archive.stat().st_size <= MAX_ARCHIVE and "sha256:" + sha(archive) == artifact["digest"], "Downloaded artifact archive digest differs")
-    safe_extract(archive, output / "package")
+    content = checked_archive_bytes(archive, artifact["digest"])
+    safe_extract(content, output / "package")
     verified = verify_source(output / "package", run)
     report = {"version": 1, "kind": "promotion-preparation", "observed_at_utc": datetime.now(timezone.utc).isoformat(), "repository": REPOSITORY, "source_revision": run["head_sha"], "run_id": run["id"], "run_attempt": run["run_attempt"], "run_url": run["html_url"], "workflow_path": WORKFLOW, "artifact_id": artifact["id"], "artifact_name": artifact["name"], "archive_digest": artifact["digest"], "package_digest": verified["package_digest"], "manifest_sha256": verified["manifest_sha256"], "state": "verified-awaiting-separate-deployment-authorization", "native_build_provenance": False, "limits": "Successful same-repository main-run/platform and downloaded byte identities were checked. This preparation authorizes no upload, deployment or publication and is not a signed build attestation."}
     write_json(output / "promotion.json", report)
@@ -195,20 +214,21 @@ def wrangler(command: list[str], *, config: Path, log: Path, cwd: Path) -> str:
 
 
 def deploy(prepared: Path, output: Path) -> dict:
-    safe_output(output)
+    private_output(output)
     require(re.fullmatch(r"v24\.[0-9]+\.[0-9]+", subprocess.check_output(["node", "--version"], text=True).strip()) is not None, "Use the reviewed Node 24 deployment runtime")
     selected = read_json(prepared / "promotion.json")
     require(selected.get("version") == 1 and selected.get("kind") == "promotion-preparation" and selected.get("state") == "verified-awaiting-separate-deployment-authorization", "Unsupported promotion preparation")
     run, artifact = inspect_platform(selected["run_id"])
     require(selected.get("artifact_id") == artifact["id"] and selected.get("archive_digest") == artifact["digest"], "Prepared artifact selection changed")
     archive = prepared / "artifact.zip"
-    require("sha256:" + sha(archive) == artifact["digest"], "Prepared archive bytes changed")
+    content = checked_archive_bytes(archive, artifact["digest"])
     require(subprocess.check_output(["git", "-C", str(ROOT), "status", "--porcelain"], text=True) == "", "Deployment tool checkout must be clean")
     require(subprocess.check_output(["git", "-C", str(ROOT), "rev-parse", "HEAD"], text=True).strip() == api("git/ref/heads/main")["object"]["sha"], "Deployment tool must be reviewed current main")
     output.mkdir(parents=True)
     with tempfile.TemporaryDirectory(prefix="fieldnotes-promotion-") as temporary:
         package = Path(temporary).resolve() / "package"
-        safe_extract(archive, package)
+        # Extraction reads the exact bytes hashed above, even if the path changes.
+        safe_extract(content, package)
         verified = verify_source(package, run)
         require(verified["package_digest"] == selected.get("package_digest") and verified["manifest_sha256"] == selected.get("manifest_sha256"), "Prepared package identity changed")
         payload = package / "payload"
@@ -255,14 +275,14 @@ def deploy(prepared: Path, output: Path) -> dict:
 
 
 def observe(deployment: Path, output: Path, *, valid_for_seconds: int = 3600) -> dict:
-    safe_output(output)
+    private_output(output)
     require(type(valid_for_seconds) is int and 1 <= valid_for_seconds <= 86400, "Observation freshness must be 1..86400 seconds")
     record = read_json(deployment)
     require(record.get("version") == 1 and record.get("kind") == "package-deployment-observation" and record.get("state") == "deployed-awaiting-live-verification" and record.get("environment_url") == LIVE_URL and record.get("traffic_percentage") == 100, "Verified deployment inventory required before live observations")
     github_deployment = api("deployments/" + str(record["github_deployment_id"]))
     require(github_deployment.get("sha") == record["source_revision"] and github_deployment.get("environment") == "production", "GitHub production deployment subject differs")
     output.mkdir(parents=True)
-    environment = dict(os.environ)
+    environment = {key: os.environ[key] for key in ("PATH", "HOME", "SYSTEMROOT", "TMPDIR", "TMP", "TEMP", "LANG", "LC_ALL", "TZ", "PLAYWRIGHT_BROWSERS_PATH") if key in os.environ}
     environment.update(APP_URL=LIVE_URL, APP_REVISION=record["source_revision"])
     with (output / "release-smoke.json").open("w", encoding="utf-8") as stream:
         subprocess.run(["node", str(ROOT / "scripts/smoke.mjs")], env=environment, stdout=stream, check=True)
@@ -330,7 +350,7 @@ def render(observations: Path, output: Path) -> dict:
     output.mkdir(parents=True)
     public = {key: record[key] for key in ("version", "kind", "state", "observed_at_utc", "environment_url", "source_revision", "toolkit_revision", "worker_version", "package_digest", "artifact_id", "archive_digest", "run_id", "run_attempt", "run_url", "cloudflare_deployment_id", "github_deployment_id", "traffic_percentage")}
     public["release_smoke"] = {k: record["release_smoke"][k] for k in ("status", "revision", "toolkitRevision", "workerVersion", "checks")}
-    public["limits"] = "Retained bounded live release observations, not new probes, local PR QA, future availability or native build provenance."
+    public["limits"] = "Retained bounded live release observations, not new probes, local PR QA, future availability or native build provenance. Formatting validates local structure and bytes; it does not independently authenticate platform or producer claims."
     public["browser"] = {k: record["browser"][k] for k in ("status", "observed_at_utc", "source_revision", "toolkit_revision", "worker_version", "checks", "screenshots", "page_errors")}
     for image in public["browser"]["screenshots"]:
         name = image["file"]
@@ -343,7 +363,7 @@ def render(observations: Path, output: Path) -> dict:
     write_json(output / "verification.json", public)
     summary = f"# Package deployment verification\n\nRecorded at `{record['observed_at_utc']}`. This document formats prior live observations; it does not deploy or reverify anything.\n\nApp `{record['source_revision']}`; toolkit `{record['toolkit_revision']}`.\nPackage `sha256:{record['package_digest']}` from successful hosted [run]({record['run_url']}), artifact `{record['artifact_id']}`, archive `{record['archive_digest']}`.\nWorker `{record['worker_version']}`, Cloudflare deployment `{record['cloudflare_deployment_id']}`, recorded traffic {record['traffic_percentage']}%.\n\nLive health, release API persistence/permissions, and desktop/mobile UI passed at that observation time. [Sanitized data](verification.json).\n\n"
     summary += "\n".join(f"- [{image['file']}](screenshots/{image['file']})" for image in public["browser"]["screenshots"])
-    summary += "\n\nChecks optional, Core advisory, lifecycle/polyglot manual. Package integrity is not signed build provenance or exhaustive application certification. Later documentation CI does not update this observation time.\n"
+    summary += "\n\nChecks optional, Core advisory, lifecycle/polyglot manual. Package integrity is not signed build provenance or exhaustive application certification. Formatting validates retained bytes without independently authenticating their producer. Later documentation CI does not update this observation time.\n"
     (output / "verification.md").write_text(summary, encoding="utf-8")
     return {"recorded_observation": record["observed_at_utc"], "source_revision": record["source_revision"], "new_live_checks": False, "output": str(output)}
 

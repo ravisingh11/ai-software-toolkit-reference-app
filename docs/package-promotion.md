@@ -55,9 +55,9 @@ scripts/release.sh prepare --run-id APPROVED_MAIN_RUN_ID \
   --output .artifacts/v2.4.0-promotion-review
 ```
 
-Preparation independently checks repository, workflow, main ancestry, final run
+Preparation independently checks repository, workflow, GitHub Actions application identity, main ancestry, final run
 conclusion, attempt, named package-step outcomes, unique nonexpired artifact and
-its GitHub archive digest. It rejects unsafe ZIP members, symlinks, duplicates,
+its GitHub archive digest. Extraction consumes those same in-memory verified bytes; a later archive-path replacement cannot change the upload payload. It rejects unsafe ZIP members, symlinks, duplicates,
 wrong source/tree and deployment configuration, and changed/missing/extra files.
 It reads no Cloudflare credentials and grants no deployment authority. A PR
 package is retained for review but is never accepted as a production candidate.
@@ -111,7 +111,7 @@ applicability stale; the original timestamped historical record remains intact.
 revisions and hashes, and emits sanitized README-ready Markdown/JSON/images. It
 runs no producers, network probes or deployment. Copy those outputs through a
 reviewed documentation PR; later documentation CI must retain its own revision.
-Raw private logs and existing historical evidence stay outside tracked docs.
+Formatting validates retained structure and bytes; it does not independently authenticate the original platform or producer. Raw private logs stay under `.artifacts` inside the checkout, or an explicitly chosen external directory. Live browser/API child processes receive only runtime environment settings and the expected public app identity, not GitHub or Cloudflare token values. Existing historical evidence stays intact.
 
 The compiled-package live pilot is **not yet performed**. Until a maintainer
 separately approves and runs these manual operations, its production handoff

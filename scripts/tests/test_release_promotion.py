@@ -29,8 +29,9 @@ class PromotionTests(unittest.TestCase):
         self.root = Path(self.temporary.name).resolve()
         self.source = "a" * 40
         self.tree = "b" * 40
-        self.run = {"id": 123, "run_attempt": 2, "repository": {"id": 11, "full_name": package.REPOSITORY}, "head_repository": {"id": 11, "full_name": package.REPOSITORY}, "event": "push", "head_branch": "main", "status": "completed", "conclusion": "success", "path": package.WORKFLOW, "workflow_id": 99, "head_sha": self.source, "created_at": "2026-10-31T12:00:00Z", "updated_at": "2026-10-31T14:00:00Z", "html_url": "https://github.com/" + package.REPOSITORY + "/actions/runs/123"}
+        self.run = {"id": 123, "run_attempt": 2, "check_suite_id": 101, "repository": {"id": 11, "full_name": package.REPOSITORY}, "head_repository": {"id": 11, "full_name": package.REPOSITORY}, "event": "push", "head_branch": "main", "status": "completed", "conclusion": "success", "path": package.WORKFLOW, "workflow_id": 99, "head_sha": self.source, "created_at": "2026-10-31T12:00:00Z", "updated_at": "2026-10-31T14:00:00Z", "html_url": "https://github.com/" + package.REPOSITORY + "/actions/runs/123"}
         self.workflow = {"id": 99, "path": package.WORKFLOW, "state": "active"}
+        self.suite = {"app": {"id": 15368}, "head_sha": self.source, "repository": {"id": 11}, "status": "completed", "conclusion": "success"}
         self.job = {"name": "Application acceptance", "status": "completed", "conclusion": "success", "head_sha": self.source, "run_id": 123, "run_attempt": 2, "steps": [{"name": n, "status": "completed", "conclusion": "success"} for n in promote.REQUIRED_STEPS]}
         self.directory = self.root / "fixture-package"
         payload = self.directory / "payload"
@@ -59,6 +60,7 @@ class PromotionTests(unittest.TestCase):
     def github(self, endpoint):
         if endpoint == "actions/runs/123": return copy.deepcopy(self.run)
         if endpoint == "actions/workflows/acceptance.yml": return copy.deepcopy(self.workflow)
+        if endpoint == "check-suites/101": return copy.deepcopy(self.suite)
         if endpoint.startswith("compare/"): return {"status": "ahead", "merge_base_commit": {"sha": self.source}}
         if endpoint == "actions/runs/123/artifacts?per_page=100": return {"total_count": 1, "artifacts": [copy.deepcopy(self.artifact)]}
         if endpoint == "actions/runs/123/attempts/2/jobs?per_page=100": return {"total_count": 1, "jobs": [copy.deepcopy(self.job)]}
@@ -120,6 +122,14 @@ class PromotionTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "ambiguous"): promote.prepare(123, self.root / "missing")
             execute.assert_not_called()
 
+    def test_wrong_platform_application_source_or_incomplete_suite_never_downloads(self):
+        original = copy.deepcopy(self.suite)
+        for change in (lambda s: s["app"].update(id=999), lambda s: s.update(head_sha="c" * 40), lambda s: s["repository"].update(id=12), lambda s: s.update(status="in_progress"), lambda s: s.update(conclusion="cancelled")):
+            self.suite = copy.deepcopy(original);change(self.suite)
+            with patch.object(promote, "api", side_effect=self.github), patch.object(promote.subprocess, "run") as execute:
+                with self.assertRaisesRegex(ValueError, "application/source"): promote.prepare(123, self.root / "wrong-suite")
+                execute.assert_not_called()
+
     def test_stale_attempt_false_pass_and_wrong_subject_evidence_rejected(self):
         path = self.directory / "verification.json";original = package.read_json(path)
         for change in (lambda r: r.update(run_attempt=1), lambda r: r.update(source_revision="c" * 40), lambda r: r["steps"]["e2e"].update(outcome="failure"), lambda r: r.update(version=99)):
@@ -148,6 +158,14 @@ class PromotionTests(unittest.TestCase):
         with zipfile.ZipFile(p, "w") as zipped:
             zipped.writestr("payload/a", b"one");zipped.writestr("payload/a", b"two")
         with self.assertRaises(ValueError): promote.safe_extract(p, self.root / "unpack")
+
+    def test_extraction_consumes_the_immutable_bytes_checked_before_a_path_swap(self):
+        content = promote.checked_archive_bytes(self.archive, self.artifact["digest"])
+        self.archive.write_bytes(b"replaced after digest check")
+        destination = self.root / "original-content"
+        promote.safe_extract(content, destination)
+        self.assertEqual((destination / "payload/worker/index.js").read_bytes(), (self.directory / "payload/worker/index.js").read_bytes())
+        with self.assertRaisesRegex(ValueError, "archive bytes changed"): promote.checked_archive_bytes(self.archive, self.artifact["digest"])
 
     def test_source_config_mismatch_rejected_even_when_package_checksums_are_valid(self):
         self.source_config["account_id"] = "other-account"
@@ -264,6 +282,25 @@ class PromotionTests(unittest.TestCase):
         receipt = self.root / "deployment-receipt.json";promote.write_checkpoint(receipt, evidence, record, checkpoint="deployment")
         self.assertEqual(assurance.read_document(receipt)["results"][-1]["status"], "not_run")
 
+    def test_observation_children_receive_no_github_cloud_or_node_injection_credentials(self):
+        record = self.deployment_fixture();deployment = self.root / "deployment.json";package.write_json(deployment, record)
+        live = self.live_fixture();output = self.root / "live-output"
+        def execute(command, **kwargs):
+            environment = kwargs["env"]
+            for name in ("GH_TOKEN", "CLOUDFLARE_API_TOKEN", "AWS_SECRET_ACCESS_KEY", "NODE_OPTIONS"):
+                self.assertNotIn(name, environment)
+            self.assertEqual(environment["APP_REVISION"], self.source)
+            self.assertEqual(environment["APP_URL"], promote.LIVE_URL)
+            if command[1].endswith("smoke.mjs"):
+                json.dump(live["release_smoke"], kwargs["stdout"])
+            else:
+                self.assertTrue(command[1].endswith("observe_release.mjs"))
+                package.write_json(output / "browser-observations.json", live["browser"])
+            return subprocess.CompletedProcess(command, 0)
+        with patch.dict("os.environ", {"GH_TOKEN": "sentinel", "CLOUDFLARE_API_TOKEN": "sentinel", "AWS_SECRET_ACCESS_KEY": "sentinel", "NODE_OPTIONS": "--require=untrusted"}), patch.object(promote, "api", return_value={"sha": self.source, "environment": "production"}), patch.object(promote.subprocess, "run", side_effect=execute), patch.object(promote, "github_write", side_effect=self.fake_github_write):
+            observed = promote.observe(deployment, output)
+        self.assertEqual(observed["state"], "verified-at-observation-time")
+
     def test_render_preserves_observation_time_and_bytes_without_network_or_credential_calls(self):
         record = self.live_fixture();observations = self.root / "live-observations.json";package.write_json(observations, record);before = observations.read_bytes()
         with patch.object(promote, "api", side_effect=AssertionError("No network")), patch.object(promote, "wrangler", side_effect=AssertionError("No cloud credentials")), patch.object(promote.subprocess, "run", side_effect=AssertionError("No producers")):
@@ -291,6 +328,12 @@ class PromotionTests(unittest.TestCase):
         self.assertEqual(marker.read_text(), "preserve")
         link = self.root / "linked";link.symlink_to(destination, target_is_directory=True)
         with self.assertRaisesRegex(ValueError, "symlink"): promote.safe_output(link / "new")
+
+    def test_private_output_under_tracked_checkout_is_rejected_before_network(self):
+        with patch.object(promote, "ROOT", self.root), patch.object(promote, "api") as network:
+            with self.assertRaisesRegex(ValueError, "under .artifacts"): promote.prepare(123, self.root / "docs/private-data")
+            network.assert_not_called()
+            promote.private_output(self.root / ".artifacts/explicitly-private")
 
 
 if __name__ == "__main__":
