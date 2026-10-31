@@ -12,6 +12,11 @@
       "next_action": "Inspect the build log and fix the compilation or packaging failure."
     },
     {
+      "id": "package",
+      "name": "Freeze compiled Worker package",
+      "next_action": "Inspect packaging/configuration gaps; never upload an unfrozen package."
+    },
+    {
       "id": "lint",
       "name": "Format and lint",
       "control": "format-and-lint",
@@ -41,6 +46,11 @@
       "next_action": "Inspect reporting assertions; preserve original evaluator semantics."
     },
     {
+      "id": "package_tests",
+      "name": "Package contract regressions",
+      "next_action": "Inspect package-integrity negative controls; do not weaken checks to permit promotion."
+    },
+    {
       "id": "browser_setup",
       "name": "Browser prerequisite installation",
       "next_action": "Inspect browser installation errors; later browser tests supply no result if skipped."
@@ -54,6 +64,16 @@
       "id": "application_artifacts",
       "name": "Retain application evidence",
       "next_action": "Inspect the artifact upload; missing artifacts are not evidence of a pass."
+    },
+    {
+      "id": "package_verified",
+      "name": "Frozen package unchanged after acceptance",
+      "next_action": "Reject changed bytes/configuration or incomplete acceptance before retention."
+    },
+    {
+      "id": "package_artifact",
+      "name": "Retain verified Worker package",
+      "next_action": "Missing artifact bytes do not establish a promotable package."
     }
   ]
 }

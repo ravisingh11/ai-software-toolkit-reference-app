@@ -1,0 +1,9 @@
+{
+  "repository": "https://github.com/ravisingh11/ai-software-toolkit",
+  "revision": "73b982aa3c752aa1c227e64a1c5badd31a1ea421",
+  "source_path": "tooling/assurance.py",
+  "installed_path": "scripts/assurance.py",
+  "sha256": "97eb94fbc04a8eaf5d94f5dd385c2051e889e6ff6f6c4566b0d98d4c9a8fccf6",
+  "license": "MIT; retained toolkit notice in docs/licenses/ai-software-toolkit-MIT.txt",
+  "status": "Candidate toolkit PR #170 source snapshot; application-owned integration, not a published v2.4.0 runtime upgrade."
+}
