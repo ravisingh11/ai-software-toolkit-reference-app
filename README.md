@@ -26,8 +26,9 @@ changes; each keeps its own revision and evidence.
 Hosted acceptance now tests and retains one [compiled Worker package](docs/package-promotion.md),
 with exact source, inventory and configuration hashes. This is CI evidence,
 not a new deployment. Production package promotion remains manual and the live
-pilot is unverified until separately authorized. The published toolkit pin and
-historical deployment records remain unchanged.
+pilot is unverified until separately authorized. The [manual procedure](docs/package-promotion.md#manual-promotion-and-evidence)
+separates package preparation, approved upload, live observations and documentation.
+The published toolkit pin and historical deployment records remain unchanged.
 
 ## Start contributing
 
