@@ -1,6 +1,10 @@
-# Fieldnotes · AI Software Toolkit reference app
+# Fieldnotes · AI Engineering Guardrails reference app
 
-A working issue tracker that consumes [AI Software Toolkit](https://github.com/ravisingh11/ai-software-toolkit) through its supported installers. This separate repository makes adoption, QA, Proof checks, and release evidence inspectable.
+A working issue tracker that consumes [AI Engineering Guardrails](https://github.com/ravisingh11/ai-engineering-guardrails) through its supported installers. This separate repository makes adoption, QA, Proof checks, and release evidence inspectable.
+
+The upstream project was previously AI Software Toolkit. See the
+[project rename and unchanged provenance](docs/toolkit-adoption.md) before
+refreshing an existing installation.
 
 **[Open the live demo](https://ai-software-toolkit-reference-app.navivision-account.workers.dev)** · **[Open the SDLC / Proof report](https://ravisingh11.github.io/ai-software-toolkit-reference-app/)** · [Release and verification evidence](https://github.com/ravisingh11/ai-software-toolkit-reference-app/releases/tag/v0.1.0) · [Evidence guide](docs/verification/README.md)
 
@@ -44,7 +48,7 @@ is an optional, separate client setup.
 
 Choose checks for the decision and evidence scope, from working changes to the
 actual merged revision. Read down the first column for the process and across
-for the invocation and relevant AI Software Toolkit capabilities.
+for the invocation and relevant AI Engineering Guardrails capabilities.
 
 ```mermaid
 %%{init: {"block": {"padding": 32}}}%%
@@ -79,7 +83,7 @@ block-beta
 
   block:toolkit
     columns 1
-    TH["AI Software Toolkit<br/>capabilities"]
+    TH["AI Engineering Guardrails<br/>capabilities"]
     T1["Review skills<br/>Test-gap analysis"]
     T2["Local static and secret checks<br/>Exact staged scope: future"]
     T3["Message conventions<br/>No built-in producer"]
@@ -304,7 +308,7 @@ The adopted Unit Tests workflow runs on PR open, reopen, and new commits:
 block-beta
   columns 1
   A["Hook<br/>PR opened, reopened, or new commits pushed"]
-  B["AI Software Toolkit<br/>Unit Tests workflow and command runner"]
+  B["AI Engineering Guardrails<br/>Unit Tests workflow and command runner"]
   C["Repository-owned test command<br/>Fieldnotes: npm run test:coverage"]
   D["GitHub check result<br/>Bound to the exact tested commit"]
   E["Trusted evidence collection and Proof<br/>Evaluate selected policy and publish the scorecard"]
@@ -380,7 +384,7 @@ passing security evidence. [Manual lifecycle run 39359753235](https://github.com
 supplied seven accepted passing lifecycle controls and those two failed scans.
 
 [Reference app Deep SAST scorecard](https://ravisingh11.github.io/ai-software-toolkit-reference-app/#check-deep-sast)
-· [Toolkit scorecard](https://ravisingh11.github.io/ai-software-toolkit/#check-deep-sast).
+· [Toolkit scorecard](https://ravisingh11.github.io/ai-engineering-guardrails/#check-deep-sast).
 These live links can advance to newer publications; the runs above identify the
 recorded snapshot, not current `main` or the deployed Worker. **All toolkit
 checks remain optional** to adopt and enforce. The separate five-language
@@ -403,10 +407,10 @@ hidden. Missing changed-line coverage or security-settings evidence for a select
 check remains unverifiable. This does not change the separately reported Snyk
 finding example or the app's dependencies.
 
-This source uses [toolkit v2.3.4](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.3.4)
-at immutable revision [`2da5654`](https://github.com/ravisingh11/ai-software-toolkit/commit/2da5654836210fc484399cbc82c85fd821bc666d)
+This source uses [toolkit v2.3.4](https://github.com/ravisingh11/ai-engineering-guardrails/releases/tag/v2.3.4)
+at immutable revision [`2da5654`](https://github.com/ravisingh11/ai-engineering-guardrails/commit/2da5654836210fc484399cbc82c85fd821bc666d)
 through the supported installer, including the stage-specific groups and full catalog.
-The [activation index](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.4/docs/activation.md)
+The [activation index](https://github.com/ravisingh11/ai-engineering-guardrails/blob/v2.3.4/docs/activation.md)
 and read-only doctor explain setup and evidence gaps for all 33 checks. Existing
 workflows and selections are retained; fresh starter defaults do not prune this app.
 All toolkit checks remain optional;
@@ -456,7 +460,7 @@ Choose **Editor** to create issues, move them through triage/in progress/done, a
 ## What this proves
 
 - Real browser UI and JSON API with persistent D1 storage, server-side permissions, session isolation, input validation, and status transitions.
-- Toolkit **[v2.3.4](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.3.4)**, installed at immutable revision [`2da5654`](https://github.com/ravisingh11/ai-software-toolkit/commit/2da5654836210fc484399cbc82c85fd821bc666d); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
+- Toolkit **[v2.3.4](https://github.com/ravisingh11/ai-engineering-guardrails/releases/tag/v2.3.4)**, installed at immutable revision [`2da5654`](https://github.com/ravisingh11/ai-engineering-guardrails/commit/2da5654836210fc484399cbc82c85fd821bc666d); see [provenance](toolkit.lock.json) and [adoption](docs/toolkit-adoption.md).
 - Deterministic domain, migration, API, and Chromium acceptance tests, including negative permissions and race/error regressions.
 - Generated app-specific local agent QA skills, executed through the actual Codex browser and HTTP tools. Agent QA remains advisory and separate from deterministic tests.
 - Clean-commit Cloudflare release script, live revision verification, and a documented code rollback procedure.
@@ -464,9 +468,9 @@ Choose **Editor** to create issues, move them through triage/in progress/done, a
 ## Use with Claude Code
 
 Start with this application's [CLAUDE.md](CLAUDE.md) for repository context and
-execution limits. Toolkit v2.3.4 provides [Claude Code onboarding](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.4/docs/quickstart.md#claude-code-setup),
-[installation and updates](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.4/docs/install.md),
-and the [release notes](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.4/docs/releases/v2.3.4.md).
+execution limits. Toolkit v2.3.4 provides [Claude Code onboarding](https://github.com/ravisingh11/ai-engineering-guardrails/blob/v2.3.4/docs/quickstart.md#claude-code-setup),
+[installation and updates](https://github.com/ravisingh11/ai-engineering-guardrails/blob/v2.3.4/docs/install.md),
+and the [release notes](https://github.com/ravisingh11/ai-engineering-guardrails/blob/v2.3.4/docs/releases/v2.3.4.md).
 See [the app's Claude setup](docs/toolkit-adoption.md#claude-code-setup) for a
 preview-first skills install from the pinned release and
 [client discovery](docs/onboarding.md#client-discovery) for its separate destination.

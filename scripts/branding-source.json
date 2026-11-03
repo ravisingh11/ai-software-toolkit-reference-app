@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "kind": "project-branding-source",
+  "repository": "https://github.com/ravisingh11/ai-engineering-guardrails",
+  "repository_id": 1348591078,
+  "revision": "242308aa6e652d3a9e9dec6c552c6fd8d98673e1",
+  "files": [
+    {
+      "source_path": "tooling/activation.py",
+      "installed_path": ".proof/activation.py",
+      "sha256": "979bc3f28b3e8075fcd0a90e31274c9eb4a949569fac0b0cb0d636e99b51d3cc",
+      "previous_sha256": "06c13748303e8f1f8029c9bbc006312aeb9d78f0a366899926167b6571321518"
+    },
+    {
+      "source_path": "tooling/render_scorecard_badge.py",
+      "installed_path": ".proof/render_scorecard_badge.py",
+      "sha256": "dd843e90aaa9f010b45a7ada0a9a380614b19ee4c035f4cc236d5527c5938047",
+      "previous_sha256": "d9aaad5579197fc49e340c783fbd74538c2881c5fbfd40324b40b9721abd0ba4"
+    },
+    {
+      "source_path": "tooling/checkpoint_report.py",
+      "installed_path": "scripts/checkpoint_report.py",
+      "sha256": "609a0461f38fe4c0ddd20659a55d21eace674693f5756310b26c80b6a4a20844",
+      "previous_sha256": "ba52806b8ffa56e646bcececb3f86b03417b66f72fd3b3be170d70c2f6d9d070"
+    },
+    {
+      "source_path": "skills/toolkit-setup/SKILL.md",
+      "installed_path": ".agents/skills/toolkit-setup/SKILL.md",
+      "sha256": "84f89fbd3b8e4586e9bc5bf94b7d3195584548fd23c997b7d141e795c86d0e6e",
+      "previous_sha256": "b33050788188af021187c081eef3ce011f79f392f7b7dabb37b58319d573df66"
+    },
+    {
+      "source_path": "skills/toolkit-setup/agents/openai.yaml",
+      "installed_path": ".agents/skills/toolkit-setup/agents/openai.yaml",
+      "sha256": "3430fc90ef7c9922ff34038ffa05f833b7f7f977d0e4d48cd87da60bd64b72eb",
+      "previous_sha256": "6bfe1e6737a0fbd9400d2932ad19688d6f90c6bb76282f3158cad81e658c5630"
+    }
+  ],
+  "scope": "Metadata-only canonical branding and upstream-link refresh. The original published toolkit.lock.json and independent scripts/assurance-source.json remain unchanged. This records file/source identity, not a runtime version upgrade, authenticated build provenance, execution evidence, activation or deployment.",
+  "published_base": {
+    "lock": "toolkit.lock.json",
+    "release": "v2.3.4",
+    "revision": "2da5654836210fc484399cbc82c85fd821bc666d"
+  },
+  "historical_evidence": "Recorded subjects, repository identities, timestamps, findings and original source pins are preserved."
+}

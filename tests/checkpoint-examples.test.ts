@@ -12,12 +12,36 @@ const renderer = join(root, '.proof/render_scorecard_badge.py');
 const repository = 'ravisingh11/ai-software-toolkit-reference-app';
 const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/checkpoint-examples.json'), 'utf8'));
 
-test('page renderer retains its explicitly pinned upstream source identity', () => {
+test('branding metadata keeps the published base and binds each canonical source copy', () => {
   const lock = JSON.parse(readFileSync(join(root, 'toolkit.lock.json'), 'utf8'));
+  const branding = JSON.parse(readFileSync(join(root, 'scripts/branding-source.json'), 'utf8'));
   assert.equal(lock.release, 'v2.3.4');
   assert.equal(lock.pageRenderer.revision, lock.revision);
   assert.match(lock.pageRenderer.revision, /^[0-9a-f]{40}$/);
-  assert.equal(createHash('sha256').update(readFileSync(renderer)).digest('hex'), lock.pageRenderer.sha256);
+  assert.equal(lock.pageRenderer.repository, 'https://github.com/ravisingh11/ai-software-toolkit');
+  assert.equal(branding.version, 1);
+  assert.equal(branding.kind, 'project-branding-source');
+  assert.equal(branding.repository, 'https://github.com/ravisingh11/ai-engineering-guardrails');
+  assert.equal(branding.repository_id, 1348591078);
+  assert.equal(branding.revision, '242308aa6e652d3a9e9dec6c552c6fd8d98673e1');
+  assert.deepEqual(branding.published_base, { lock: 'toolkit.lock.json', release: lock.release, revision: lock.revision });
+  const expectedCopies = {
+    '.proof/activation.py': 'tooling/activation.py',
+    '.proof/render_scorecard_badge.py': 'tooling/render_scorecard_badge.py',
+    'scripts/checkpoint_report.py': 'tooling/checkpoint_report.py',
+    '.agents/skills/toolkit-setup/SKILL.md': 'skills/toolkit-setup/SKILL.md',
+    '.agents/skills/toolkit-setup/agents/openai.yaml': 'skills/toolkit-setup/agents/openai.yaml',
+  };
+  assert.deepEqual(branding.files.map(file => file.installed_path).sort(), Object.keys(expectedCopies).sort());
+  for (const file of branding.files) {
+    assert.equal(file.source_path, expectedCopies[file.installed_path]);
+    assert.match(file.sha256, /^[0-9a-f]{64}$/);
+    assert.match(file.previous_sha256, /^[0-9a-f]{64}$/);
+    assert.equal(createHash('sha256').update(readFileSync(join(root, file.installed_path))).digest('hex'), file.sha256);
+  }
+  const currentRenderer = branding.files.find(file => file.installed_path === '.proof/render_scorecard_badge.py');
+  assert.equal(currentRenderer.source_path, lock.pageRenderer.sourcePath);
+  assert.equal(currentRenderer.previous_sha256, lock.pageRenderer.sha256);
 });
 
 test('app page separates historical PR checks from its own main checks and live score', () => {

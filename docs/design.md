@@ -1,7 +1,7 @@
 # Fieldnotes reference application
 
 ## Purpose
-A small issue tracker that consumes AI Software Toolkit through its public installer and demonstrates a tested, deployed change lifecycle. The application is a separate repository; toolkit policy remains upstream.
+A small issue tracker that consumes AI Engineering Guardrails through its public installer and demonstrates a tested, deployed change lifecycle. The application is a separate repository; toolkit policy remains upstream.
 
 ## Contract
 Cloudflare Worker serves static HTML/CSS/JavaScript and a JSON API backed by D1. Each demo session receives a new isolated board and cryptographically random HttpOnly SameSite=Strict cookie; only its hash is stored. Sessions expire after 24 hours. Demo roles are selected at creation and persisted server-side; choosing an editor session is intentionally public, not production identity authentication. Never enter real customer data.
