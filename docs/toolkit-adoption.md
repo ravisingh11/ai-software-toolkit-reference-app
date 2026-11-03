@@ -1,6 +1,21 @@
 # Toolkit adoption
 
-The runtime and selected skills are pinned to published [toolkit v2.3.4](https://github.com/ravisingh11/ai-software-toolkit/releases/tag/v2.3.4)
+The upstream project is now **AI Engineering Guardrails** at
+[`ravisingh11/ai-engineering-guardrails`](https://github.com/ravisingh11/ai-engineering-guardrails),
+formerly AI Software Toolkit. This project rename preserves the `ai-toolkit` CLI
+command, `toolkit.lock.json` provenance, `.proof/` paths and contracts, selected
+checks and published source pins. The reference app keeps its existing repository, Pages,
+Worker and database identities. Historical deployment and verification records
+keep their recorded names and addresses; this documentation change is not a
+new deployment or a toolkit version upgrade.
+
+The current display labels, activation links and setup-skill descriptions use
+exact canonical source copies recorded in
+[`scripts/branding-source.json`](../scripts/branding-source.json). That sidecar
+records source revisions and file hashes separately from the published lock;
+it does not establish producer execution or authenticated build provenance.
+
+The runtime and selected skills are pinned to published [toolkit v2.3.4](https://github.com/ravisingh11/ai-engineering-guardrails/releases/tag/v2.3.4)
 at immutable upstream commit `2da5654836210fc484399cbc82c85fd821bc666d`.
 This release packages actionable checkpoint reporting: invocation, actual tested
 revision, outcomes, evidence gaps and next steps. This app already adopted the
@@ -70,7 +85,7 @@ skills for Claude Code, use a separate trusted toolkit checkout at the pinned
 revision and preview the selection first:
 
 ```sh
-git clone https://github.com/ravisingh11/ai-software-toolkit.git /path/to/toolkit
+git clone https://github.com/ravisingh11/ai-engineering-guardrails.git /path/to/toolkit
 git -C /path/to/toolkit checkout --detach 2da5654836210fc484399cbc82c85fd821bc666d
 bash /path/to/toolkit/tooling/install-skills.sh --client claude-code \
   --target /path/to/ai-software-toolkit-reference-app/.claude/skills \
@@ -91,8 +106,8 @@ write that file.
 
 For example: “Use the code-review skill to review this change. Explain risks
 with file references. Do not run tests or commands unless I ask.” Review the
-[versioned upstream onboarding](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.4/docs/quickstart.md#claude-code-setup)
-and [CLI guide](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.4/docs/install.md).
+[versioned upstream onboarding](https://github.com/ravisingh11/ai-engineering-guardrails/blob/v2.3.4/docs/quickstart.md#claude-code-setup)
+and [CLI guide](https://github.com/ravisingh11/ai-engineering-guardrails/blob/v2.3.4/docs/install.md).
 All toolkit checks remain optional. Application acceptance remains the only
 required CI check; lifecycle and polyglot workflows remain manual and optional.
 

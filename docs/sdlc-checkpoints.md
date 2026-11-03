@@ -14,7 +14,7 @@ that guidance; the original adaptation links above retain their source identitie
 `2da5654836210fc484399cbc82c85fd821bc666d`.
 
 All 33 checks remain discoverable through the
-[versioned activation index](https://github.com/ravisingh11/ai-software-toolkit/blob/v2.3.4/docs/activation.md)
+[versioned activation index](https://github.com/ravisingh11/ai-engineering-guardrails/blob/v2.3.4/docs/activation.md)
 and the upstream guide's full checkpoint mapping. Reuse those guides for
 prerequisites and provider adoption rather than treating this placement map as
 configuration. Only selected, applicable checks affect scoring. All toolkit
@@ -230,7 +230,7 @@ claimed discovered or executed by the agent.
 Cancellation, runner loss or checkout failure may prevent summaries/artifacts;
 inspect the original GitHub run when missing. Artifact retention/access is
 controlled by GitHub. All 33 checks remain discoverable in the
-[activation index](https://github.com/ravisingh11/ai-software-toolkit/blob/main/docs/activation.md).
+[activation index](https://github.com/ravisingh11/ai-engineering-guardrails/blob/main/docs/activation.md).
 Checks stay optional, Core advisory, and lifecycle/polyglot manual. Deployment,
 real skill verification and previous hook evidence remain unchanged.
 
