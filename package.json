@@ -30,14 +30,14 @@
     "polyglot:format": "prettier --check examples/polyglot/typescript/src examples/polyglot/typescript/dependency-cruiser.cjs"
   },
   "devDependencies": {
-    "@playwright/test": "1.64.1",
+    "@playwright/test": "1.65.0",
     "c8": "12.0.0",
-    "dependency-cruiser": "18.7.0",
-    "eslint": "10.13.0",
+    "dependency-cruiser": "18.7.2",
+    "eslint": "10.14.0",
     "prettier": "3.9.10",
-    "typescript": "5.9.3",
-    "typescript-eslint": "8.72.0",
-    "wrangler": "4.151.2"
+    "typescript": "7.0.2",
+    "typescript-eslint": "8.72.2",
+    "wrangler": "4.159.0"
   },
   "overrides": {
     "miniflare@5.20261019.0-beta": {
